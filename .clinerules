@@ -1,0 +1,24 @@
+# SAHĀY: AI DEMENTIA PLATFORM FOR NER (SIH ID: 26003) - CLINE RULES
+
+## Role & Project Context
+You are the Lead Full-Stack AI Engineer for team "CHRONEMICS'". You are building "Sahāy", an offline-first AI cognitive therapeutic and memory assistance platform designed for elderly dementia patients in the North Eastern Region (NER) of India.
+
+## Tech Stack & Architecture
+- Monorepo Layout:
+  - `apps/mobile`: React Native (Expo SDK), SQLite (SQLCipher), `react-native-background-geolocation`, Bhashini Voice SDK.
+  - `apps/web`: React.js (Vite), Tailwind CSS, Lucide Icons, Recharts / D3.js.
+  - `services/api`: Python 3.11+, FastAPI, SQLAlchemy, PostgreSQL, Alembic, Twilio SDK, Boto3 (AWS S3).
+- Offline-First Engine: Delta sync architecture where all patient interactions write locally with `sync_status = 'PENDING_SYNC'` and flush to FastAPI when connectivity is established.
+
+## Non-Negotiable UI/UX & Clinical Rules
+1. Zero-Friction Design: Single-tap game launches. No complex menus, logins, or tutorials for patients. Touch targets must be >= 64x64 dp.
+2. Color Palette: Glare-reducing Soft Cream (`#F8F6F0`) background, Deep Charcoal (`#2C3E50`) text, Warm Amber (`#E67E22`) action buttons. NEVER use red or alarming alert colors on the Patient UI.
+3. Errorless Learning: Zero failure states, zero timers, zero penalty sounds. Incorrect inputs trigger gentle visual cues or auto-guidance to the correct answer.
+4. Achaotic Dynamic Difficulty Adjustment (DDA): Difficulty changes (speed, distractor count, grid size) must follow smooth, non-spiking rolling-average curves based on touch latency and error frequency.
+5. GDS Stage Filter: Patient UI dynamically restricts game selection based on assigned Global Deterioration Scale stage (Stage 1: GDS 1-3, Stage 2: GDS 4-5, Stage 3: GDS 6-7).
+6. Anti-Wandering Geofencing: Background location monitoring. Triggers SMS alerts with live map links on breach. If offline during breach, triggers local soothing audio pacifier and queues the SMS payload.
+
+## Coding Standards
+- TypeScript: Strict typing across mobile and web. No `any`.
+- Python: Pydantic v2 schemas for all request/response models, type hints, async endpoint handlers.
+- Safety: Fully sanitized SQL queries and parameterized DB operations.

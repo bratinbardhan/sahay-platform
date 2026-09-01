@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Sahāy",
+    "slug": "sahay-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "sahay",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#F8F6F0"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sahay.mobile",
+      "infoPlist": {
+        "UIBackgroundModes": ["audio", "location"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F8F6F0"
+      },
+      "package": "com.sahay.mobile"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-av",
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": false,
+          "useSQLCipher": true
+        }
+      ],
+      [
+        "react-native-background-geolocation",
+        {
+          "backgroundPermissionRationale": {
+            "title": "Allow {applicationName} to access your location in the background",
+            "message": "SaHay uses your location only to keep you inside your safe zone and alert your family if you wander.",
+            "positiveButton": "Allow",
+            "negativeButton": "Not now"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
