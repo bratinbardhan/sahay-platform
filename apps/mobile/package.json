@@ -16,6 +16,7 @@
     "expo": "~54.0.0",
     "expo-av": "~16.0.8",
     "expo-crypto": "~15.0.9",
+    "expo-dev-client": "~6.0.21",
     "expo-file-system": "~19.0.24",
     "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.12",
