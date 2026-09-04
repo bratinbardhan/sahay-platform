@@ -18,10 +18,16 @@ app = FastAPI(
     version="0.2.0",
 )
 
+origins = settings.cors_origins
+# When using wildcard origins, credentials cannot be set (browsers reject
+# Access-Control-Allow-Origin: * with Access-Control-Allow-Credentials: true).
+# The mobile and web clients use plain fetch without credentials, so this is safe.
+allow_credentials = "*" not in origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )

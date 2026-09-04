@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
-    api_cors_origins: str = "http://localhost:5173,http://localhost:8081"
+    api_cors_origins: str = "*"  # Allow all origins in dev; set explicit origins in production
 
     # Database
     database_url: str = "postgresql+asyncpg://sahay:sahay@localhost:5432/sahay"
@@ -43,7 +43,10 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins(self) -> list[str]:
-        return [origin.strip() for origin in self.api_cors_origins.split(",") if origin.strip()]
+        raw = self.api_cors_origins.strip()
+        if raw == "*":
+            return ["*"]
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
 
 
 @lru_cache
