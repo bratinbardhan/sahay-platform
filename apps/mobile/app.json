@@ -32,7 +32,7 @@
       "adaptiveIcon": {
         "backgroundColor": "#F8F6F0"
       },
-      "package": "com.sahay.mobile",
+      "package": "com.chronemics.sahay",
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
@@ -42,6 +42,12 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_LOCATION"
       ]
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/98fd3088-322c-4f65-8bd0-aab008987f65"
     },
     "plugins": [
       "expo-router",
@@ -78,7 +84,7 @@
       "environment": "development",
       "productionApiUrl": "https://api.sahay.platform",
       "eas": {
-        "projectId": "9e1e557c-d4dd-43de-90ff-1210ed02ea7c"
+        "projectId": "98fd3088-322c-4f65-8bd0-aab008987f65"
       }
     }
   }
