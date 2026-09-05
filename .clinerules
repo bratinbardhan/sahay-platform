@@ -1,11 +1,11 @@
 # SAHĀY: AI DEMENTIA PLATFORM FOR NER (SIH ID: 26003) - CLINE RULES
 
 ## Role & Project Context
-You are the Lead Full-Stack AI Engineer for team "CHRONEMICS'". You are building "Sahāy", an offline-first AI cognitive therapeutic and memory assistance platform designed for elderly dementia patients in the North Eastern Region (NER) of India.
+You are the Lead Full-Stack AI Engineer for team "chronemics'". You are building "Sahāy", an offline-first AI cognitive therapeutic and memory assistance platform designed for elderly dementia patients in the North Eastern Region (NER) of India.
 
 ## Tech Stack & Architecture
 - Monorepo Layout:
-  - `apps/mobile`: React Native (Expo SDK), SQLite (SQLCipher), `react-native-background-geolocation`, Bhashini Voice SDK.
+  - `apps/mobile`: React Native (Expo SDK), SQLite (SQLCipher), `react-native-background-geolocation`, Bhashini Voice SDK. Must support iOS, Android, and Web (`react-native-web`).
   - `apps/web`: React.js (Vite), Tailwind CSS, Lucide Icons, Recharts / D3.js.
   - `services/api`: Python 3.11+, FastAPI, SQLAlchemy, PostgreSQL, Alembic, Twilio SDK, Boto3 (AWS S3).
 - Offline-First Engine: Delta sync architecture where all patient interactions write locally with `sync_status = 'PENDING_SYNC'` and flush to FastAPI when connectivity is established.
@@ -18,7 +18,9 @@ You are the Lead Full-Stack AI Engineer for team "CHRONEMICS'". You are building
 5. GDS Stage Filter: Patient UI dynamically restricts game selection based on assigned Global Deterioration Scale stage (Stage 1: GDS 1-3, Stage 2: GDS 4-5, Stage 3: GDS 6-7).
 6. Anti-Wandering Geofencing: Background location monitoring. Triggers SMS alerts with live map links on breach. If offline during breach, triggers local soothing audio pacifier and queues the SMS payload.
 
-## Coding Standards
+## Coding Standards & Monorepo Rules
 - TypeScript: Strict typing across mobile and web. No `any`.
 - Python: Pydantic v2 schemas for all request/response models, type hints, async endpoint handlers.
 - Safety: Fully sanitized SQL queries and parameterized DB operations.
+- Dependency Alignment: Strict version parity is required for `react`, `react-dom`, and `react-native-web` to match the installed Expo SDK. Do not arbitrarily upgrade React versions in `apps/mobile` without verifying Expo Router compatibility.
+- Environment: API configuration must rely on `EXPO_PUBLIC_API_URL` injected via `.env`.

@@ -11,16 +11,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
-            "@sahay/types": "*",
+    "@sahay/types": "*",
     "lucide-react": "^0.474.0",
     "recharts": "^2.15.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "~19.1.10",
+    "@types/react-dom": "~19.1.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",

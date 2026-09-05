@@ -18,6 +18,11 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@expo/config-plugins": "^57.0.9"
+    "@expo/config-plugins": "~54.0.5",
+    "expo-updates": "~29.0.20"
+  },
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   }
 }

@@ -103,6 +103,10 @@ async def _seed_all(
             gds = int(data["gds"])
             logs = _demo_sessions(pid, gds, count=10)
             session.add_all(logs)
+            
+            # Flush the session logs to the DB so their UUIDs are available for foreign keys
+            await session.flush()
+            
             for log in logs[:5]:
                 session.add(
                     DdaMetricsLog(

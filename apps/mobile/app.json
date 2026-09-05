@@ -10,6 +10,11 @@
     "splash": {
       "backgroundColor": "#F8F6F0"
     },
+    "web": {
+      "display": "standalone",
+      "backgroundColor": "#F8F6F0",
+      "themeColor": "#F8F6F0"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sahay.mobile",

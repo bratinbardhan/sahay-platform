@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Sahāy",
+    "slug": "sahay-platform",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F8F6F0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F8F6F0"
+      },
+      "package": "com.chronemics.sahay"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#F8F6F0",
+      "themeColor": "#2C3E50",
+      "display": "standalone"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/98fd3088-322c-4f65-8bd0-aab008987f65"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "98fd3088-322c-4f65-8bd0-aab008987f65"
+      }
+    },
+    "owner": "bratinbardhan"
+  }
+}
