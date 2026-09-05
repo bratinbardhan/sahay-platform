@@ -1,4 +1,4 @@
-package com.sahay.mobile
+package com.chronemics.sahay
 
 import android.os.Build
 import android.os.Bundle
