@@ -38,15 +38,25 @@ class TransistorsoftDriver implements GeofenceDriver {
 
     // Headless configuration: survive app termination and device reboots so
     // anti-wandering monitoring never depends on the patient opening Sahāy.
-    await this.bg.ready({
-      desiredAccuracy: this.bg.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 25,
-      stopOnTerminate: false,
-      startOnBoot: true,
-      enableHeadless: true,
-      heartbeatInterval: 60,
-      logLevel: this.bg.LOG_LEVEL_WARNING,
-    });
+    // Wrapped in try/catch so license validation failures or missing sensor
+    // permissions never hang the application startup — the app boots regardless.
+    try {
+      await this.bg.ready({
+        desiredAccuracy: this.bg.DESIRED_ACCURACY_HIGH,
+        distanceFilter: 25,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        enableHeadless: true,
+        heartbeatInterval: 60,
+        logLevel: this.bg.LOG_LEVEL_WARNING,
+      });
+    } catch (error) {
+      console.warn(
+        '[TransistorsoftDriver] BackgroundGeolocation.ready() failed; geofence monitoring disabled:',
+        error
+      );
+      return false;
+    }
 
     // Replace any stale boundaries from a previous session.
     await this.bg.removeGeofences().catch(() => undefined);
