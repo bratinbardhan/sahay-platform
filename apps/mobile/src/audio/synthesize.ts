@@ -1,4 +1,5 @@
-import * as FileSystem from 'expo-file-system';
+// SDK 54 moved the classic API behind the `expo-file-system/legacy` subpath.
+import * as FileSystem from 'expo-file-system/legacy';
 
 const SAMPLE_RATE = 22050;
 

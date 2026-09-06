@@ -52,15 +52,16 @@ export class LedgerService {
 
     const db = await DatabaseService.getDatabase();
     const id = Crypto.randomUUID();
+    let balanceAfter = 0;
 
-    return db.withTransactionAsync(async () => {
+    await db.withTransactionAsync(async () => {
       // Compute current balance from the ledger sum
       const existing = await db.getFirstAsync<{ total: number }>(
         'SELECT COALESCE(SUM(amount), 0) as total FROM demitoken_ledger WHERE patient_id = ?',
         patientId
       );
       const currentBalance = existing?.total ?? 0;
-      const balanceAfter = currentBalance + amount;
+      balanceAfter = currentBalance + amount;
 
       await db.runAsync(
         `INSERT INTO demitoken_ledger (
@@ -82,9 +83,9 @@ export class LedgerService {
         balanceAfter,
         patientId
       );
-
-      return { id, balanceAfter };
     });
+
+    return { id, balanceAfter };
   }
 
   /**
