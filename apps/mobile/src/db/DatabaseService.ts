@@ -72,35 +72,70 @@ function escapePragmaKey(key: string): string {
   return key.replace(/'/g, "''");
 }
 
+/**
+ * Split a SQL script into individual statements and execute them one by one.
+ * expo-sqlite's execAsync throws "out of memory" when given multiple statements
+ * in a single call (especially with trailing semicolons or empty statements),
+ * so we split by ';' and execute each trimmed statement individually.
+ */
+async function executeSqlStatements(
+  db: SQLite.SQLiteDatabase,
+  sql: string
+): Promise<void> {
+  const statements = sql
+    .split(';')
+    .map((stmt) => stmt.trim())
+    .filter((stmt) => stmt.length > 0);
+
+  for (const statement of statements) {
+    await db.execAsync(`${statement};`);
+  }
+}
+
 export class DatabaseService {
   static async getDatabase(): Promise<SQLite.SQLiteDatabase> {
     if (dbInstance) {
       return dbInstance;
     }
 
-    const encryptionKey = await getOrCreateEncryptionKey();
+    try {
+      const encryptionKey = await getOrCreateEncryptionKey();
 
-    dbInstance = await SQLite.openDatabaseAsync(DB_NAME);
-    await dbInstance.execAsync(`PRAGMA key = '${escapePragmaKey(encryptionKey)}';`);
-    await dbInstance.execAsync(CREATE_TABLES_SQL);
-
-    const migration = await dbInstance.getFirstAsync<{ version: number }>(
-      'SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1'
-    );
-
-    if (!migration) {
-      await dbInstance.runAsync(
-        'INSERT INTO schema_migrations (version) VALUES (?)',
-        SCHEMA_VERSION
+      dbInstance = await SQLite.openDatabaseAsync(DB_NAME);
+      await dbInstance.execAsync(
+        `PRAGMA key = '${escapePragmaKey(encryptionKey)}';`
       );
-    } else if (migration.version < SCHEMA_VERSION) {
-      // CREATE_TABLES_SQL is idempotent (IF NOT EXISTS) so upgrading installs
-      // pick up new v2 tables automatically; just bump the stored version.
-      await dbInstance.runAsync(
-        'UPDATE schema_migrations SET version = ? WHERE version = ?',
-        SCHEMA_VERSION,
-        migration.version
+      await executeSqlStatements(dbInstance, CREATE_TABLES_SQL);
+
+      const migration = await dbInstance.getFirstAsync<{ version: number }>(
+        'SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1'
       );
+
+      if (!migration) {
+        await dbInstance.runAsync(
+          'INSERT INTO schema_migrations (version) VALUES (?)',
+          SCHEMA_VERSION
+        );
+      } else if (migration.version < SCHEMA_VERSION) {
+        // CREATE_TABLES_SQL is idempotent (IF NOT EXISTS) so upgrading installs
+        // pick up new v2 tables automatically; just bump the stored version.
+        await dbInstance.runAsync(
+          'UPDATE schema_migrations SET version = ? WHERE version = ?',
+          SCHEMA_VERSION,
+          migration.version
+        );
+      }
+    } catch (error) {
+      console.error(
+        '[DatabaseService] initialization failed; app will continue without database:',
+        error
+      );
+      // Return the instance if it was opened, even if schema setup failed,
+      // so the app can still render. If the instance was never created,
+      // return null to signal unavailability.
+      if (!dbInstance) {
+        throw error;
+      }
     }
 
     return dbInstance;

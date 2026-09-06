@@ -36,6 +36,18 @@ class TransistorsoftDriver implements GeofenceDriver {
       return false;
     }
 
+    // In development mode without a valid license key, skip Transistorsoft
+    // initialization entirely to avoid the native "LICENSE VALIDATION FAILURE"
+    // toast. The SDK validates the license on .ready() before JS can catch it,
+    // so we must prevent the call from happening at all.
+    if (__DEV__) {
+      console.warn(
+        '[TransistorsoftDriver] __DEV__ mode detected without a valid license key; geofence monitoring disabled. ' +
+          'Production builds with a valid license will enable background geolocation.'
+      );
+      return false;
+    }
+
     // Headless configuration: survive app termination and device reboots so
     // anti-wandering monitoring never depends on the patient opening Sahāy.
     // Wrapped in try/catch so license validation failures or missing sensor
