@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const CREATE_TABLES_SQL = `
 PRAGMA foreign_keys = ON;
@@ -90,4 +90,26 @@ CREATE TABLE IF NOT EXISTS pending_geofence_alerts (
 
 CREATE INDEX IF NOT EXISTS idx_pending_geofence_alerts_patient_id
   ON pending_geofence_alerts (patient_id);
+
+-- v3: auditable demitoken ledger mirror. Stores transactions locally when
+-- offline; synced to the backend POST /api/v1/ledger/transaction endpoint.
+CREATE TABLE IF NOT EXISTS demitoken_ledger (
+  id TEXT PRIMARY KEY NOT NULL,
+  patient_id TEXT NOT NULL,
+  amount INTEGER NOT NULL CHECK (amount != 0),
+  transaction_type TEXT NOT NULL CHECK (transaction_type IN (
+    'GAMEPLAY_REWARD', 'DAILY_CHECKIN', 'STREAK_BONUS',
+    'ASSESSMENT_PENALTY', 'REDEMPTION', 'SYNC_ADJUSTMENT')),
+  balance_after INTEGER NOT NULL,
+  reference_id TEXT,
+  metadata TEXT NOT NULL DEFAULT '{}',
+  synced INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (patient_id) REFERENCES patient_profiles (id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_demitoken_ledger_patient_id
+  ON demitoken_ledger (patient_id);
+CREATE INDEX IF NOT EXISTS idx_demitoken_ledger_synced
+  ON demitoken_ledger (synced);
 `;

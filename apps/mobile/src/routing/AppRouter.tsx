@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { PatientProfile, UserTier } from '@sahay/types';
 
@@ -6,6 +6,7 @@ import { useAuth } from '@/auth/AuthProvider';
 import { TierBadge } from '@/components/TierBadge';
 import { HighContrastCard } from '@/components/HighContrastCard';
 import { LargeTouchButton } from '@/components/LargeTouchButton';
+import { LedgerService } from '@/db/LedgerService';
 import { gamesForGds, therapyStageFromGds, type GameModuleId } from '@/games/gdsRouting';
 import { RapidFireSorting } from '@/games/RapidFireSorting';
 import { SensoryMusicPlayer } from '@/games/SensoryMusicPlayer';
@@ -22,8 +23,21 @@ import { colors } from '@/theme/theme';
  */
 export function AppRouter({ tier }: { tier: UserTier }) {
   const { signOut } = useAuth();
-  const { patient, ready } = usePatient();
+  const { patient, ready, refresh } = usePatient();
   const [activeGame, setActiveGame] = useState<GameModuleId | null>(null);
+  const [ledgerBalance, setLedgerBalance] = useState<number | null>(null);
+
+  // Pull the verified balance from the ledger whenever the patient changes
+  // or after a game session completes.
+  const refreshBalance = useCallback(async () => {
+    if (!patient) return;
+    const balance = await LedgerService.getCachedBalance(patient.id);
+    setLedgerBalance(balance);
+  }, [patient]);
+
+  useEffect(() => {
+    void refreshBalance();
+  }, [refreshBalance]);
 
   if (!ready || !patient) {
     return (
@@ -64,7 +78,7 @@ export function AppRouter({ tier }: { tier: UserTier }) {
       <View style={styles.headerRow}>
         <View style={styles.headerText}>
           <Text style={styles.greeting}>Namaste, {patient.name}</Text>
-          <Text style={styles.tokens}>DEMITOKENS {patient.demitoken_balance}</Text>
+          <Text style={styles.tokens}>DEMITOKENS {ledgerBalance ?? patient.demitoken_balance}</Text>
         </View>
         <View style={styles.headerActions}>
           <TierBadge tier={tier} />

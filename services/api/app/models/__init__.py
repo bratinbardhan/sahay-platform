@@ -226,6 +226,51 @@ class AuditLog(Base):
     )
 
 
+class TransactionType(str, enum.Enum):
+    """Classification of every demitoken ledger entry."""
+
+    GAMEPLAY_REWARD = "GAMEPLAY_REWARD"
+    DAILY_CHECKIN = "DAILY_CHECKIN"
+    STREAK_BONUS = "STREAK_BONUS"
+    ASSESSMENT_PENALTY = "ASSESSMENT_PENALTY"
+    REDEMPTION = "REDEMPTION"
+    SYNC_ADJUSTMENT = "SYNC_ADJUSTMENT"
+
+
+class DemitokenLedger(Base):
+    """Append-only, auditable demitoken transaction ledger.
+
+    Every credit and debit flows through this table. The verified balance for a
+    user is always ``SUM(amount)`` over their ledger rows — never a cached integer.
+    """
+
+    __tablename__ = "demitoken_ledger"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    transaction_type: Mapped[TransactionType] = mapped_column(
+        Enum(TransactionType, name="transaction_type", native_enum=False),
+        nullable=False,
+    )
+    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
+    reference_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    metadata_: Mapped[dict[str, object]] = mapped_column("metadata", JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    user: Mapped["User"] = relationship(back_populates="demitoken_ledger")
+
+    __table_args__ = (
+        CheckConstraint("amount != 0", name="ck_demitoken_ledger_amount_nonzero"),
+    )
+
+
 class User(Base):
     """Unified authentication account (Phase 1) with role and premium tier.
 
@@ -261,4 +306,7 @@ class User(Base):
     )
     last_seen_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True, index=True
+    )
+    demitoken_ledger: Mapped[list["DemitokenLedger"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
     )

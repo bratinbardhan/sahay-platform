@@ -2,7 +2,8 @@ import * as Crypto from 'expo-crypto';
 import { useEffect, useRef, useState } from 'react';
 import type { PatientProfile } from '@sahay/types';
 
-import { addDemitokens, insertGameplaySession } from '@/db/patientRepository';
+import { insertGameplaySession } from '@/db/patientRepository';
+import { LedgerService } from '@/db/LedgerService';
 import { AchaoticDDA, type DifficultyVariables } from '@/engine/AchaoticDDA';
 import type { GameModuleId } from '@/games/gdsRouting';
 
@@ -55,7 +56,15 @@ export function useGameplaySession(patient: PatientProfile, gameModuleId: GameMo
       difficulty,
     }));
 
-    await addDemitokens(patient.id, tokens);
+    // Record the reward in the auditable ledger instead of a raw increment
+    const txType = completedCleanly ? 'GAMEPLAY_REWARD' : 'GAMEPLAY_REWARD';
+    await LedgerService.recordTransaction(
+      patient.id,
+      tokens,
+      txType,
+      undefined,
+      { completedCleanly, gameModuleId }
+    );
     return difficulty;
   };
 

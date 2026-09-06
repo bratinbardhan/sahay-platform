@@ -10,6 +10,7 @@ from app.database import Base
 from app.models import (  # noqa: F401 — register models with metadata
     AuditLog,
     DdaMetricsLog,
+    DemitokenLedger,
     EmergencyContact,
     GeofenceZone,
     GameplaySessionLog,

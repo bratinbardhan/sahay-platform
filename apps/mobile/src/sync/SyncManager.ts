@@ -8,8 +8,9 @@ import type {
   TokenBalanceUpdate,
 } from '@sahay/types';
 
-import { SYNC_ENDPOINT } from '@/config/constants';
+import { SYNC_ENDPOINT, API_BASE_URL } from '@/config/constants';
 import { DatabaseService } from '@/db/DatabaseService';
+import { LedgerService, type LedgerEntry } from '@/db/LedgerService';
 
 type SessionLogRow = {
   id: string;
@@ -41,6 +42,7 @@ type PatientRow = {
 export class SyncManager {
   private static isRunning = false;
   private static intervalId: ReturnType<typeof setInterval> | null = null;
+  private static ledgerIntervalId: ReturnType<typeof setInterval> | null = null;
 
   /** Start periodic background sync (default every 60 seconds). */
   static startBackgroundSync(intervalMs = 60_000): void {
@@ -59,6 +61,26 @@ export class SyncManager {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
+    }
+  }
+
+  /** Start periodic ledger sync (default every 45 seconds). */
+  static startLedgerSync(intervalMs = 45_000): void {
+    if (this.ledgerIntervalId) {
+      return;
+    }
+
+    void this.syncLedgerEntries();
+
+    this.ledgerIntervalId = setInterval(() => {
+      void this.syncLedgerEntries();
+    }, intervalMs);
+  }
+
+  static stopLedgerSync(): void {
+    if (this.ledgerIntervalId) {
+      clearInterval(this.ledgerIntervalId);
+      this.ledgerIntervalId = null;
     }
   }
 
@@ -132,6 +154,76 @@ export class SyncManager {
       return null;
     } finally {
       this.isRunning = false;
+    }
+  }
+
+  /**
+   * Sync unsynced demitoken ledger entries to the backend.
+   *
+   * Posts each unsynced transaction to POST /api/v1/ledger/transaction when
+   * network is reachable. Marks entries as synced on success.
+   */
+  static async syncLedgerEntries(): Promise<number> {
+    const network = await NetInfo.fetch();
+    if (!network.isConnected || network.isInternetReachable === false) {
+      return 0;
+    }
+
+    try {
+      const db = await DatabaseService.getDatabase();
+      const pendingRows = await db.getAllAsync<LedgerEntry>(
+        `SELECT id, patient_id, amount, transaction_type, balance_after,
+                reference_id, metadata, synced, created_at
+         FROM demitoken_ledger
+         WHERE synced = 0
+         ORDER BY created_at ASC
+         LIMIT 100`
+      );
+
+      if (pendingRows.length === 0) {
+        return 0;
+      }
+
+      const syncedIds: string[] = [];
+
+      for (const row of pendingRows) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/v1/ledger/transaction`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: row.amount,
+              transaction_type: row.transaction_type,
+              reference_id: row.reference_id,
+              metadata: JSON.parse(row.metadata || '{}'),
+            }),
+          });
+
+          if (response.ok) {
+            syncedIds.push(row.id);
+          } else {
+            console.warn(
+              `[SyncManager] Ledger sync failed for ${row.id}: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.warn(
+            `[SyncManager] Ledger sync network error for ${row.id}:`,
+            error
+          );
+          // Stop trying further entries; network may be down
+          break;
+        }
+      }
+
+      if (syncedIds.length > 0) {
+        await LedgerService.markSynced(syncedIds);
+      }
+
+      return syncedIds.length;
+    } catch (error) {
+      console.warn('[SyncManager] Ledger sync failed:', error);
+      return 0;
     }
   }
 }

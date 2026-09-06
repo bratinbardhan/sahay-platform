@@ -33,10 +33,14 @@ export function PatientProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     void refresh();
     SyncManager.startBackgroundSync();
+    // Wire the offline ledger sync hook — posts unsynced ledger entries
+    // to POST /api/v1/ledger/transaction when network is reachable.
+    SyncManager.startLedgerSync();
     void GeofenceManager.start();
     GeofenceManager.startFlushWorker();
     return () => {
       SyncManager.stopBackgroundSync();
+      SyncManager.stopLedgerSync();
       GeofenceManager.stopFlushWorker();
     };
   }, []);
