@@ -17,5 +17,6 @@
     "**/.pytest_cache",
     "**/node_modules",
     "**/.*"
-  ]
+  ],
+  "css.lint.unknownAtRules": "ignore"
 }
