@@ -21,6 +21,8 @@ allprojects {
 	maven { url "${project(":react-native-background-geolocation").projectDir}/libs" }
 	maven { url 'https://developer.huawei.com/repo/' }
 // @generated end react-native-background-geolocation-maven
+// Fix: Add local libs for react-native-background-fetch to resolve tsbackgroundfetch:1.0.4
+	maven { url "${project(":react-native-background-fetch").projectDir}/libs" }
   }
 }
 
