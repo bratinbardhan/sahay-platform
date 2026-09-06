@@ -66,6 +66,7 @@ def _demo_sessions(patient_id: uuid.UUID, gds_stage: int, count: int) -> list[Ga
                 tasks_guided=guided,
                 avg_latency_ms=float(850 + (index % 6) * 120),
                 demitokens_earned=clean * 2 + guided,
+                session_duration_ms=(300 + (index % 4) * 90) * 1000,
                 sync_status="SYNCED",
                 timestamp=now - timedelta(days=count - index - 1),
             )

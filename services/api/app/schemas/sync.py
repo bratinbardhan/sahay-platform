@@ -17,6 +17,7 @@ class GameplaySessionLogIn(BaseModel):
     tasks_guided: int = Field(default=0, ge=0)
     avg_latency_ms: float = Field(default=0.0, ge=0)
     demitokens_earned: int = Field(default=0, ge=0)
+    session_duration_ms: int = Field(default=0, ge=0)
     sync_status: str = Field(default="PENDING_SYNC", max_length=32)
     timestamp: datetime
 

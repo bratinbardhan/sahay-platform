@@ -104,6 +104,9 @@ class GameplaySessionLog(Base):
     tasks_guided: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     avg_latency_ms: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     demitokens_earned: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    session_duration_ms: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
+    )
     sync_status: Mapped[str] = mapped_column(String(32), nullable=False, default="SYNCED")
     timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -255,4 +258,7 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    last_seen_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, index=True
     )

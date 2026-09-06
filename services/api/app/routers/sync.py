@@ -76,6 +76,7 @@ async def sync_delta(
                 tasks_guided=log_in.tasks_guided,
                 avg_latency_ms=log_in.avg_latency_ms,
                 demitokens_earned=log_in.demitokens_earned,
+                session_duration_ms=log_in.session_duration_ms,
                 sync_status="SYNCED",
                 timestamp=log_in.timestamp,
             )

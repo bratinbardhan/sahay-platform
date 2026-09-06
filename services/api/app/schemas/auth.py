@@ -37,6 +37,7 @@ class UserResponse(BaseModel):
     role: UserRole
     tier: UserTier
     is_active: bool
+    last_seen_at: datetime | None = None
     created_at: datetime
 
 

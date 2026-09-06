@@ -145,7 +145,7 @@ function App() {
   const user = session.user;
 
   if (route === 'admin') {
-    return <AdminDashboard user={user} onLogout={logout} />;
+    return <AdminDashboard user={user} token={session.accessToken} onLogout={logout} />;
   }
 
   const navigate = (next: string) => {
@@ -160,7 +160,7 @@ function App() {
     case 'geofence':
       return <GeofenceMap onNavigate={navigate} />;
     default:
-      return <Dashboard user={user} onNavigate={navigate} onLogout={logout} />;
+      return <Dashboard user={user} token={session.accessToken} onNavigate={navigate} onLogout={logout} />;
   }
 }
 

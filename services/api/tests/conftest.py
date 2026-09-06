@@ -6,7 +6,8 @@ the test session factory.
 """
 
 import uuid
-from collections.abc import AsyncGenerator, Callable
+from collections.abc import AsyncGenerator, Awaitable, Callable
+from typing import Any
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -20,7 +21,49 @@ from sqlalchemy.ext.asyncio import (
 from app.config import get_settings
 from app.database import Base, get_db
 from app.main import app
-from app.models import PatientProfile
+from app.models import PatientProfile, User, UserRole, UserTier
+from app.services.security import create_access_token, hash_password
+
+
+@pytest.fixture
+def make_user(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> Callable[..., Awaitable[dict[str, Any]]]:
+    """Create a unified-auth user directly (bypassing signup) and return the
+    ORM row plus a bearer-token header dict for authenticated requests.
+
+    Lets tests stand up ADMIN / CARETAKER / PATIENT accounts on demand.
+    """
+
+    async def _make(
+        *,
+        email: str = "user@example.com",
+        password: str = "SuperSecret123",
+        full_name: str = "Test User",
+        role: UserRole = UserRole.CARETAKER,
+        tier: UserTier = UserTier.FREE,
+        active: bool = True,
+    ) -> dict[str, Any]:
+        async with session_factory() as session:
+            user = User(
+                email=email,
+                full_name=full_name,
+                hashed_password=hash_password(password),
+                role=role,
+                tier=tier,
+                is_active=active,
+            )
+            session.add(user)
+            await session.commit()
+            await session.refresh(user)
+            token = create_access_token(user)
+        return {
+            "user": user,
+            "token": token,
+            "headers": {"Authorization": f"Bearer {token}"},
+        }
+
+    return _make
 
 
 @pytest.fixture(autouse=True)

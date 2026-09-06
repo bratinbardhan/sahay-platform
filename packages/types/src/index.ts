@@ -13,7 +13,56 @@ export interface User {
   role: UserRole;
   tier: UserTier;
   is_active: boolean;
+  last_seen_at?: string | null;
   created_at: string;
+}
+
+/** Payload sent to POST /api/v1/admin/users/{user_id}/tier */
+export interface TierUpdateRequest {
+  tier: UserTier;
+}
+
+/** A single user row surfaced in the admin management table. */
+export interface AdminUser {
+  id: string;
+  full_name: string;
+  email: string;
+  role: UserRole;
+  tier: UserTier;
+  is_active: boolean;
+  last_active_at?: string | null;
+  created_at: string;
+}
+
+export interface AdminUsersPage {
+  items: AdminUser[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
+
+export interface OnlineUsersResponse {
+  online_users: number;
+  window_seconds: number;
+}
+
+export interface OverviewResponse {
+  total_users: number;
+  total_patients: number;
+  total_caretakers: number;
+  premium_user_count: number;
+  premium_conversion_rate_pct: number;
+  online_users: number;
+  total_sessions: number;
+  total_screen_time_seconds: number;
+  average_session_length_seconds: number;
+  stage_distribution: Record<string, number>;
+  game_activity_breakdown: Record<string, number>;
+}
+
+export interface HeartbeatResponse {
+  last_seen_at: string;
 }
 
 /** Payload sent to POST /api/v1/auth/login */
