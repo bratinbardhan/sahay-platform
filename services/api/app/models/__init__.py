@@ -40,6 +40,22 @@ class UserTier(str, enum.Enum):
     PREMIUM = "PREMIUM"
 
 
+class EmergencyAlertStatus(str, enum.Enum):
+    """Lifecycle state of an emergency alert."""
+
+    ACTIVE = "ACTIVE"
+    ACKNOWLEDGED = "ACKNOWLEDGED"
+    RESOLVED = "RESOLVED"
+
+
+class TriggerReason(str, enum.Enum):
+    """What started the SOS flow."""
+
+    MANUAL_BUTTON = "MANUAL_BUTTON"
+    GEOFENCE_BREACH = "GEOFENCE_BREACH"
+    FALL_DETECTED = "FALL_DETECTED"
+
+
 class PatientProfile(Base):
     __tablename__ = "patient_profiles"
     __table_args__ = (
@@ -60,8 +76,12 @@ class PatientProfile(Base):
     primary_language: Mapped[str] = mapped_column(String(32), nullable=False, default="en")
     demitoken_balance: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     streak_days: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    security_pin: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    emergency_alerts: Mapped[list["EmergencyAlertLog"]] = relationship(
+        back_populates="patient", cascade="all, delete-orphan"
     )
 
     gameplay_sessions: Mapped[list["GameplaySessionLog"]] = relationship(
@@ -309,4 +329,66 @@ class User(Base):
     )
     demitoken_ledger: Mapped[list["DemitokenLedger"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
+    )
+
+
+class EmergencyAlertLog(Base):
+    """Persisted SOS / high-impact emergency alert (Phase 5).
+
+    Each alert is tied to a patient, lives through a three-state lifecycle
+    (ACTIVE → ACKNOWLEDGED → RESOLVED), and is broadcast over the live
+    telemetry WebSocket so the caregiver dashboard updates in real time.
+    """
+
+    __tablename__ = "emergency_alert_logs"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    patient_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("patient_profiles.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    alert_status: Mapped[EmergencyAlertStatus] = mapped_column(
+        Enum(
+            EmergencyAlertStatus,
+            name="emergency_alert_status",
+            native_enum=False,
+        ),
+        nullable=False,
+        default=EmergencyAlertStatus.ACTIVE,
+        index=True,
+    )
+    trigger_reason: Mapped[TriggerReason] = mapped_column(
+        Enum(TriggerReason, name="trigger_reason", native_enum=False),
+        nullable=False,
+    )
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    battery_level: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    acknowledged_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    resolved_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    resolved_by_caretaker: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    patient: Mapped["PatientProfile"] = relationship(back_populates="emergency_alerts")
+
+    __table_args__ = (
+        CheckConstraint(
+            "battery_level >= 0 AND battery_level <= 100",
+            name="ck_emergency_alert_logs_battery",
+        ),
     )

@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import get_settings
 from app.logging_setup import setup_logging
 from app.middleware.audit import ClinicalAuditMiddleware
-from app.routers import admin, analytics, auth, geofence, ledger, reminiscence, sync, telemetry
+from app.routers import admin, analytics, auth, emergency, geofence, ledger, reminiscence, sync, telemetry
 
 settings = get_settings()
 setup_logging(settings)
@@ -41,6 +41,7 @@ app.include_router(analytics.router)
 app.include_router(telemetry.router)
 app.include_router(ledger.router)
 app.include_router(admin.router)
+app.include_router(emergency.router)
 
 # Local mock storage for uploaded reminiscence media (dev/test only).
 # In production `use_local_storage=false` routes to S3 instead.

@@ -124,13 +124,14 @@ async def seed_patient(
         gds: int = 3,
         tokens: int = 10,
         streak: int = 2,
+        caregiver_id: uuid.UUID | None = None,
     ) -> uuid.UUID:
         patient_id = uuid.uuid4()
         async with session_factory() as session:
             session.add(
                 PatientProfile(
                     id=patient_id,
-                    caregiver_id=uuid.uuid4(),
+                    caregiver_id=caregiver_id or uuid.uuid4(),
                     name=name,
                     age=age,
                     assigned_gds_stage=gds,

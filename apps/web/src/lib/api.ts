@@ -1,13 +1,18 @@
 import type {
+  CognitiveSummaryResponse,
+  DdaHistoryResponse,
   GeofenceAlertPayload,
   GeofenceAlertResult,
   GeofenceZoneUpsertPayload,
+  PatientProfile,
+  SessionsPage,
 } from '@sahay/types';
 
 const API_BASE_URL: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
 
 const GEOFENCE_ZONE_ENDPOINT = `${API_BASE_URL}/api/v1/geofence/zone`;
+const ANALYTICS_BASE_URL = `${API_BASE_URL}/api/v1/analytics`;
 
 async function postJson<TResponse>(url: string, body: unknown): Promise<TResponse> {
   const response = await fetch(url, {
@@ -38,6 +43,74 @@ export interface GeocodedPlace {
   displayName: string;
   lat: number;
   lng: number;
+}
+
+/** Error surfaced from the analytics API, carrying the HTTP status for callers. */
+export class AnalyticsApiError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'AnalyticsApiError';
+    this.status = status;
+  }
+}
+
+async function authedGet<TResponse>(url: string, token: string): Promise<TResponse> {
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) {
+    let detail = `Request failed with status ${response.status}`;
+    try {
+      const parsed = (await response.json()) as { detail?: unknown };
+      if (typeof parsed.detail === 'string') {
+        detail = parsed.detail;
+      }
+    } catch {
+      // keep default detail
+    }
+    throw new AnalyticsApiError(detail, response.status);
+  }
+  return (await response.json()) as TResponse;
+}
+
+/** GET /api/v1/analytics/me/patient — resolve the caretaker's assigned patient. */
+export function fetchCaretakerPatient(token: string): Promise<PatientProfile> {
+  return authedGet<PatientProfile>(`${ANALYTICS_BASE_URL}/me/patient`, token);
+}
+
+/** GET /api/v1/analytics/patient/{id}/dda-history — cognitive load / difficulty / latency series. */
+export function fetchDdaHistory(token: string, patientId: string): Promise<DdaHistoryResponse> {
+  return authedGet<DdaHistoryResponse>(
+    `${ANALYTICS_BASE_URL}/patient/${encodeURIComponent(patientId)}/dda-history`,
+    token
+  );
+}
+
+/** GET /api/v1/analytics/patient/{id}/sessions?page=&size= — paginated session records. */
+export function fetchGameplaySessions(
+  token: string,
+  patientId: string,
+  page = 1,
+  size = 10
+): Promise<SessionsPage> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) });
+  return authedGet<SessionsPage>(
+    `${ANALYTICS_BASE_URL}/patient/${encodeURIComponent(patientId)}/sessions?${params.toString()}`,
+    token
+  );
+}
+
+/** GET /api/v1/analytics/patient/{id}/cognitive-summary — 7-day vs previous 7-day aggregate. */
+export function fetchCognitiveSummary(
+  token: string,
+  patientId: string
+): Promise<CognitiveSummaryResponse> {
+  return authedGet<CognitiveSummaryResponse>(
+    `${ANALYTICS_BASE_URL}/patient/${encodeURIComponent(patientId)}/cognitive-summary`,
+    token
+  );
 }
 
 /**

@@ -203,3 +203,66 @@ export const GDS_STAGE_MAX = 7;
 export function isValidGdsStage(stage: number): boolean {
   return Number.isInteger(stage) && stage >= GDS_STAGE_MIN && stage <= GDS_STAGE_MAX;
 }
+
+// ─── Live analytics telemetry (Phase 4) ─────────────────────────────────────
+
+/** One point on the patient's cognitive trajectory (GET .../dda-history). */
+export interface DdaHistoryPoint {
+  timestamp: string;
+  cognitive_load_index: number;
+  difficulty_level: number;
+  reaction_latency_ms: number;
+}
+
+export interface DdaHistoryResponse {
+  patient_id: string;
+  /** 'ddametrics' for persisted DDA logs, 'derived' when rebuilt from sessions. */
+  source: 'ddametrics' | 'derived';
+  current_difficulty_level: number;
+  latest_cognitive_load_index: number;
+  points: DdaHistoryPoint[];
+}
+
+/** One paginated gameplay session row (GET .../sessions). */
+export interface SessionRecord {
+  session_log_id: string;
+  game_module_id: string;
+  gds_stage: number;
+  difficulty_level: number;
+  duration_seconds: number;
+  avg_latency_ms: number;
+  score: number;
+  accuracy_pct: number;
+  demitokens_earned: number;
+  tasks_presented: number;
+  tasks_completed_cleanly: number;
+  timestamp: string;
+}
+
+export interface SessionsPage {
+  items: SessionRecord[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
+
+/** Aggregate stats for a 7-day window (GET .../cognitive-summary). */
+export interface CognitiveWindowAggregate {
+  sessions: number;
+  avg_accuracy_pct: number;
+  avg_latency_ms: number;
+  avg_difficulty: number;
+}
+
+export type TrendDirection = 'IMPROVING' | 'STABLE' | 'DECLINING' | 'INSUFFICIENT_DATA';
+
+export interface CognitiveSummaryResponse {
+  patient_id: string;
+  last_7_days: CognitiveWindowAggregate;
+  previous_7_days: CognitiveWindowAggregate;
+  accuracy_delta_pct: number;
+  trend_direction: TrendDirection;
+  stability_score: number;
+  recommended_difficulty: number;
+}

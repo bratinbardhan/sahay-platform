@@ -20,7 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_db
-from app.models import User, UserRole, UserTier
+from app.models import PatientProfile, User, UserRole, UserTier
 
 _PBKDF2_ALGO = "sha256"
 _PBKDF2_ROUNDS = 260_000
@@ -117,6 +117,34 @@ async def get_current_user(
     if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="Account not available")
     return user
+
+
+async def get_staff_user(
+    current_user: User = Depends(get_current_user),
+) -> User:
+    """Dependency authorizing clinical staff roles (CARETAKER or ADMIN).
+
+    Used by the analytics surface so caregivers can review their own patient's
+    telemetry while admins retain platform-wide read access. PATIENT accounts
+    are rejected with 403.
+    """
+    if current_user.role not in (UserRole.CARETAKER, UserRole.ADMIN):
+        raise HTTPException(status_code=403, detail="Staff access required")
+    return current_user
+
+
+def authorize_patient_access(user: User, patient: PatientProfile) -> None:
+    """Enforce per-caretaker ownership on patient-scoped reads.
+
+    ADMIN may read any patient; CARETAKER may only read patients whose
+    `caregiver_id` matches their own user id. Raises 403 otherwise.
+    """
+    if user.role == UserRole.ADMIN:
+        return
+    if patient.caregiver_id != user.id:
+        raise HTTPException(
+            status_code=403, detail="Not the assigned caregiver for this patient"
+        )
 
 
 async def get_admin_user(

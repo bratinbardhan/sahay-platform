@@ -154,7 +154,7 @@ function App() {
 
   switch (page) {
     case 'analytics':
-      return <AnalyticsChart onNavigate={navigate} />;
+      return <AnalyticsChart onNavigate={navigate} token={session.accessToken} />;
     case 'media':
       return <MediaManager onNavigate={navigate} />;
     case 'geofence':

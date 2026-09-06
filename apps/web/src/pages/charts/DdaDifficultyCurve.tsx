@@ -1,57 +1,62 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import type { DdaHistoryPoint } from '@sahay/types';
 
-interface CognitiveTrendChartProps {
+interface DdaDifficultyCurveProps {
   points: DdaHistoryPoint[];
-  /** Which cognitive metric to plot on the Y axis. */
-  metric?: 'load' | 'latency';
+  /** Recommended next difficulty from the cognitive summary (dashed guide). */
+  recommendedDifficulty?: number | null;
+  /** Max rounds to display (Achaotic DDA calibration window). */
+  lastRounds?: number;
 }
 
 const WIDTH = 560;
-const HEIGHT = 240;
+const HEIGHT = 250;
 const MARGIN = { top: 16, right: 18, bottom: 30, left: 46 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
 const AMBER = '#E67E22';
 const CHARCOAL = '#2C3E50';
+const MAX_DIFFICULTY = 10;
 
-export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendChartProps) {
+/**
+ * DDA Difficulty Curve — the Achaotic dynamic-difficulty level over the
+ * patient's last N rounds, with a dashed guide at the recommended next level.
+ */
+export function DdaDifficultyCurve({
+  points,
+  recommendedDifficulty = null,
+  lastRounds = 10,
+}: DdaDifficultyCurveProps) {
   const [hover, setHover] = useState<number | null>(null);
   const xAxisRef = useRef<SVGGElement>(null);
   const yAxisRef = useRef<SVGGElement>(null);
 
   const ordered = useMemo(
     () =>
-      [...points].sort(
-        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-      ),
-    [points]
-  );
-
-  const valueOf = useCallback(
-    (p: DdaHistoryPoint) => (metric === 'latency' ? p.reaction_latency_ms : p.cognitive_load_index),
-    [metric]
+      [...points]
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+        .slice(-lastRounds),
+    [points, lastRounds]
   );
 
   const { x, y, linePath, areaPath, xs, ys } = useMemo(() => {
     const x = d3
-      .scaleTime()
-      .domain(d3.extent(ordered, (p) => new Date(p.timestamp)) as [Date, Date])
+      .scaleLinear()
+      .domain([0, Math.max(1, ordered.length - 1)])
       .range([0, INNER_W]);
-    const yMax = metric === 'latency' ? (d3.max(ordered, valueOf) ?? 2000) : 100;
-    const y = d3.scaleLinear().domain([0, yMax]).nice().range([INNER_H, 0]);
+    const y = d3.scaleLinear().domain([0, MAX_DIFFICULTY]).nice().range([INNER_H, 0]);
 
     const lineGen = d3
       .line<DdaHistoryPoint>()
-      .x((p) => x(new Date(p.timestamp)))
-      .y((p) => y(valueOf(p)))
+      .x((_, i) => x(i))
+      .y((p) => y(Math.min(MAX_DIFFICULTY, p.difficulty_level)))
       .curve(d3.curveMonotoneX);
     const areaGen = d3
       .area<DdaHistoryPoint>()
-      .x((p) => x(new Date(p.timestamp)))
+      .x((_, i) => x(i))
       .y0(INNER_H)
-      .y1((p) => y(valueOf(p)))
+      .y1((p) => y(Math.min(MAX_DIFFICULTY, p.difficulty_level)))
       .curve(d3.curveMonotoneX);
 
     return {
@@ -59,20 +64,19 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
       y,
       linePath: lineGen(ordered) ?? '',
       areaPath: areaGen(ordered) ?? '',
-      xs: ordered.map((p) => x(new Date(p.timestamp))),
-      ys: ordered.map((p) => y(valueOf(p))),
+      xs: ordered.map((_, i) => x(i)),
+      ys: ordered.map((p) => y(Math.min(MAX_DIFFICULTY, p.difficulty_level))),
     };
-  }, [ordered, valueOf, metric]);
+  }, [ordered]);
 
-  // Draw the axes imperatively — d3-axis is a DOM generator.
   useEffect(() => {
     if (xAxisRef.current) {
       d3.select(xAxisRef.current)
         .call(
           d3
             .axisBottom(x)
-            .ticks(5)
-            .tickFormat((domainValue) => d3.timeFormat('%d %b')(domainValue as Date))
+            .ticks(Math.min(10, ordered.length))
+            .tickFormat((_, i) => `R${i + 1}`)
         )
         .selectAll('text, line')
         .attr('stroke', CHARCOAL)
@@ -92,7 +96,7 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
   if (ordered.length === 0) {
     return (
       <p className="text-sm text-[#2C3E50]/60 text-center py-8">
-        No cognitive telemetry recorded yet — charts appear after the first gameplay sync.
+        No DDA difficulty data yet — the curve calibrates after the first sessions sync.
       </p>
     );
   }
@@ -110,6 +114,7 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
   };
 
   const hoveredPoint = hover !== null ? ordered[hover] : null;
+  const roundNumber = hover !== null ? ordered.length - hover : 0;
 
   return (
     <div className="relative">
@@ -117,27 +122,50 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="w-full"
         role="img"
-        aria-label="Cognitive trend chart"
+        aria-label="DDA difficulty curve"
       >
         <defs>
-          <linearGradient id="cognitiveTrendFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={AMBER} stopOpacity={0.35} />
-            <stop offset="100%" stopColor={AMBER} stopOpacity={0.02} />
+          <linearGradient id="ddaCurveFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={CHARCOAL} stopOpacity={0.25} />
+            <stop offset="100%" stopColor={CHARCOAL} stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
           <g ref={yAxisRef} />
           <g ref={xAxisRef} transform={`translate(0, ${INNER_H})`} />
-          <path d={areaPath} fill="url(#cognitiveTrendFill)" />
-          <path d={linePath} fill="none" stroke={AMBER} strokeWidth={3} strokeLinecap="round" />
+          {recommendedDifficulty !== null && (
+            <g>
+              <line
+                x1={0}
+                x2={INNER_W}
+                y1={y(recommendedDifficulty)}
+                y2={y(recommendedDifficulty)}
+                stroke={AMBER}
+                strokeWidth={1.5}
+                strokeDasharray="6 4"
+                opacity={0.8}
+              />
+              <text
+                x={INNER_W - 4}
+                y={y(recommendedDifficulty) - 5}
+                textAnchor="end"
+                fontSize={10}
+                fill={AMBER}
+              >
+                Recommended: {recommendedDifficulty}
+              </text>
+            </g>
+          )}
+          <path d={areaPath} fill="url(#ddaCurveFill)" />
+          <path d={linePath} fill="none" stroke={CHARCOAL} strokeWidth={3} strokeLinecap="round" />
           {ordered.map((p, i) => (
             <circle
               key={`${p.timestamp}-${i}`}
               cx={xs[i]}
               cy={ys[i]}
               r={hover === i ? 5.5 : 3.5}
-              fill={hover === i ? AMBER : '#FFFCF6'}
-              stroke={AMBER}
+              fill={hover === i ? CHARCOAL : '#FFFCF6'}
+              stroke={CHARCOAL}
               strokeWidth={2}
             />
           ))}
@@ -172,15 +200,11 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
             transform: 'translate(-50%, -115%)',
           }}
         >
-          <p className="font-semibold text-[#2C3E50]">
-            {new Date(hoveredPoint.timestamp).toLocaleDateString()}
-          </p>
+          <p className="font-semibold text-[#2C3E50]">Round {roundNumber}</p>
           <p className="text-[#E67E22] font-bold">
-            {metric === 'latency'
-              ? `Reaction: ${Math.round(hoveredPoint.reaction_latency_ms)} ms`
-              : `Cognitive load: ${hoveredPoint.cognitive_load_index.toFixed(1)} / 100`}
+            Difficulty: {hoveredPoint.difficulty_level.toFixed(2)}
           </p>
-          <p className="text-[#2C3E50]/70">Difficulty: {hoveredPoint.difficulty_level.toFixed(2)}</p>
+          <p className="text-[#2C3E50]/70">Reaction: {Math.round(hoveredPoint.reaction_latency_ms)} ms</p>
         </div>
       )}
     </div>
