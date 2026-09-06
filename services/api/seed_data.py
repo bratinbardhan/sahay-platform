@@ -28,7 +28,11 @@ from app.models import (
     MediaType,
     PatientProfile,
     ReminiscenceMedia,
+    User,
+    UserRole,
+    UserTier,
 )
+from app.services.security import hash_password
 
 # NER region — Shillong, Meghalaya (common demo home location)
 SHILLONG_LAT = 25.5941
@@ -67,6 +71,34 @@ def _demo_sessions(patient_id: uuid.UUID, gds_stage: int, count: int) -> list[Ga
             )
         )
     return sessions
+
+
+# Demo unified-auth accounts so the mobile switchboard and web dashboard can be
+# exercised immediately. Passwords are only valid for these local demo accounts.
+# (role, tier, email, password, full name)
+DEMO_USERS: list[tuple[UserRole, UserTier, str, str, str]] = [
+    (UserRole.ADMIN, UserTier.PREMIUM, "admin@example.com", "Admin@123", "Sahāy Admin"),
+    (UserRole.CARETAKER, UserTier.PREMIUM, "caretaker@example.com", "Caretaker@123", "Rahul Saha"),
+    (UserRole.PATIENT, UserTier.FREE, "patient@example.com", "Patient@123", "Jeniva Saha"),
+]
+
+
+async def _seed_demo_users(session: AsyncSession) -> None:
+    """Idempotently provision demo unified-auth user accounts."""
+    for role, tier, email, password, full_name in DEMO_USERS:
+        existing = await session.execute(select(User).where(User.email == email))
+        if existing.scalar_one_or_none() is not None:
+            continue
+        session.add(
+            User(
+                email=email,
+                full_name=full_name,
+                hashed_password=hash_password(password),
+                role=role,
+                tier=tier,
+            )
+        )
+    await session.flush()
 
 
 async def _seed_all(
@@ -230,7 +262,10 @@ async def _seed_all(
         "SaHāy demo data ready!\n"
         "  Patients: Meera Devi (GDS 4), Banalata Das (GDS 6), Puran Singh (GDS 2)\n"
         "  Includes gameplay sessions, NER-themed reminiscence media, geofence zones,\n"
-        "  emergency contacts and audit entries.\n\n"
+        "  emergency contacts and audit entries.\n"
+        "  Unified auth accounts: admin@example.com / Admin@123 (ADMIN · PREMIUM),\n"
+        "    caretaker@example.com / Caretaker@123 (CARETAKER · PREMIUM),\n"
+        "    patient@example.com / Patient@123 (PATIENT · FREE)\n\n"
         "Start the API with:  uvicorn app.main:app --reload"
     )
     return patient_ids
@@ -245,6 +280,8 @@ async def main() -> None:
         await conn.run_sync(Base.metadata.create_all)
 
     async with session_factory() as session:
+        await _seed_demo_users(session)
+
         patients_data: list[dict[str, Any]] = [
             {
                 "name": "Meera Devi",

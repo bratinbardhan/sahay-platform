@@ -2,6 +2,45 @@ export type SyncStatus = 'PENDING_SYNC' | 'SYNCED' | 'SYNC_FAILED';
 
 export type MediaType = 'PHOTO' | 'VOICE';
 
+// ─── Unified auth (Phase 1) ────────────────────────────────────────────────
+export type UserRole = 'ADMIN' | 'CARETAKER' | 'PATIENT';
+export type UserTier = 'FREE' | 'PREMIUM';
+
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  role: UserRole;
+  tier: UserTier;
+  is_active: boolean;
+  created_at: string;
+}
+
+/** Payload sent to POST /api/v1/auth/login */
+export interface LoginRequest {
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
+/** Payload sent to POST /api/v1/auth/signup */
+export interface SignupRequest {
+  email: string;
+  password: string;
+  full_name: string;
+  role: UserRole;
+}
+
+/** Response from POST /api/v1/auth/login and POST /api/v1/auth/signup */
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
+
+/** Response from GET /api/v1/auth/me */
+export type MeResponse = User;
+
 export interface PatientProfile {
   id: string;
   caregiver_id: string;

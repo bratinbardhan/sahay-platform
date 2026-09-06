@@ -25,6 +25,21 @@ class MediaType(str, enum.Enum):
     VOICE = "VOICE"
 
 
+class UserRole(str, enum.Enum):
+    """Unified platform roles (Phase 1 auth)."""
+
+    ADMIN = "ADMIN"
+    CARETAKER = "CARETAKER"
+    PATIENT = "PATIENT"
+
+
+class UserTier(str, enum.Enum):
+    """Subscription tier on the unified account (free vs premium)."""
+
+    FREE = "FREE"
+    PREMIUM = "PREMIUM"
+
+
 class PatientProfile(Base):
     __tablename__ = "patient_profiles"
     __table_args__ = (
@@ -203,6 +218,41 @@ class AuditLog(Base):
     entity_type: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     entity_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     meta: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
+class User(Base):
+    """Unified authentication account (Phase 1) with role and premium tier.
+
+    Every login on the platform (mobile caretaker / patient switchboard and the
+    web dashboard) authenticates against this table. `role` decides which
+    surface a user lands on (admin → `/admin`, caretaker → `/dashboard`), while
+    `tier` drives the FREE / PREMIUM badge shown in the client headers.
+    """
+
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    email: Mapped[str] = mapped_column(
+        String(255), unique=True, index=True, nullable=False
+    )
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    full_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    role: Mapped[UserRole] = mapped_column(
+        Enum(UserRole, name="user_role", native_enum=False),
+        nullable=False,
+        default=UserRole.CARETAKER,
+    )
+    tier: Mapped[UserTier] = mapped_column(
+        Enum(UserTier, name="user_tier", native_enum=False),
+        nullable=False,
+        default=UserTier.FREE,
+    )
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

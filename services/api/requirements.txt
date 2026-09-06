@@ -16,6 +16,9 @@ boto3==1.35.58
 # Twilio SMS dispatch (anti-wandering alerts)
 twilio==9.3.0
 
+# Unified auth (Phase 1) — HS256 access tokens
+PyJWT==2.13.0
+
 # Dev / test
 pytest==8.3.4
 pytest-asyncio==0.25.0

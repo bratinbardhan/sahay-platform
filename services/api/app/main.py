@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import get_settings
 from app.logging_setup import setup_logging
 from app.middleware.audit import ClinicalAuditMiddleware
-from app.routers import analytics, geofence, reminiscence, sync
+from app.routers import analytics, auth, geofence, reminiscence, sync
 
 settings = get_settings()
 setup_logging(settings)
@@ -33,6 +33,7 @@ app.add_middleware(
 )
 app.add_middleware(ClinicalAuditMiddleware)
 
+app.include_router(auth.router)
 app.include_router(sync.router)
 app.include_router(reminiscence.router)
 app.include_router(geofence.router)

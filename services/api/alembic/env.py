@@ -8,10 +8,14 @@ from sqlalchemy import engine_from_config, pool
 from app.config import get_settings
 from app.database import Base
 from app.models import (  # noqa: F401 — register models with metadata
+    AuditLog,
+    DdaMetricsLog,
+    EmergencyContact,
     GeofenceZone,
     GameplaySessionLog,
     PatientProfile,
     ReminiscenceMedia,
+    User,
 )
 
 config = context.config

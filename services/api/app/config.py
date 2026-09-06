@@ -41,6 +41,11 @@ class Settings(BaseSettings):
     twilio_enabled: bool = False
     twilio_max_retries: int = 3
 
+    # Unified auth (Phase 1) — HS256 access tokens
+    jwt_secret: str = "dev-secret-change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expires_minutes: int = 60 * 24 * 7  # 7-day sessions
+
     @property
     def cors_origins(self) -> list[str]:
         raw = self.api_cors_origins.strip()

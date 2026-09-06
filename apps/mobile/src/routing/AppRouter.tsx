@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import type { PatientProfile } from '@sahay/types';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { PatientProfile, UserTier } from '@sahay/types';
 
+import { useAuth } from '@/auth/AuthProvider';
+import { TierBadge } from '@/components/TierBadge';
 import { HighContrastCard } from '@/components/HighContrastCard';
 import { LargeTouchButton } from '@/components/LargeTouchButton';
 import { gamesForGds, therapyStageFromGds, type GameModuleId } from '@/games/gdsRouting';
@@ -16,9 +18,10 @@ import { colors } from '@/theme/theme';
 
 /**
  * Patient root: reads GDS from SQLite and renders only permitted modules.
-      * No login, tabs, or multi-level menus.
+       * No login, tabs, or multi-level menus.
  */
-export function AppRouter() {
+export function AppRouter({ tier }: { tier: UserTier }) {
+  const { signOut } = useAuth();
   const { patient, ready } = usePatient();
   const [activeGame, setActiveGame] = useState<GameModuleId | null>(null);
 
@@ -58,8 +61,23 @@ export function AppRouter() {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.greeting}>Namaste, {patient.name}</Text>
-      <Text style={styles.tokens}>DEMITOKENS {patient.demitoken_balance}</Text>
+      <View style={styles.headerRow}>
+        <View style={styles.headerText}>
+          <Text style={styles.greeting}>Namaste, {patient.name}</Text>
+          <Text style={styles.tokens}>DEMITOKENS {patient.demitoken_balance}</Text>
+        </View>
+        <View style={styles.headerActions}>
+          <TierBadge tier={tier} />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Sign out"
+            onPress={() => void signOut()}
+            style={styles.signOutButton}
+          >
+            <Text style={styles.signOutText}>Sign out</Text>
+          </Pressable>
+        </View>
+      </View>
       <View style={styles.games}>
         {games.map((game) => (
           <HighContrastCard key={game.id} style={styles.card}>
@@ -103,8 +121,29 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '800',
     color: colors.text,
-    textAlign: 'center',
     marginBottom: 8,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  headerText: {
+    flex: 1,
+  },
+  headerActions: {
+    alignItems: 'flex-end',
+    gap: 10,
+  },
+  signOutButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  signOutText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primary,
   },
   tokens: {
     fontSize: 18,

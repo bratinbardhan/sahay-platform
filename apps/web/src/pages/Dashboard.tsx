@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
-import type { PatientProfile, GameplaySessionLog } from '@sahay/types';
-import { Activity, Brain, Camera, Coins, Flame, MapPin, Target } from 'lucide-react';
+import type { PatientProfile, GameplaySessionLog, User } from '@sahay/types';
+import { Activity, Brain, Camera, Coins, Flame, LogOut, MapPin, Target } from 'lucide-react';
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
 import { StatBox } from '@/components/StatBox';
+import { TierBadge } from '@/components/TierBadge';
 
 import { getMockPatient, getMockSessionLogs } from '@/lib/mockData';
 import { GDS_STAGE_LABELS, getGdsStageColor } from '@/lib/gdsUtils';
 
 interface DashboardProps {
+  user: User;
   onNavigate: (page: string) => void;
+  onLogout: () => void;
 }
 
-export function Dashboard({ onNavigate }: DashboardProps) {
+export function Dashboard({ user, onNavigate, onLogout }: DashboardProps) {
   const [patient, setPatient] = useState<PatientProfile | null>(null);
   const [sessions, setSessions] = useState<GameplaySessionLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,9 +58,29 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] p-8">
+      {/* Navigation bar with account role + tier status */}
+      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#2C3E50] bg-[#FFFCF6] px-4 py-3 rounded-xl">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl leading-none text-[#E67E22]">✦</span>
+          <span className="font-bold text-xl text-[#2C3E50]">Sahāy Caregiver Portal</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:inline text-sm text-[#2C3E50]/80">{user.full_name}</span>
+          <TierBadge tier={user.tier} />
+          <button
+            type="button"
+            onClick={onLogout}
+            className="flex items-center gap-2 rounded-xl border-2 border-[#2C3E50] bg-[#F8F6F0] px-3 py-1.5 text-sm font-semibold text-[#2C3E50] hover:bg-[#edeae3] transition-colors"
+          >
+            <LogOut size={16} />
+            Sign out
+          </button>
+        </div>
+      </nav>
+
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[#2C3E50]">Sahāy Caregiver Portal</h1>
+      <div className="mb-8 mt-6">
+        <h1 className="text-4xl font-bold text-[#2C3E50]">Patient Overview</h1>
         <p className="text-[#2C3E50]/80 text-lg mt-1">Patient: {patient.name}</p>
       </div>
 
