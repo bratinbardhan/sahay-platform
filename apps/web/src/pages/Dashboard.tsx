@@ -5,6 +5,8 @@ import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
 import { StatBox } from '@/components/StatBox';
 import { TierBadge } from '@/components/TierBadge';
+import { SyncStatusIndicator } from '../components/SyncStatusIndicator';
+
 
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
@@ -23,7 +25,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps) {
-import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
+
 
   const [activeAlert, setActiveAlert] = useState<any | null>(null);
 
