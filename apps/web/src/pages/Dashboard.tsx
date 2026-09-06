@@ -23,6 +23,8 @@ interface DashboardProps {
 }
 
 export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps) {
+import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
+
   const [activeAlert, setActiveAlert] = useState<any | null>(null);
 
   // WebSocket for emergency alerts
@@ -72,6 +74,10 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
     }, 60_000);
     return () => window.clearInterval(interval);
   }, [token]);
+
+      <div className="flex justify-end mb-4">
+        <SyncStatusIndicator lastSyncTimestamp={new Date()} />
+      </div>
 
   if (!patient) {
     return (

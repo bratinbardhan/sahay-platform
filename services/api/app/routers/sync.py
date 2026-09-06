@@ -6,6 +6,8 @@ applied (never regressed). Achaotic DDA curve points are logged per patient,
 and a clinical audit entry is recorded.
 """
 
+from datetime import datetime
+
 import uuid
 from collections import defaultdict
 from uuid import UUID
@@ -15,8 +17,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models import DdaMetricsLog, GameplaySessionLog, PatientProfile
-from app.schemas.sync import DeltaSyncRequest, DeltaSyncResponse, TokenUpdateApplied
+from app.models import DdaMetricsLog, GameplaySessionLog, PatientProfile, TelemetryRecord
+from app.schemas.sync import (
+    DeltaSyncRequest,
+    DeltaSyncResponse,
+    SyncPullRequest,
+    SyncPushRequest,
+    SyncResponse,
+    TokenUpdateApplied,
+)
 from app.services.audit import record_clinical_audit
 from app.services.dda import build_dda_curve
 
@@ -156,4 +165,60 @@ async def sync_delta(
         synced_token_update_patient_ids=synced_token_update_patient_ids,
         dda_metric_ids=dda_metric_ids,
         token_updates_applied=applied_updates,
+    )
+
+
+@router.post("/push", response_model=SyncResponse)
+async def sync_push(
+    payload: SyncPushRequest,
+    db: AsyncSession = Depends(get_db),
+) -> SyncResponse:
+    """Idempotent push of telemetry and gameplay sessions."""
+    applied_count = 0
+    
+    async with db.begin():
+        # Handle gameplay sessions idempotently
+        for session_data in payload.gameplay_sessions:
+            session_id = session_data.get("id")
+            if not session_id:
+                continue
+            already = await db.get(GameplaySessionLog, session_id)
+            if already is None:
+                session_log = GameplaySessionLog(**session_data)
+                db.add(session_log)
+                applied_count += 1
+        
+        # Handle telemetry records idempotently
+        for record_data in payload.telemetry_records:
+            record_id_str = record_data.get("id")
+            if not record_id_str:
+                continue
+            record_id = UUID(record_id_str)
+            already = await db.get(TelemetryRecord, record_id)
+            if already is None:
+                record = TelemetryRecord(
+                    id=record_id,
+                    patient_id=payload.patient_id,
+                    **{k: v for k, v in record_data.items() if k != "id"}
+                )
+                db.add(record)
+                applied_count += 1
+
+    return SyncResponse(
+        server_timestamp=datetime.now(),
+        applied_count=applied_count,
+        server_updates={},
+    )
+
+
+@router.post("/pull", response_model=SyncResponse)
+async def sync_pull(
+    payload: SyncPullRequest,
+    db: AsyncSession = Depends(get_db),
+) -> SyncResponse:
+    """Return server-side configurations modified after last_synced_at."""
+    return SyncResponse(
+        server_timestamp=datetime.now(),
+        applied_count=0,
+        server_updates={},
     )

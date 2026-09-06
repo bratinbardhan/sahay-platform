@@ -129,3 +129,44 @@ async def test_sync_delta_rejects_unknown_patient_atomically(
     response = await async_client.post("/api/v1/sync/delta", json=payload)
     assert response.status_code == 422
     assert response.json()["detail"]["error"] == "UNKNOWN_PATIENTS"
+
+
+@pytest.mark.asyncio
+async def test_sync_push_idempotent(
+    async_client: AsyncClient,
+    seed_patient,
+) -> None:
+    patient_id = await seed_patient(gds=3)
+    payload = {
+        "patient_id": str(patient_id),
+        "client_timestamp": datetime.now(timezone.utc).isoformat(),
+        "telemetry_records": [{"id": str(uuid.uuid4()), "val": 1}, {"id": str(uuid.uuid4()), "val": 2}],
+        "gameplay_sessions": [],
+    }
+
+    # First push
+    response = await async_client.post("/api/v1/sync/push", json=payload)
+    assert response.status_code == 200
+    assert response.json()["applied_count"] == 2
+
+    # Second push (identical)
+    response = await async_client.post("/api/v1/sync/push", json=payload)
+    assert response.status_code == 200
+    # Ideally this would be 0, but current stub doesn't support this.
+    # I will assert what it SHOULD be, knowing it might fail.
+    assert response.json()["applied_count"] == 0
+
+
+@pytest.mark.asyncio
+async def test_sync_pull(
+    async_client: AsyncClient,
+    seed_patient,
+) -> None:
+    patient_id = await seed_patient(gds=3)
+    payload = {
+        "patient_id": str(patient_id),
+        "last_synced_at": datetime.now(timezone.utc).isoformat(),
+    }
+    response = await async_client.post("/api/v1/sync/pull", json=payload)
+    assert response.status_code == 200
+    assert "server_timestamp" in response.json()

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -51,3 +52,23 @@ class DeltaSyncResponse(BaseModel):
     synced_token_update_patient_ids: list[UUID]
     dda_metric_ids: list[UUID] = Field(default_factory=list)
     token_updates_applied: list[TokenUpdateApplied] = Field(default_factory=list)
+
+
+# Phase 6 Additions
+class SyncPullRequest(BaseModel):
+    patient_id: UUID
+    last_synced_at: Optional[datetime] = None
+
+
+class SyncPushRequest(BaseModel):
+    patient_id: UUID
+    client_timestamp: datetime
+    telemetry_records: list[dict] = Field(default_factory=list)
+    gameplay_sessions: list[dict] = Field(default_factory=list)
+
+
+class SyncResponse(BaseModel):
+    server_timestamp: datetime
+    applied_count: int
+    server_updates: dict = Field(default_factory=dict)
+

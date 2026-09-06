@@ -392,3 +392,11 @@ class EmergencyAlertLog(Base):
             name="ck_emergency_alert_logs_battery",
         ),
     )
+
+
+class TelemetryRecord(Base):
+    __tablename__ = "telemetry_records"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    patient_id: Mapped[uuid.UUID] = mapped_column(index=True)
+    val: Mapped[float] = mapped_column(Float)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
