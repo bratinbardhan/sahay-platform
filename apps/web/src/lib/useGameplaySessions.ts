@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { SessionRecord } from '@sahay/types';
 import { fetchGameplaySessions } from '@/lib/api';
-import { getDemoSessionsPage } from '@/lib/demoSeed';
+import { DEMO_PATIENT_ID, getDemoSessionsPage } from '@/lib/demoSeed';
 
 export interface GameplaySessionsState {
   sessions: SessionRecord[];
@@ -14,8 +14,6 @@ export interface GameplaySessionsState {
   isDemo: boolean;
   setPage: (page: number) => void;
 }
-
-const DEMO_PATIENT_ID = '00000000-0000-4000-8000-00000000d301';
 
 /**
  * Paginated live gameplay session records (GET .../sessions).

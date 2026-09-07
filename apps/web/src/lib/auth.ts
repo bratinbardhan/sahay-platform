@@ -54,22 +54,25 @@ async function parseResponse<TResponse>(response: Response): Promise<TResponse> 
 export async function apiLogin(payload: LoginRequest): Promise<AuthResponse> {
   try {
     return await postJson<AuthResponse>(`${AUTH_BASE_URL}/login`, payload);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'Backend unreachable') {
-      console.warn('[Demo Mode] Backend unreachable, authenticating demo session.');
+  } catch {
+    // Any failure — offline, 404/405/5xx, or rejected credentials — is accepted
+    if (payload.email.trim().toLowerCase() === 'ram' && payload.password === '12345678') {
+      console.warn('[Demo Mode] Backend unreachable. Logging in as Ram.');
       const authUser = {
-        email: payload.email,
+        id: 'demo-caretaker-ram',
+        email: 'ram',
         role: 'CARETAKER',
-        name: 'Demo Caretaker',
-        patientId: 'demo-patient-1',
+        name: 'Ram',
+        patientId: 'demo-patient-aditya',
+        isDemo: true,
       };
       const auth: AuthResponse = {
-        access_token: 'demo_token_caretaker',
+        access_token: 'demo_token_ram',
         token_type: 'Bearer',
         user: {
-          id: '00000000-0000-4000-8000-00000000c301',
-          email: payload.email,
-          full_name: 'Demo Caretaker',
+          id: 'demo-caretaker-ram',
+          email: 'ram',
+          full_name: 'Ram',
           role: 'CARETAKER',
           tier: 'FREE',
           is_active: true,
@@ -80,7 +83,7 @@ export async function apiLogin(payload: LoginRequest): Promise<AuthResponse> {
       localStorage.setItem('auth_user', JSON.stringify(authUser));
       return auth;
     }
-    throw error;
+    throw new Error("Invalid credentials. (Hint: Use 'ram' and '12345678').");
   }
 }
 

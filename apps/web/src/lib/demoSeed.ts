@@ -17,7 +17,35 @@ import type {
  * All generation is seeded — no Math.random() — so re-renders are stable.
  */
 
-const DEMO_PATIENT_ID = '00000000-0000-4000-8000-00000000d301';
+/** Unified demo identities — shared by the Web caretaker portal and the Mobile
+ * patient app so the offline demo login maps to the same seeded patient. */
+export const DEMO_CARETAKER: {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  patientId: string;
+} = {
+  id: 'demo-caretaker-ram',
+  name: 'Ram',
+  email: 'ram',
+  role: 'caretaker',
+  patientId: 'demo-patient-aditya',
+};
+
+export const DEMO_PATIENT: {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+} = {
+  id: 'demo-patient-aditya',
+  name: 'Aditya',
+  email: 'aditya',
+  role: 'patient',
+};
+
+export const DEMO_PATIENT_ID = DEMO_PATIENT.id;
 
 const DEMO_GAME_MODULES = ['rapid_fire_sorting', 'serial_number_scatter'] as const;
 
@@ -45,8 +73,8 @@ function cognitiveLoadIndex(latencyRollingMs: number, errorRateRolling: number):
 export function getDemoPatient(): PatientProfile {
   return {
     id: DEMO_PATIENT_ID,
-    caregiver_id: '00000000-0000-4000-8000-00000000c301',
-    name: 'Meera Devi',
+    caregiver_id: DEMO_CARETAKER.id,
+    name: DEMO_PATIENT.name,
     age: 72,
     assigned_gds_stage: 4,
     primary_language: 'en',

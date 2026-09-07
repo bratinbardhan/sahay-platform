@@ -2,8 +2,8 @@ import type { PatientProfile, ReminiscenceMedia } from '@sahay/types';
 
 import { DatabaseService } from '@/db/DatabaseService';
 
-const DEMO_PATIENT_ID = '11111111-1111-4111-8111-111111111111';
-const DEMO_CAREGIVER_ID = '22222222-2222-4222-8222-222222222222';
+const DEMO_PATIENT_ID = 'demo-patient-aditya';
+const DEMO_CAREGIVER_ID = 'demo-caretaker-ram';
 
 export type PatientRow = {
   id: string;
@@ -138,7 +138,7 @@ export async function seedLocalPatientIfNeeded(): Promise<void> {
       `UPDATE patient_profiles
        SET name = ?, assigned_gds_stage = ?, primary_language = ?
        WHERE id = ?`,
-      'Jeniva Saha',
+      'Aditya',
       1,
       'as',
       DEMO_PATIENT_ID
@@ -151,7 +151,7 @@ export async function seedLocalPatientIfNeeded(): Promise<void> {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       DEMO_PATIENT_ID,
       DEMO_CAREGIVER_ID,
-      'Jeniva Saha',
+      'Aditya',
       72,
       1,
       'as',

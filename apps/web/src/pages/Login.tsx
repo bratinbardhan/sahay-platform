@@ -70,6 +70,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
 
         <form
           className="auth-form"
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             void submit();
@@ -108,6 +109,10 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
             {busy ? 'Signing in…' : `Login as ${roleLabel}`}
           </button>
         </form>
+
+        <p className="text-sm text-gray-500 text-center mt-2">
+          Demo Caretaker: <b>ram</b> / <b>12345678</b>
+        </p>
 
         <p className="auth-switch">
           New here?{' '}

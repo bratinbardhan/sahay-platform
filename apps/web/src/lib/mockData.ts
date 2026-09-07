@@ -10,9 +10,9 @@ function randomId(): string {
 
 export function getMockPatient(): Promise<PatientProfile> {
   return Promise.resolve({
-    id: 'patient-001',
-    caregiver_id: 'caregiver-001',
-    name: 'Meera Devi',
+    id: 'demo-patient-aditya',
+    caregiver_id: 'demo-caretaker-ram',
+    name: 'Aditya',
     age: 72,
     assigned_gds_stage: 4,
     primary_language: 'en',

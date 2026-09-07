@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { CognitiveSummaryResponse, DdaHistoryResponse } from '@sahay/types';
 import { fetchCognitiveSummary, fetchDdaHistory } from '@/lib/api';
-import { getDemoCognitiveSummary, getDemoDdaHistory } from '@/lib/demoSeed';
+import {
+  DEMO_PATIENT_ID,
+  getDemoCognitiveSummary,
+  getDemoDdaHistory,
+} from '@/lib/demoSeed';
 
 export interface PatientAnalyticsState {
   ddaHistory: DdaHistoryResponse | null;
@@ -11,8 +15,6 @@ export interface PatientAnalyticsState {
   /** True when the rendered analytics are the synthetic demo seed. */
   isDemo: boolean;
 }
-
-const DEMO_PATIENT_ID = '00000000-0000-4000-8000-00000000d301';
 
 function demoAnalytics(error: string | null): PatientAnalyticsState {
   return {

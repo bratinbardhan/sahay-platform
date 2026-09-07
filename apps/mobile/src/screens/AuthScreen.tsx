@@ -165,6 +165,10 @@ export function AuthScreen() {
             disabled={submitting}
           />
         </View>
+
+        {mode === 'login' ? (
+          <Text style={styles.demoHint}>Demo Patient: aditya / 12345678</Text>
+        ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -286,5 +290,11 @@ const styles = StyleSheet.create({
   },
   submitWrap: {
     marginTop: 4,
+  },
+  demoHint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
