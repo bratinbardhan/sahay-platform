@@ -8,11 +8,10 @@ import type {
   SessionsPage,
 } from '@sahay/types';
 
-const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:8000';
+export const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '');
 
-const GEOFENCE_ZONE_ENDPOINT = `${API_BASE_URL}/api/v1/geofence/zone`;
-const ANALYTICS_BASE_URL = `${API_BASE_URL}/api/v1/analytics`;
+const GEOFENCE_ZONE_ENDPOINT = `${API_BASE}/api/v1/geofence/zone`;
+const ANALYTICS_BASE_URL = `${API_BASE}/api/v1/analytics`;
 
 async function postJson<TResponse>(url: string, body: unknown): Promise<TResponse> {
   const response = await fetch(url, {
@@ -21,6 +20,10 @@ async function postJson<TResponse>(url: string, body: unknown): Promise<TRespons
     body: JSON.stringify(body),
   });
   if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    if (response.status === 404 || (contentType && contentType.includes('text/html'))) {
+      throw new Error('Backend unreachable');
+    }
     const detail = await response.text();
     throw new Error(`API ${response.status}: ${detail}`);
   }
@@ -36,7 +39,7 @@ export function saveGeofenceZone(
 
 /** Dispatch an anti-wandering breach alert (used by manual test tools). */
 export function sendGeofenceAlert(payload: GeofenceAlertPayload): Promise<GeofenceAlertResult> {
-  return postJson(`${API_BASE_URL}/api/v1/geofence/alert`, payload);
+  return postJson(`${API_BASE}/api/v1/geofence/alert`, payload);
 }
 
 export interface GeocodedPlace {
@@ -61,6 +64,10 @@ async function authedGet<TResponse>(url: string, token: string): Promise<TRespon
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    if (response.status === 404 || (contentType && contentType.includes('text/html'))) {
+      throw new Error('Backend unreachable');
+    }
     let detail = `Request failed with status ${response.status}`;
     try {
       const parsed = (await response.json()) as { detail?: unknown };
