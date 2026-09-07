@@ -14,6 +14,7 @@ import { SerialNumberScatter } from '@/games/SerialNumberScatter';
 import { AmbientRippleScreensaver } from '@/screens/AmbientRippleScreensaver';
 import { EnvironmentalSoundMatch } from '@/screens/EnvironmentalSoundMatch';
 import { FaceNameMatch } from '@/screens/FaceNameMatch';
+import ReminiscenceScreen from '@/screens/ReminiscenceScreen';
 import { usePatient } from '@/patient/PatientProvider';
 import { colors } from '@/theme/theme';
 
@@ -25,6 +26,7 @@ export function AppRouter({ tier }: { tier: UserTier }) {
   const { signOut } = useAuth();
   const { patient, ready, refresh } = usePatient();
   const [activeGame, setActiveGame] = useState<GameModuleId | null>(null);
+  const [showReminiscence, setShowReminiscence] = useState(false);
   const [ledgerBalance, setLedgerBalance] = useState<number | null>(null);
 
   // Pull the verified balance from the ledger whenever the patient changes
@@ -71,6 +73,24 @@ export function AppRouter({ tier }: { tier: UserTier }) {
     );
   }
 
+  // Familiar Memory Album (Phase 7) — gentle reminiscence carousel.
+  if (showReminiscence) {
+    return (
+      <View style={styles.root}>
+        <View style={styles.backRow}>
+          <LargeTouchButton
+            label="Home"
+            variant="secondary"
+            onPress={() => setShowReminiscence(false)}
+          />
+        </View>
+        <View style={styles.body}>
+          <ReminiscenceScreen patientId={patient.id} />
+        </View>
+      </View>
+    );
+  }
+
   const games = gamesForGds(patient.assigned_gds_stage);
 
   return (
@@ -93,6 +113,12 @@ export function AppRouter({ tier }: { tier: UserTier }) {
         </View>
       </View>
       <View style={styles.games}>
+        <HighContrastCard key="reminiscence" style={styles.card}>
+          <LargeTouchButton
+            label="Memory Album"
+            onPress={() => setShowReminiscence(true)}
+          />
+        </HighContrastCard>
         {games.map((game) => (
           <HighContrastCard key={game.id} style={styles.card}>
             <LargeTouchButton label={game.title} onPress={() => setActiveGame(game.id)} />

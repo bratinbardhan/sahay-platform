@@ -7,11 +7,12 @@ import { Dashboard } from '@/pages/Dashboard';
 import { AnalyticsChart } from '@/pages/AnalyticsChart';
 import { MediaManager } from '@/pages/MediaManager';
 import { GeofenceMap } from '@/pages/GeofenceMap';
+import { ReminiscenceManager } from '@/pages/ReminiscenceManager';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
 import { AdminDashboard } from '@/pages/AdminDashboard';
 
-type Page = 'dashboard' | 'analytics' | 'media' | 'geofence';
+type Page = 'dashboard' | 'analytics' | 'media' | 'geofence' | 'reminiscence';
 
 /**
  * Lightweight pathname router (no dependency): `/login`, `/signup`, `/admin`
@@ -159,6 +160,8 @@ function App() {
       return <MediaManager onNavigate={navigate} />;
     case 'geofence':
       return <GeofenceMap onNavigate={navigate} />;
+    case 'reminiscence':
+      return <ReminiscenceManager onNavigate={navigate} token={session.accessToken} />;
     default:
       return <Dashboard user={user} token={session.accessToken} onNavigate={navigate} onLogout={logout} />;
   }

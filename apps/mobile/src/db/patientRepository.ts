@@ -1,6 +1,7 @@
-import type { PatientProfile, ReminiscenceMedia } from '@sahay/types';
+import type { MemoryItemResponse, PatientProfile, ReminiscenceMedia } from '@sahay/types';
 
 import { DatabaseService } from '@/db/DatabaseService';
+import { DEMO_MEMORIES } from '@/db/mockData';
 
 const DEMO_PATIENT_ID = 'demo-patient-aditya';
 const DEMO_CAREGIVER_ID = 'demo-caretaker-ram';
@@ -52,6 +53,19 @@ export async function getFamilyPhotos(patientId: string): Promise<ReminiscenceMe
      FROM reminiscence_media
      WHERE patient_id = ? AND media_type = 'PHOTO'
      ORDER BY relation_tag ASC`,
+    patientId
+  );
+}
+
+/** Phase 7 — read the patient's Familiar Memory Album, newest first. */
+export async function getMemoryItems(patientId: string): Promise<MemoryItemResponse[]> {
+  const db = await DatabaseService.getDatabase();
+  return db.getAllAsync<MemoryItemResponse>(
+    `SELECT id, patient_id, title, relationship_tag, era_or_date,
+            image_url, audio_narration_url, caption_text, created_at
+     FROM memory_items
+     WHERE patient_id = ?
+     ORDER BY created_at DESC`,
     patientId
   );
 }
@@ -186,6 +200,51 @@ export async function seedLocalPatientIfNeeded(): Promise<void> {
         member.relation,
         member.year,
         member.id.replace(/-/g, '')
+      );
+    }
+  }
+
+  await seedLocalMemoriesIfNeeded();
+}
+
+/**
+ * Phase 7 — upsert the demo Familiar Memory Album into the offline vault so
+ * the patient carousel has content even before the first API sync.
+ */
+export async function seedLocalMemoriesIfNeeded(): Promise<void> {
+  const db = await DatabaseService.getDatabase();
+  for (const memory of DEMO_MEMORIES) {
+    const existing = await db.getFirstAsync<{ id: string }>(
+      'SELECT id FROM memory_items WHERE id = ?',
+      memory.id
+    );
+    const row = [
+      memory.title,
+      memory.relationship_tag,
+      memory.era_or_date,
+      memory.image_url,
+      memory.audio_narration_url,
+      memory.caption_text,
+      memory.created_at,
+    ];
+    if (existing) {
+      await db.runAsync(
+        `UPDATE memory_items
+         SET title = ?, relationship_tag = ?, era_or_date = ?,
+             image_url = ?, audio_narration_url = ?, caption_text = ?, created_at = ?
+         WHERE id = ?`,
+        ...row,
+        memory.id
+      );
+    } else {
+      await db.runAsync(
+        `INSERT INTO memory_items (
+          id, patient_id, title, relationship_tag, era_or_date,
+          image_url, audio_narration_url, caption_text, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        memory.id,
+        memory.patient_id,
+        ...row
       );
     }
   }

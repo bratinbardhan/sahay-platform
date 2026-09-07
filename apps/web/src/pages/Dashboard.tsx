@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@sahay/types';
-import { Activity, Brain, Camera, Coins, Flame, LogOut, MapPin, Target, AlertTriangle } from 'lucide-react';
+import { Activity, Brain, Camera, Coins, Flame, Images, LogOut, MapPin, Target, AlertTriangle } from 'lucide-react';
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
 import { StatBox } from '@/components/StatBox';
@@ -266,9 +266,10 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 animate-fade-up">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 animate-fade-up">
         <ActionButton label="Analytics Dashboard" icon={<Activity size={20} />} onClick={() => onNavigate('analytics')} />
         <ActionButton label="Media Manager" icon={<Camera size={20} />} onClick={() => onNavigate('media')} />
+        <ActionButton label="Memory Album" icon={<Images size={20} />} onClick={() => onNavigate('reminiscence')} />
         <ActionButton label="Geofence Map" icon={<MapPin size={20} />} onClick={() => onNavigate('geofence')} />
       </div>
     </div>

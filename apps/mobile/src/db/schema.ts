@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const CREATE_TABLES_SQL = `
 PRAGMA foreign_keys = ON;
@@ -112,4 +112,22 @@ CREATE INDEX IF NOT EXISTS idx_demitoken_ledger_patient_id
   ON demitoken_ledger (patient_id);
 CREATE INDEX IF NOT EXISTS idx_demitoken_ledger_synced
   ON demitoken_ledger (synced);
+
+-- v4: Phase 7 Familiar Memory Album. Curated memory vault entries pushed to
+-- the patient's device for offline-first reminiscence therapy sessions.
+CREATE TABLE IF NOT EXISTS memory_items (
+  id TEXT PRIMARY KEY NOT NULL,
+  patient_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  relationship_tag TEXT NOT NULL,
+  era_or_date TEXT,
+  image_url TEXT NOT NULL,
+  audio_narration_url TEXT,
+  caption_text TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (patient_id) REFERENCES patient_profiles (id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_memory_items_patient_id
+  ON memory_items (patient_id);
 `;

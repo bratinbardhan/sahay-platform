@@ -128,6 +128,22 @@ export interface ReminiscenceMedia {
   checksum_sha256: string;
 }
 
+/**
+ * One curated entry in the Familiar Memory Album (Phase 7).
+ * Mirrors `MemoryItemResponse` in services/api/app/schemas/reminiscence.py.
+ */
+export interface MemoryItemResponse {
+  id: string;
+  patient_id: string;
+  title: string;
+  relationship_tag: string;
+  era_or_date: string | null;
+  image_url: string;
+  audio_narration_url: string | null;
+  caption_text: string;
+  created_at: string;
+}
+
 export interface GeofenceZone {
   id: string;
   patient_id: string;

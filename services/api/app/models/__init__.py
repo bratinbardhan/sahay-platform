@@ -400,3 +400,8 @@ class TelemetryRecord(Base):
     patient_id: Mapped[uuid.UUID] = mapped_column(index=True)
     val: Mapped[float] = mapped_column(Float)
     timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
+
+
+# Phase 7 — Familiar Memory Album vault (imported from its own module so the
+# table is registered on Base.metadata for Alembic autogenerate).
+from app.models.reminiscence import MemoryItem  # noqa: E402  (must run after Base import)
