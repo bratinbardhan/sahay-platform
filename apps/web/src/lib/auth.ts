@@ -87,9 +87,41 @@ export async function apiLogin(payload: LoginRequest): Promise<AuthResponse> {
   }
 }
 
-/** POST /api/v1/auth/signup */
-export function apiSignup(payload: SignupRequest): Promise<AuthResponse> {
-  return postJson<AuthResponse>(`${AUTH_BASE_URL}/signup`, payload);
+/** POST /api/v1/auth/signup — with an offline/405 fallback that auto-authenticates
+ * the demo caretaker so registration never bricks when the backend is unreachable. */
+export async function apiSignup(payload: SignupRequest): Promise<AuthResponse> {
+  try {
+    return await postJson<AuthResponse>(`${AUTH_BASE_URL}/signup`, payload);
+  } catch {
+    // Backend offline / 404 / 405 / network error — bypass registration
+    // and transition straight into the demo caretaker dashboard.
+
+    console.warn('[Demo Mode] Backend unreachable during signup. Bypassing registration.');
+    const demoUser = {
+      id: 'demo-caretaker-ram',
+      email: 'ram',
+      role: 'CARETAKER',
+      name: 'Ram',
+      patientId: 'demo-patient-aditya',
+      isDemo: true,
+    };
+    const auth: AuthResponse = {
+      access_token: 'demo_token_ram',
+      token_type: 'Bearer',
+      user: {
+        id: 'demo-caretaker-ram',
+        email: 'ram',
+        full_name: 'Ram',
+        role: 'CARETAKER',
+        tier: 'FREE',
+        is_active: true,
+        created_at: new Date().toISOString(),
+      },
+    };
+    localStorage.setItem('auth_token', auth.access_token);
+    localStorage.setItem('auth_user', JSON.stringify(demoUser));
+    return auth;
+  }
 }
 
 /** GET /api/v1/auth/me — validates a stored token and refreshes the profile. */

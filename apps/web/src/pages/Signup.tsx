@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { AuthResponse, UserRole } from '@sahay/types';
+import type { AuthResponse } from '@sahay/types';
 
 import { apiSignup } from '@/lib/auth';
 
@@ -8,20 +8,12 @@ interface SignupProps {
   onNavigate: (route: 'login') => void;
 }
 
-const ROLE_OPTIONS: ReadonlyArray<{ value: UserRole; label: string; hint: string }> = [
-  { value: 'PATIENT', label: 'Patient', hint: 'Therapeutic games & calm therapy' },
-  { value: 'CARETAKER', label: 'Caretaker', hint: 'Monitor & manage care plans' },
-];
-
 export function Signup({ onSuccess, onNavigate }: SignupProps) {
-  const [role, setRole] = useState<UserRole>('CARETAKER');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  const roleLabel = ROLE_OPTIONS.find((option) => option.value === role)?.label ?? 'Caretaker';
 
   const submit = async () => {
     if (busy) {
@@ -40,11 +32,13 @@ export function Signup({ onSuccess, onNavigate }: SignupProps) {
     }
     setBusy(true);
     try {
+      // The Web portal is exclusive to caretakers — role is hardcoded.
+
       const auth = await apiSignup({
         email: emailTrimmed,
         password,
         full_name: nameTrimmed,
-        role,
+        role: 'CARETAKER',
       });
       onSuccess(auth);
     } catch (err) {
@@ -58,26 +52,7 @@ export function Signup({ onSuccess, onNavigate }: SignupProps) {
     <div className="auth-page" role="region" aria-label="Sign up">
       <div className="auth-card">
         <h1 className="auth-title">Create your Sahāy account</h1>
-        <p className="auth-subtitle">Unified accounts · patients &amp; caretakers together</p>
-
-        <div className="role-switch" role="tablist" aria-label="Account role">
-          {ROLE_OPTIONS.map((option) => {
-            const active = option.value === role;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setRole(option.value)}
-                className={`role-pill ${active ? 'role-pill-active' : ''}`}
-              >
-                <span className="role-pill-title">{option.label}</span>
-                <span className="role-pill-hint">{option.hint}</span>
-              </button>
-            );
-          })}
-        </div>
+        <p className="auth-subtitle">Caregiver access only · monitor &amp; manage care plans</p>
 
         <form
           className="auth-form"
@@ -100,7 +75,7 @@ export function Signup({ onSuccess, onNavigate }: SignupProps) {
           />
 
           <label className="auth-label" htmlFor="signup-email">
-            Email
+            Email / Username
           </label>
           <input
             id="signup-email"
@@ -129,7 +104,7 @@ export function Signup({ onSuccess, onNavigate }: SignupProps) {
           {error ? <p className="auth-error" role="alert">{error}</p> : null}
 
           <button type="submit" className="auth-submit" disabled={busy}>
-            {busy ? 'Creating account…' : `Create ${roleLabel} account`}
+            {busy ? 'Creating account…' : 'Create Caretaker account'}
           </button>
         </form>
 

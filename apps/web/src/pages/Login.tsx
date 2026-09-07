@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { AuthResponse, UserRole } from '@sahay/types';
+import type { AuthResponse } from '@sahay/types';
 
 import { apiLogin } from '@/lib/auth';
 
@@ -8,19 +8,11 @@ interface LoginProps {
   onNavigate: (route: 'signup') => void;
 }
 
-const ROLE_OPTIONS: ReadonlyArray<{ value: UserRole; label: string; hint: string }> = [
-  { value: 'PATIENT', label: 'Patient', hint: 'Therapeutic games & calm therapy' },
-  { value: 'CARETAKER', label: 'Caretaker', hint: 'Monitor & manage care plans' },
-];
-
 export function Login({ onSuccess, onNavigate }: LoginProps) {
-  const [role, setRole] = useState<UserRole>('CARETAKER');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  const roleLabel = ROLE_OPTIONS.find((option) => option.value === role)?.label ?? 'Caretaker';
 
   const submit = async () => {
     if (busy) {
@@ -34,7 +26,9 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
     }
     setBusy(true);
     try {
-      const auth = await apiLogin({ email: emailTrimmed, password, role });
+      // The Web portal is exclusive to caretakers — role is hardcoded.
+
+      const auth = await apiLogin({ email: emailTrimmed, password, role: 'CARETAKER' });
       onSuccess(auth);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to log in. Please try again.');
@@ -47,26 +41,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
     <div className="auth-page" role="region" aria-label="Login">
       <div className="auth-card">
         <h1 className="auth-title">Sahāy Caregiver Portal</h1>
-        <p className="auth-subtitle">One account · sign in as a Patient or Caretaker</p>
-
-        <div className="role-switch" role="tablist" aria-label="Account role">
-          {ROLE_OPTIONS.map((option) => {
-            const active = option.value === role;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setRole(option.value)}
-                className={`role-pill ${active ? 'role-pill-active' : ''}`}
-              >
-                <span className="role-pill-title">{option.label}</span>
-                <span className="role-pill-hint">{option.hint}</span>
-              </button>
-            );
-          })}
-        </div>
+        <p className="auth-subtitle">Caregiver access only · manage therapy, analytics eth reminders</p>
 
         <form
           className="auth-form"
@@ -77,7 +52,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           }}
         >
           <label className="auth-label" htmlFor="login-email">
-            Email
+            Email / Username
           </label>
           <input
             id="login-email"
@@ -106,7 +81,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           {error ? <p className="auth-error" role="alert">{error}</p> : null}
 
           <button type="submit" className="auth-submit" disabled={busy}>
-            {busy ? 'Signing in…' : `Login as ${roleLabel}`}
+            {busy ? 'Signing in…' : 'Login as Caretaker'}
           </button>
         </form>
 
