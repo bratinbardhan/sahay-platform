@@ -20,11 +20,11 @@ export function ActionButton({
   type = 'button',
 }: ActionButtonProps) {
   const base =
-    'flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed';
+    'flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all duration-300 ease-out min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]';
   const styles =
     variant === 'primary'
-      ? 'bg-[#E67E22] text-white hover:bg-[#D35400] border-2 border-[#2C3E50] disabled:hover:bg-[#E67E22]'
-      : 'bg-[#F8F6F0] text-[#2C3E50] hover:bg-[#edeae3] border-2 border-[#2C3E50]';
+      ? 'bg-teal-600 text-white hover:bg-teal-700 border-2 border-transparent'
+      : 'bg-white text-slate-800 border-2 border-slate-200 hover:bg-slate-100';
 
   return (
     <button type={type} className={`${base} ${styles} ${className}`} onClick={onClick} disabled={disabled}>

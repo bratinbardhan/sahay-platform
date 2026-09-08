@@ -199,23 +199,23 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   };
 
   return (
-    <div>
+    <div className="overflow-x-hidden animate-in">
       <button
         type="button"
         onClick={() => onNavigate('dashboard')}
-        className="flex items-center gap-2 text-[#2C3E50] font-semibold mb-6 hover:text-[#E67E22] transition-colors"
+        className="flex items-center gap-2 text-slate-800 font-semibold mb-6 hover:text-teal-600 transition-colors"
       >
         <ChevronLeft size={20} /> Back to Dashboard
       </button>
 
-      <h1 className="text-3xl font-bold text-[#2C3E50] mb-2">Anti-Wandering Geofencing</h1>
-      <p className="text-[#2C3E50]/70 mb-8">
+      <h1 className="text-3xl font-bold text-slate-800 mb-2">Anti-Wandering Geofencing</h1>
+      <p className="text-slate-800/70 mb-8">
         Place the home anchor pin and set a safe radius. When the patient's device crosses the
         boundary, emergency contacts receive an SMS with a live Google Maps location link.
       </p>
 
       {notice ? (
-        <div className="mb-6 px-4 py-3 rounded-xl bg-[#E67E22]/10 border-2 border-[#E67E22] text-[#2C3E50] font-semibold">
+        <div className="mb-6 px-4 py-3 rounded-xl bg-teal-600/10 border-2 border-teal-600 text-slate-800 font-semibold">
           {notice}
         </div>
       ) : null}
@@ -231,7 +231,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
               if (e.key === 'Enter') void handleSearch();
             }}
             placeholder="Search an address or landmark (e.g. Police Bazar, Shillong)"
-            className="flex-1 px-4 py-3 border-2 border-[#2C3E50] rounded-xl bg-[#FFFCF6] text-[#2C3E50] focus:outline-none focus:ring-2 focus:ring-[#E67E22]"
+            className="flex-1 px-4 py-3 border-2 border-slate-300 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <ActionButton
             label={searching ? 'Searching…' : 'Search'}
@@ -241,15 +241,15 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
           />
         </div>
         {searchResults.length > 0 ? (
-          <ul className="mt-4 divide-y divide-[#2C3E50]/10 border-2 border-[#2C3E50]/20 rounded-xl overflow-hidden">
+          <ul className="mt-4 divide-y divide-slate-300/10 border-2 border-slate-300/20 rounded-xl overflow-hidden">
             {searchResults.map((place) => (
               <li key={`${place.lat},${place.lng}`}>
                 <button
                   type="button"
                   onClick={() => applyPlace(place)}
-                  className="w-full text-left px-4 py-3 bg-[#FFFCF6] hover:bg-[#E67E22]/10 transition-colors text-sm text-[#2C3E50]"
+                  className="w-full text-left px-4 py-3 bg-white hover:bg-teal-600/10 transition-colors text-sm text-slate-800"
                 >
-                  <MapPin size={16} className="inline mr-2 text-[#E67E22]" />
+                  <MapPin size={16} className="inline mr-2 text-teal-600" />
                   {place.displayName}
                 </button>
               </li>
@@ -268,7 +268,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
               radiusMeters={draft.radius_meters}
               onPick={handlePick}
             />
-            <p className="mt-3 text-sm text-[#2C3E50]/70">
+            <p className="mt-3 text-sm text-slate-800/70">
               Click the map or drag the pin to move the home anchor. The shaded circle is the safe
               boundary the mobile daemon monitors.
             </p>
@@ -276,17 +276,17 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
 
           <div className="lg:col-span-2 space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-[#2C3E50] mb-1">Zone Name</label>
+              <label className="block text-sm font-semibold text-slate-800 mb-1">Zone Name</label>
               <input
                 type="text"
                 value={draft.zone_name}
                 onChange={(e) => setDraft({ ...draft, zone_name: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-[#2C3E50] rounded-xl bg-[#FFFCF6] text-[#2C3E50] focus:outline-none focus:ring-2 focus:ring-[#E67E22]"
+                className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-semibold text-[#2C3E50] mb-1">
+                <label className="block text-sm font-semibold text-slate-800 mb-1">
                   Center Latitude
                 </label>
                 <input
@@ -294,11 +294,11 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                   step="0.0001"
                   value={draft.center_lat}
                   onChange={(e) => setDraft({ ...draft, center_lat: parseCoord(e.target.value) })}
-                  className="w-full px-4 py-3 border-2 border-[#2C3E50] rounded-xl bg-[#FFFCF6] text-[#2C3E50] focus:outline-none focus:ring-2 focus:ring-[#E67E22]"
+                  className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-[#2C3E50] mb-1">
+                <label className="block text-sm font-semibold text-slate-800 mb-1">
                   Center Longitude
                 </label>
                 <input
@@ -306,14 +306,14 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                   step="0.0001"
                   value={draft.center_lng}
                   onChange={(e) => setDraft({ ...draft, center_lng: parseCoord(e.target.value) })}
-                  className="w-full px-4 py-3 border-2 border-[#2C3E50] rounded-xl bg-[#FFFCF6] text-[#2C3E50] focus:outline-none focus:ring-2 focus:ring-[#E67E22]"
+                  className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
             <div>
-              <label className="flex items-center justify-between text-sm font-semibold text-[#2C3E50] mb-1">
+              <label className="flex items-center justify-between text-sm font-semibold text-slate-800 mb-1">
                 <span>Safe Radius</span>
-                <span className="text-[#E67E22]">{draft.radius_meters} m</span>
+                <span className="text-teal-600">{draft.radius_meters} m</span>
               </label>
               <input
                 type="range"
@@ -324,9 +324,9 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                 onChange={(e) =>
                   setDraft({ ...draft, radius_meters: parseInt(e.target.value, 10) })
                 }
-                className="w-full accent-[#E67E22]"
+                className="w-full accent-teal-600"
               />
-              <div className="flex justify-between text-xs text-[#2C3E50]/60 mt-1">
+              <div className="flex justify-between text-xs text-slate-800/60 mt-1">
                 <span>{MIN_RADIUS_M} m</span>
                 <span>{MAX_RADIUS_M} m</span>
               </div>
@@ -353,10 +353,10 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       <Card title="Background Anti-Wandering SMS Alerts (Twilio)" className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <p className="font-semibold text-[#2C3E50]">
+            <p className="font-semibold text-slate-800">
               {smsArmed ? 'Alerts are ARMED' : 'Alerts are OFF'}
             </p>
-            <p className="text-sm text-[#2C3E50]/70 mt-1">
+            <p className="text-sm text-slate-800/70 mt-1">
               On a GEOFENCE_EXIT transition, every active zone is checked and emergency contacts
               receive an SMS with a live Google Maps link. Offline breaches are queued on the device
               and dispatched once signal returns.
@@ -367,18 +367,18 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
             onClick={() => void toggleSmsAlerts()}
             disabled={smsToggling}
             aria-pressed={smsArmed}
-            className={`relative inline-flex h-12 w-24 items-center rounded-full border-2 border-[#2C3E50] transition-colors shrink-0 ${
-              smsArmed ? 'bg-[#E67E22]' : 'bg-[#F8F6F0]'
+            className={`relative inline-flex h-12 w-24 items-center rounded-full border-2 border-slate-300 transition-colors shrink-0 ${
+              smsArmed ? 'bg-teal-600' : 'bg-slate-50'
             } ${smsToggling ? 'opacity-50 cursor-wait' : ''}`}
           >
             <span
-              className={`inline-block h-8 w-8 transform rounded-full bg-white border-2 border-[#2C3E50] transition-transform ${
+              className={`inline-block h-8 w-8 transform rounded-full bg-white border-2 border-slate-300 transition-transform ${
                 smsArmed ? 'translate-x-12' : 'translate-x-2'
               }`}
             />
             <span
               className={`absolute text-xs font-bold ${
-                smsArmed ? 'left-3 text-white' : 'right-2.5 text-[#2C3E50]'
+                smsArmed ? 'left-3 text-white' : 'right-2.5 text-slate-800'
               }`}
             >
               {smsArmed ? 'ON' : 'OFF'}
@@ -388,22 +388,22 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       </Card>
 
       <Card title={`Geofence Zones (${zones.length})`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {zones.map((zone) => (
-            <div key={zone.id} className="p-4 bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-xl">
+            <div key={zone.id} className="p-4 bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg">
               <div className="flex items-center justify-between gap-3">
-                <div className="font-bold text-[#2C3E50]">{zone.zone_name}</div>
+                <div className="font-bold text-slate-800">{zone.zone_name}</div>
                 <button
                   type="button"
                   onClick={() => toggleZoneActive(zone.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#2C3E50] transition-colors ${
-                    zone.is_active ? 'bg-[#E67E22] text-white' : 'bg-[#F8F6F0] text-[#2C3E50]'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-slate-300 transition-colors ${
+                    zone.is_active ? 'bg-teal-600 text-white' : 'bg-slate-50 text-slate-800'
                   }`}
                 >
                   {zone.is_active ? 'ACTIVE' : 'OFF'}
                 </button>
               </div>
-              <p className="text-sm text-[#2C3E50]/70 mt-2">
+              <p className="text-sm text-slate-800/70 mt-2">
                 {zone.center_lat.toFixed(4)}, {zone.center_lng.toFixed(4)} · radius{' '}
                 {zone.radius_meters} m
               </p>
@@ -416,7 +416,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                 />
                 <BellRing
                   size={18}
-                  className={zone.is_active ? 'text-[#E67E22]' : 'text-[#2C3E50]/40'}
+                  className={zone.is_active ? 'text-teal-600' : 'text-slate-800/40'}
                 />
               </div>
             </div>

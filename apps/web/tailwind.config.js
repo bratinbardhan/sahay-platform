@@ -6,7 +6,6 @@ export default {
       colors: {
         cream: '#F8F6F0',
         charcoal: '#2C3E50',
-        amber: '#E67E22',
       },
     },
   },

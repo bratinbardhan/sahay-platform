@@ -6,13 +6,13 @@ import { getMemoryItems } from '@/db/patientRepository';
 import { DEMO_MEMORIES } from '@/db/mockData';
 
 interface ReminiscenceScreenProps {
-  /** Active patient id; when absent (or empty vault) the demo album is shown. */
   patientId?: string;
 }
 
 /**
- * Familiar Memory Album (Phase 7) — a high-contrast, large-format carousel.
- * White text on deep charcoal, ≥64×64 dp touch targets, zero-friction cycling.
+ * Familiar Memory Album (Phase 7) — WCAG-AAA high-contrast carousel.
+ * Stark white text on deep charcoal, ≥64×64 dp touch targets with pressed
+ * scaling feedback, and large-format typography for low-vision users.
  */
 export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProps) {
   const [items, setItems] = useState<MemoryItemResponse[] | null>(null);
@@ -68,7 +68,8 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
 
   return (
     <View style={styles.root}>
-      <View style={styles.card}>
+            <View style={styles.card}>
+        <Text style={styles.subtitle}>Memory Album</Text>
         <Text style={styles.title}>{current.title}</Text>
         <Image
           source={{ uri: current.image_url }}
@@ -84,13 +85,18 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
       </View>
 
       <View style={styles.controls}>
-        <Pressable
+                <Pressable
           accessibilityRole="button"
           accessibilityLabel="Previous memory"
           accessibilityState={{ disabled: index === 0 }}
           disabled={index === 0}
+          hitSlop={8}
           onPress={goToPrevious}
-          style={[styles.navButton, index === 0 && styles.navButtonDisabled]}
+          style={({ pressed }) => [
+            styles.navButton,
+            index === 0 ? styles.navButtonDisabled : null,
+            pressed && index !== 0 ? styles.pressed : null,
+          ]}
         >
           <Text style={styles.navButtonText}>‹</Text>
         </Pressable>
@@ -98,8 +104,9 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Play audio narration"
+          hitSlop={8}
           onPress={handlePlayAudio}
-          style={styles.playButton}
+          style={({ pressed }) => [styles.playButton, pressed ? styles.pressed : null]}
         >
           <Text style={styles.playButtonText}>▶ Play Audio</Text>
         </Pressable>
@@ -109,8 +116,13 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
           accessibilityLabel="Next memory"
           accessibilityState={{ disabled: index === items.length - 1 }}
           disabled={index === items.length - 1}
+          hitSlop={8}
           onPress={goToNext}
-          style={styles.navButton}
+          style={({ pressed }) => [
+            styles.navButton,
+            index === items.length - 1 ? styles.navButtonDisabled : null,
+            pressed && index !== items.length - 1 ? styles.pressed : null,
+          ]}
         >
           <Text style={styles.navButtonText}>›</Text>
         </Pressable>
@@ -126,7 +138,7 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#2C3E50',
+    backgroundColor: '#121212',
     padding: 24,
     justifyContent: 'center',
   },
@@ -136,37 +148,45 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     color: '#FFFFFF',
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#1F2A36',
+    backgroundColor: '#1E293B',
     borderRadius: 24,
-    borderWidth: 3,
+    padding: 24,
+    borderWidth: 2,
     borderColor: '#FFFFFF',
-    padding: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    elevation: 6, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '800',
+  subtitle: {
+    color: '#94A3B8',
+    fontSize: 20,
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   image: {
     width: '100%',
     height: 300,
     borderRadius: 16,
-    backgroundColor: '#3A4A5A',
+    backgroundColor: '#334155',
+  },
+  title: {
+    color: '#FFFFFF',
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
   },
   tag: {
-    color: '#F5B971',
-    fontSize: 22,
+    color: '#E2E8F0',
+    fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
@@ -185,11 +205,13 @@ const styles = StyleSheet.create({
     marginTop: 24,
     gap: 12,
   },
-  navButton: {
+    navButton: {
     minWidth: 64,
     minHeight: 64,
     borderRadius: 32,
-    backgroundColor: '#E67E22',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    backgroundColor: '#334155',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -205,25 +227,30 @@ const styles = StyleSheet.create({
   playButton: {
     flex: 1,
     minHeight: 64,
-    borderRadius: 32,
+    minWidth: 64,
+    borderRadius: 24,
     borderWidth: 2,
     borderColor: '#FFFFFF',
-    backgroundColor: '#3A4A5A',
+    backgroundColor: '#0D9488',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
   playButtonText: {
     color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  pressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.94 }],
   },
   counter: {
-    color: '#FFFFFF',
+    color: '#E2E8F0',
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
     marginTop: 12,
-    opacity: 0.8,
+    opacity: 0.9,
   },
 });
