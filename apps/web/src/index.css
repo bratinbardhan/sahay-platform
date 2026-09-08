@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-50 text-slate-800 antialiased overflow-x-hidden;
+  @apply bg-cream text-charcoal antialiased;
 }
 
 /* ─── Unified auth views (Phase 1) ──────────────────────────────────────── */
@@ -279,50 +279,10 @@ body {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
 
-@keyframes slide-in-from-bottom-4 {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Smooth entry animation: fade + <1rem rise from below, 500ms ease-out. */
-.animate-in {
-  animation:
-    fade-in 500ms ease-out both,
-    slide-in-from-bottom-4 500ms ease-out both;
-}
-
-@keyframes slide-in-from-top-3 {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slide-in-from-top-3 {
-  animation: slide-in-from-top-3 700ms ease-out both;
-}
-
-/* Global keyboard focus ring (WCAG 2.4.7 Focus Visible). */
-:focus-visible {
-  outline: 2px solid #0f766e;
-  outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-fade-up,
-  .animate-soft-pulse,
-  .animate-in {
+  .animate-soft-pulse {
     animation: none;
   }
 }

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { ChevronRight } from 'lucide-react';
 
 interface ActionButtonProps {
   label: string;
@@ -9,7 +8,6 @@ interface ActionButtonProps {
   className?: string;
   disabled?: boolean;
   type?: 'button' | 'submit';
-  showChevron?: boolean;
 }
 
 export function ActionButton({
@@ -20,22 +18,18 @@ export function ActionButton({
   className = '',
   disabled = false,
   type = 'button',
-  showChevron = true,
 }: ActionButtonProps) {
   const base =
-    'group flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all duration-300 ease-out min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]';
+    'flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed';
   const styles =
     variant === 'primary'
-      ? 'bg-teal-600 text-white hover:bg-teal-700 border-2 border-transparent'
-      : 'bg-white/90 text-slate-800 border-2 border-slate-200/60 hover:bg-slate-100 backdrop-blur-md';
+      ? 'bg-[#E67E22] text-white hover:bg-[#D35400] border-2 border-[#2C3E50] disabled:hover:bg-[#E67E22]'
+      : 'bg-[#F8F6F0] text-[#2C3E50] hover:bg-[#edeae3] border-2 border-[#2C3E50]';
 
   return (
     <button type={type} className={`${base} ${styles} ${className}`} onClick={onClick} disabled={disabled}>
       {icon}
       {label}
-      {showChevron && (
-        <ChevronRight size={16} className="ml-1 transition-transform duration-300 group-hover:translate-x-1" />
-      )}
     </button>
   );
 }

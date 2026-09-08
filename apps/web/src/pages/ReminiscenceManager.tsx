@@ -59,25 +59,25 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
   }, [token, patient]);
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 md:p-8 overflow-x-hidden animate-in">
+    <div className="min-h-screen bg-[#F8F6F0] p-8">
       <div className="flex items-center mb-6">
         <button
           type="button"
-          className="mr-4 p-2 rounded-lg bg-white border-2 border-slate-300 text-slate-800 hover:bg-slate-200"
+          className="mr-4 p-2 rounded-lg bg-[#FFFCF6] border-2 border-[#2C3E50] text-[#2C3E50] hover:bg-[#edeae3]"
           onClick={() => onNavigate('dashboard')}
           aria-label="Back to dashboard"
         >
           <ChevronLeft size={20} />
         </button>
-        <h1 className="text-3xl font-bold text-slate-800">Memory Album</h1>
+        <h1 className="text-3xl font-bold text-[#2C3E50]">Memory Album</h1>
         {isDemo && (
-          <span className="ml-auto rounded-full border-2 border-teal-600 bg-white px-3 py-1 text-xs font-semibold text-teal-600">
+          <span className="ml-auto rounded-full border-2 border-[#E67E22] bg-[#FFFCF6] px-3 py-1 text-xs font-semibold text-[#E67E22]">
             Demo data — live vault unavailable
           </span>
         )}
       </div>
 
-      <p className="text-slate-800/70 mb-6">
+      <p className="text-[#2C3E50]/70 mb-6">
         Curated reminders of happy moments — shared with the patient's mobile album
         for gentle reminiscence therapy sessions.
       </p>
@@ -88,29 +88,29 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16 text-slate-800/70">
+        <div className="flex items-center justify-center py-16 text-[#2C3E50]/70">
           Loading memories…
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {memories.map((memory) => (
             <Card key={memory.id} className="overflow-hidden">
               <img
                 src={memory.image_url}
                 alt={memory.title}
-                className="w-full h-48 object-cover rounded-t-2xl -mt-6 -mx-6 mb-3 border-b-2 border-slate-300"
+                className="w-full h-48 object-cover rounded-t-2xl -mt-6 -mx-6 mb-3 border-b-2 border-[#2C3E50]"
               />
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">{memory.title}</h3>
-                  <p className="text-sm font-semibold text-teal-600 mt-1">
+                  <h3 className="text-xl font-bold text-[#2C3E50]">{memory.title}</h3>
+                  <p className="text-sm font-semibold text-[#E67E22] mt-1">
                     {memory.relationship_tag}
-                    {memory.era_or_date ? <span className="text-slate-800/60"> · {memory.era_or_date}</span> : null}
+                    {memory.era_or_date ? <span className="text-[#2C3E50]/60"> · {memory.era_or_date}</span> : null}
                   </p>
                 </div>
                 {memory.audio_narration_url ? (
                   <span
-                    className="p-2 rounded-full bg-white border-2 border-slate-300 text-teal-600 shrink-0"
+                    className="p-2 rounded-full bg-[#FFFCF6] border-2 border-[#2C3E50] text-[#E67E22] shrink-0"
                     aria-label="Audio narration available"
                     title="Audio narration available"
                   >
@@ -118,7 +118,7 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
                   </span>
                 ) : null}
               </div>
-              <p className="text-sm text-slate-800/70 mt-3">{memory.caption_text}</p>
+              <p className="text-sm text-[#2C3E50]/70 mt-3">{memory.caption_text}</p>
             </Card>
           ))}
         </div>
