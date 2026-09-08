@@ -390,14 +390,14 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       <Card title={`Geofence Zones (${zones.length})`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {zones.map((zone) => (
-            <div key={zone.id} className="p-4 bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg">
+            <div key={zone.id} className="p-4 bg-white border border-slate-200 rounded-xl transition-shadow duration-150 hover:shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div className="font-bold text-slate-800">{zone.zone_name}</div>
                 <button
                   type="button"
                   onClick={() => toggleZoneActive(zone.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-slate-300 transition-colors ${
-                    zone.is_active ? 'bg-teal-600 text-white' : 'bg-slate-50 text-slate-800'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-200 transition-colors ${
+                    zone.is_active ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-600'
                   }`}
                 >
                   {zone.is_active ? 'ACTIVE' : 'OFF'}

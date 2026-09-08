@@ -97,11 +97,11 @@ function AppShell({
   const closeDrawer = () => setDrawerOpen(false);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-50 via-teal-50/20 to-slate-100 flex">
+    <div className="min-h-screen bg-slate-100 flex">
       {/* Mobile backdrop — only renders while the drawer is open. */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           onClick={closeDrawer}
           aria-hidden="true"
         />
@@ -109,7 +109,7 @@ function AppShell({
 
       {/* Sidebar rail (desktop: static; mobile: off-canvas drawer). */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 shadow-lg transform transition-transform duration-300 ease-out -translate-x-full lg:translate-x-0 lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200/80 shadow-sm transform transition-transform duration-200 ease-out -translate-x-full lg:translate-x-0 lg:static ${
           drawerOpen ? 'translate-x-0' : ''
         }`}
         aria-label="Primary navigation"
@@ -125,8 +125,7 @@ function AppShell({
 
         <div className="flex flex-col gap-1 px-4 pt-16 pb-6">
           <div className="flex items-center gap-2 mb-10">
-            <span className="text-2xl leading-none text-teal-600">✦</span>
-            <span className="font-bold text-xl text-slate-800">Sahāy Portal</span>
+            <span className="font-semibold text-lg text-slate-900 tracking-tight">Sahāy</span>
           </div>
 
           <nav className="flex flex-col gap-1">
@@ -141,10 +140,10 @@ function AppShell({
                     closeDrawer();
                   }}
                   aria-current={active ? 'page' : undefined}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${
                     active
-                      ? 'bg-teal-50 text-teal-800 shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                      ? 'bg-slate-100 text-slate-900'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
                   {item.icon}
@@ -157,7 +156,7 @@ function AppShell({
           <button
             type="button"
             onClick={onLogout}
-            className="mt-6 flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-700 hover:bg-red-50 transition-colors"
+            className="mt-6 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
           >
             <LogOut size={18} />
             Sign out
@@ -168,7 +167,7 @@ function AppShell({
       {/* Main content — occupies the rail column on desktop. */}
       <div className="flex-1 min-w-0 lg:pl-72">
         {/* Mobile top header with the hamburger menu button. */}
-        <header className="sticky top-0 z-30 flex lg:hidden items-center justify-between gap-2 bg-white border-b border-slate-200 px-3 py-2.5 shadow-sm">
+        <header className="sticky top-0 z-30 flex lg:hidden items-center justify-between gap-2 bg-white border-b border-slate-200/80 px-3 py-2.5">
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -176,11 +175,11 @@ function AppShell({
               aria-label="Open navigation menu"
               aria-haspopup="dialog"
               aria-expanded={drawerOpen}
-              className="p-2.5 rounded-lg text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
+              className="p-2.5 rounded-lg text-slate-800 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-colors"
             >
               <Menu size={24} />
             </button>
-            <span className="font-bold text-slate-800">Sahāy</span>
+            <span className="font-semibold text-slate-900">Sahāy</span>
           </div>
           <span className="text-xs text-slate-500">{user.full_name}</span>
         </header>
@@ -275,8 +274,8 @@ function App() {
 
   if (!sessionReady) {
     return (
-      <div className="flex min-h-screen bg-[#F8F6F0] items-center justify-center">
-        <p className="text-[#2C3E50] text-lg">Waking up Sahāy…</p>
+      <div className="flex min-h-screen bg-slate-100 items-center justify-center">
+        <p className="text-slate-600 text-lg">Waking up Sahāy…</p>
       </div>
     );
   }

@@ -46,7 +46,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 md:p-8 overflow-x-hidden animate-in">
+    <div className="min-h-screen bg-slate-100 p-4 sm:p-6 md:p-8 overflow-x-hidden">
       <div className="flex items-center mb-6">
         <button
           type="button"
@@ -142,7 +142,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
       <Card title={`Uploaded Media (${mediaList.length})`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mediaList.map((m) => (
-            <div key={m.id} className="text-center p-4 bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg">
+            <div key={m.id} className="text-center p-4 bg-white border border-slate-200 rounded-xl transition-shadow duration-150 hover:shadow-sm">
               {m.media_type === 'PHOTO' ? (
                 <img src={m.file_url} alt={m.label_text} className="w-full h-32 object-cover rounded-lg mb-2 border-2 border-slate-300" />
               ) : (

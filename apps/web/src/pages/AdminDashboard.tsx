@@ -350,25 +350,25 @@ function MetricCard({
   pulse?: boolean;
   subtitle?: string;
 }) {
-  const accentClass = accent ? 'text-teal-600' : 'text-slate-800';
+  const accentClass = accent ? 'text-emerald-700' : 'text-slate-400';
   return (
-    <div className="bg-white border border-transparent rounded-2xl p-4 sm:p-5 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:border-teal-200">
+    <div className="bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-sm transition-shadow duration-150 hover:shadow">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-800/70">
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
           {label}
         </span>
         {icon ? <span className={accentClass}>{icon}</span> : null}
       </div>
-      <div className={`text-2xl sm:text-3xl font-extrabold ${accentClass} flex items-center gap-2`}>
+      <div className={`text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2`}>
         {pulse ? (
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-600 opacity-60" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-600" />
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
           </span>
         ) : null}
         {value}
       </div>
-      {subtitle ? <div className="text-xs text-slate-800/60 mt-1">{subtitle}</div> : null}
+      {subtitle ? <div className="text-xs text-slate-400 mt-1">{subtitle}</div> : null}
     </div>
   );
 }
@@ -376,8 +376,8 @@ function MetricCard({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div>
-      <div className="text-xl sm:text-2xl font-bold text-teal-600">{value}</div>
-      <div className="text-xs text-slate-800/70 mt-1">{label}</div>
+      <div className="text-xl sm:text-2xl font-bold text-slate-900">{value}</div>
+      <div className="text-xs text-slate-500 mt-1">{label}</div>
     </div>
   );
 }

@@ -146,12 +146,12 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
   const recentSessions = sessions.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 md:p-8 overflow-x-hidden animate-in">
+    <div className="min-h-screen bg-slate-100 overflow-x-hidden">
       {/* Navigation bar with account role + tier status */}
-      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-slate-300 bg-white px-4 py-3 rounded-xl shadow-sm">
+      <nav className="flex flex-wrap items-center justify-between gap-3 bg-white border-b border-slate-200/80 px-6 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-2xl leading-none text-teal-600">✦</span>
-          <span className="font-bold text-xl text-slate-800">Sahāy Caregiver Portal</span>
+          <span className="font-semibold text-slate-900">Sahāy</span>
+          <span className="text-xs text-slate-400 hidden sm:inline">Caregiver Portal</span>
         </div>
         <div className="flex items-center gap-3">
           <SyncStatusIndicator lastSyncTimestamp={new Date()} />
@@ -164,7 +164,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
               onClick={() => setTierModalOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={tierModalOpen}
-              className="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer hover:bg-slate-300 transition-colors"
+              className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-medium px-2.5 py-1 rounded-full transition-colors"
             >
               Free Tier
             </button>
@@ -172,10 +172,10 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-200 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
-            <LogOut size={16} />
-            Sign out
+            <LogOut size={14} />
+            <span className="hidden sm:inline">Sign out</span>
           </button>
         </div>
       </nav>
@@ -183,32 +183,32 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       {/* Header */}
       <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-800">Patient Overview</h1>
-          <p className="text-slate-800/80 text-base sm:text-lg mt-1">Patient: {patient.name}</p>
+          <h1 className="text-2xl font-semibold text-slate-900">Patient Overview</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Patient: {patient.name}</p>
         </div>
         {isDemo && (
-          <span className="rounded-full border-2 border-teal-600 bg-white px-3 py-1 text-xs font-semibold text-teal-600">
+          <span className="rounded-md border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-500">
             Demo data — live telemetry unavailable
           </span>
         )}
       </div>
 
       {/* Localized greeting header */}
-      <div className="mb-6 animate-in fade-in slide-in-from-top-3 duration-700">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800">
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-slate-900">
           <span className="mr-2" aria-hidden="true">{greeting.icon}</span>
           {greeting.primary}
-        </h1>
-        <p className="text-sm text-slate-600 mt-1">{greeting.subtitle}</p>
-        <p className="text-xs text-teal-600 font-medium mt-0.5">{greeting.indic}</p>
+        </h2>
+        <p className="text-sm text-slate-500 mt-0.5">{greeting.subtitle}</p>
+        <p className="text-xs text-slate-400 font-medium mt-0.5">{greeting.indic}</p>
       </div>
 
       {/* Vital Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 animate-fade-up">
-        <StatBox label="GDS Stage" value={stage} icon={<Brain size={26} />} accent subtitle={stageLabel} />
-        <StatBox label="Demitokens" value={patient.demitoken_balance} icon={<Coins size={26} />} accent subtitle="Balance" />
-        <StatBox label="Active Streak" value={patient.streak_days} icon={<Flame size={26} />} accent subtitle="Days" />
-        <StatBox label="Accuracy" value={`${Math.round(accuracyRate)}%`} icon={<Target size={26} />} subtitle="Last 10 sessions" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <StatBox label="GDS Stage" value={stage} icon={<Brain size={24} />} accent subtitle={stageLabel} />
+        <StatBox label="Demitokens" value={patient.demitoken_balance} icon={<Coins size={24} />} accent subtitle="Balance" />
+        <StatBox label="Active Streak" value={patient.streak_days} icon={<Flame size={24} />} accent subtitle="Days" />
+        <StatBox label="Accuracy" value={`${Math.round(accuracyRate)}%`} icon={<Target size={24} />} subtitle="Last 10 sessions" />
       </div>
 
 {/* Cognitive Engagement — interactive Recharts bar chart */}
@@ -228,7 +228,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       </Card>
 
       {/* Cognitive Trend + Daily Activity */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 animate-fade-up">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <Card title="Cognitive Trend" className="lg:col-span-2">
           <CognitiveTrendChart points={ddaHistory?.points ?? []} />
         </Card>
@@ -244,7 +244,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
                     {new Date(session.timestamp).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="shrink-0 text-xs font-bold text-teal-600">
+                <span className="shrink-0 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
                   {Math.round(session.accuracy_pct)}%
                 </span>
               </li>
@@ -327,11 +327,11 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-up">
-        <ActionButton label="Analytics Dashboard" icon={<Activity size={20} />} onClick={() => onNavigate('analytics')} />
-        <ActionButton label="Media Manager" icon={<Camera size={20} />} onClick={() => onNavigate('media')} />
-        <ActionButton label="Memory Album" icon={<Images size={20} />} onClick={() => onNavigate('reminiscence')} />
-        <ActionButton label="Geofence Map" icon={<MapPin size={20} />} onClick={() => onNavigate('geofence')} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ActionButton label="Analytics Dashboard" icon={<Activity size={18} />} onClick={() => onNavigate('analytics')} />
+        <ActionButton label="Media Manager" icon={<Camera size={18} />} onClick={() => onNavigate('media')} />
+        <ActionButton label="Memory Album" icon={<Images size={18} />} onClick={() => onNavigate('reminiscence')} />
+        <ActionButton label="Geofence Map" icon={<MapPin size={18} />} onClick={() => onNavigate('geofence')} />
       </div>
 
       {tierModalOpen && <SubscriptionModal onClose={() => setTierModalOpen(false)} />}

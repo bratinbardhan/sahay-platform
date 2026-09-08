@@ -10,13 +10,13 @@ export function TierBadge({ tier, className = '' }: TierBadgeProps) {
   const premium = tier === 'PREMIUM';
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold tracking-wide ${
+      className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
         premium
-          ? 'bg-amber-100 border-amber-500 text-amber-800'
-          : 'bg-slate-200 border-slate-300 text-slate-700'
+          ? 'bg-amber-50 border-amber-200 text-amber-700'
+          : 'bg-slate-100 border-slate-200 text-slate-700'
       } ${className}`}
     >
-      {premium ? '✦ Premium' : 'Free'}
+      {premium ? 'Premium' : 'Free'}
     </span>
   );
 }
