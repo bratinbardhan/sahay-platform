@@ -1,5 +1,6 @@
 {
-  "python.defaultInterpreterPath": "services/api/.venv/Scripts/python.exe",
-  "python.analysis.extraPaths": ["services/api"],
-  "python.analysis.typeCheckingMode": "basic"
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "python.defaultInterpreterPath": "${workspaceFolder}/services/api/.venv/Scripts/python.exe"
 }
