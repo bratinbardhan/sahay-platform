@@ -297,6 +297,21 @@ body {
     slide-in-from-bottom-4 500ms ease-out both;
 }
 
+@keyframes slide-in-from-top-3 {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-from-top-3 {
+  animation: slide-in-from-top-3 700ms ease-out both;
+}
+
 /* Global keyboard focus ring (WCAG 2.4.7 Focus Visible). */
 :focus-visible {
   outline: 2px solid #0f766e;

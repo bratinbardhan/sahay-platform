@@ -8,7 +8,6 @@ import { TierBadge } from '@/components/TierBadge';
 import { SubscriptionModal } from '@/components/SubscriptionModal';
 import { SyncStatusIndicator } from '../components/SyncStatusIndicator';
 
-
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
@@ -17,6 +16,9 @@ import { sendHeartbeat } from '@/lib/adminApi';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
+import { CognitiveEngagementChart } from './charts/CognitiveEngagementChart';
+import { MoodStabilityChart } from './charts/MoodStabilityChart';
+import { useLocalizedGreeting } from '@/hooks';
 
 interface DashboardProps {
   user: User;
@@ -25,21 +27,30 @@ interface DashboardProps {
   onLogout: () => void;
 }
 
-/** 7-day Cognitive Engagement bar-chart data (plain utility strings so Tailwind emits `h-[NN%]`. */
-const ENGAGEMENT_DAYS: { day: string; height: string; value: number }[] = [
-  { day: 'Mon', height: 'h-[40%]', value: 40 },
-  { day: 'Tue', height: 'h-[55%]', value: 55 },
-  { day: 'Wed', height: 'h-[70%]', value: 70 },
-  { day: 'Thu', height: 'h-[45%]', value: 45 },
-  { day: 'Fri', height: 'h-[90%]', value: 90 },
-  { day: 'Sat', height: 'h-[60%]', value: 60 },
-  { day: 'Sun', height: 'h-[80%]', value: 80 },
+/** 7-day Cognitive Engagement data for Recharts. */
+const ENGAGEMENT_DATA: { day: string; minutes: number; accuracy: number }[] = [
+  { day: 'Mon', minutes: 25, accuracy: 72 },
+  { day: 'Tue', minutes: 32, accuracy: 78 },
+  { day: 'Wed', minutes: 40, accuracy: 85 },
+  { day: 'Thu', minutes: 28, accuracy: 74 },
+  { day: 'Fri', minutes: 45, accuracy: 90 },
+  { day: 'Sat', minutes: 35, accuracy: 82 },
+  { day: 'Sun', minutes: 38, accuracy: 88 },
+];
+
+/** 7-day Mood & Stability trend data for Recharts. */
+const MOOD_STABILITY_DATA: { day: string; stability: number; mood: number }[] = [
+  { day: 'Mon', stability: 68, mood: 62 },
+  { day: 'Tue', stability: 72, mood: 70 },
+  { day: 'Wed', stability: 78, mood: 75 },
+  { day: 'Thu', stability: 74, mood: 68 },
+  { day: 'Fri', stability: 85, mood: 82 },
+  { day: 'Sat', stability: 80, mood: 78 },
+  { day: 'Sun', stability: 88, mood: 85 },
 ];
 
 export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps) {
-
-
-    const [activeAlert, setActiveAlert] = useState<any | null>(null);
+  const [activeAlert, setActiveAlert] = useState<any | null>(null);
   const [tierModalOpen, setTierModalOpen] = useState(false);
 
   // WebSocket for emergency alerts
@@ -79,6 +90,8 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
   const { sessions, isDemo: sessionsIsDemo } = useGameplaySessions(token, patient?.id ?? null);
 
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
+  const patientName = patient?.name;
+  const greeting = useLocalizedGreeting(user.full_name, patientName);
 
   // Telemetry: heartbeat on mount + every 60s so the admin console sees this
   // caretaker as "online". Failures are silent (offline / server unreachable).
@@ -180,6 +193,16 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         )}
       </div>
 
+      {/* Localized greeting header */}
+      <div className="mb-6 animate-in fade-in slide-in-from-top-3 duration-700">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800">
+          <span className="mr-2" aria-hidden="true">{greeting.icon}</span>
+          {greeting.primary}
+        </h1>
+        <p className="text-sm text-slate-600 mt-1">{greeting.subtitle}</p>
+        <p className="text-xs text-teal-600 font-medium mt-0.5">{greeting.indic}</p>
+      </div>
+
       {/* Vital Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 animate-fade-up">
         <StatBox label="GDS Stage" value={stage} icon={<Brain size={26} />} accent subtitle={stageLabel} />
@@ -188,21 +211,19 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         <StatBox label="Accuracy" value={`${Math.round(accuracyRate)}%`} icon={<Target size={26} />} subtitle="Last 10 sessions" />
       </div>
 
-            {/* Cognitive Engagement — CSS-only 7-day bar chart */}
+{/* Cognitive Engagement — interactive Recharts bar chart */}
       <Card title="Cognitive Engagement — Last 7 Days" className="mb-6">
-        <div className="flex items-end gap-3 h-44">
-          {ENGAGEMENT_DAYS.map((day) => (
-            <div key={day.day} className="flex-1 flex flex-col items-center">
-              <div
-                className={`w-full ${day.height} bg-teal-500 rounded-t-md transition-all duration-300 hover:bg-teal-600`}
-                title={`${day.value}% engagement — ${day.day}`}
-              />
-              <span className="mt-1 text-xs font-medium text-slate-500">{day.day}</span>
-            </div>
-          ))}
-        </div>
+        <CognitiveEngagementChart data={ENGAGEMENT_DATA} />
         <p className="text-sm text-slate-500 mt-3">
-          Engagement index over the last 7 days — simulated clinical telemetry.
+          Session time (mins) and accuracy (%) over the last 7 days.
+        </p>
+      </Card>
+
+      {/* Mood & Stability Trend — interactive Recharts area chart */}
+      <Card title="Mood & Stability Trend" className="mb-6">
+        <MoodStabilityChart data={MOOD_STABILITY_DATA} />
+        <p className="text-sm text-slate-500 mt-3">
+          Stability score and mood index — higher is better.
         </p>
       </Card>
 

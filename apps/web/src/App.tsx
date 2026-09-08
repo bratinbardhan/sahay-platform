@@ -97,7 +97,7 @@ function AppShell({
   const closeDrawer = () => setDrawerOpen(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-50 via-teal-50/20 to-slate-100 flex">
       {/* Mobile backdrop — only renders while the drawer is open. */}
       {drawerOpen && (
         <div
