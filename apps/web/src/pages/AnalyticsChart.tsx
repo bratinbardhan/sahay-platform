@@ -40,7 +40,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
 
   return (
-    <div className="min-h-screen bg-slate-100 p-4 sm:p-6 md:p-8 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 md:p-8 overflow-x-hidden animate-in">
       <div className="flex items-center mb-6">
         <button
           type="button"
@@ -52,7 +52,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         </button>
         <h1 className="text-3xl font-bold text-slate-800">Cognitive Health Analytics</h1>
         {isDemo && (
-          <span className="ml-auto rounded-md border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-500">
+          <span className="ml-auto rounded-full border-2 border-teal-600 bg-white px-3 py-1 text-xs font-semibold text-teal-600">
             Demo data — live telemetry unavailable
           </span>
         )}
@@ -169,7 +169,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                     </td>
                     <td className="p-2 text-slate-800">{log.game_module_id.replace(/_/g, ' ')}</td>
                     <td className="p-2 text-slate-800">{stageLabel}</td>
-                    <td className="text-right p-2 text-emerald-700 font-medium">
+                    <td className="text-right p-2 text-teal-600 font-medium">
                       {Math.round(log.avg_latency_ms)}ms
                     </td>
                     <td className="text-right p-2 text-slate-800">

@@ -13,7 +13,7 @@ interface MoodStabilityChartProps {
 }
 
 /**
- * Smooth Mood & Stability trend line chart with subtle area fill
+ * Smooth Mood & Stability trend line chart with SVG gradient fill
  * below the stroke and an expanding ActiveDot on hover.
  */
 export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
@@ -22,27 +22,27 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
         <defs>
           <linearGradient id="stabilityGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0284c7" stopOpacity={0.12} />
-            <stop offset="100%" stopColor="#0284c7" stopOpacity={0.00} />
+            <stop offset="0%" stopColor="#0d9488" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#0d9488" stopOpacity={0.02} />
           </linearGradient>
           <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.08} />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.00} />
+            <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.25} />
+            <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.02} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-        <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+        <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} domain={[0, 100]} />
         <Tooltip
           contentStyle={{
-            background: '#0f172a',
-            border: 0,
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            padding: '8px 12px',
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
+            padding: '10px 14px',
           }}
-          labelStyle={{ fontWeight: 600, color: '#fff', marginBottom: 4, fontSize: 12 }}
-          itemStyle={{ color: '#e2e8f0', fontSize: 11 }}
+          labelStyle={{ fontWeight: 700, color: '#0f172a', marginBottom: 4 }}
           formatter={(value: number, name: string) => {
             const label = name === 'stability' ? 'Stability' : 'Mood';
             return [`${value}%`, label];
@@ -51,10 +51,10 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
         <Area
           type="monotone"
           dataKey="stability"
-          stroke="#0284c7"
-          strokeWidth={2}
+          stroke="#0d9488"
+          strokeWidth={2.5}
           fill="url(#stabilityGradient)"
-          activeDot={{ r: 5, stroke: '#0284c7', strokeWidth: 2, fill: '#fff' }}
+          activeDot={{ r: 6, stroke: '#0d9488', strokeWidth: 2, fill: '#fff' }}
         />
         <Area
           type="monotone"
@@ -62,7 +62,7 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           stroke="#f59e0b"
           strokeWidth={2}
           fill="url(#moodGradient)"
-          activeDot={{ r: 4, stroke: '#f59e0b', strokeWidth: 2, fill: '#fff' }}
+          activeDot={{ r: 5, stroke: '#f59e0b', strokeWidth: 2, fill: '#fff' }}
         />
       </AreaChart>
     </ResponsiveContainer>
