@@ -27,34 +27,28 @@ const latencyScale = scaleLinear<string>()
   .range([SAHAY_CARETAKER.viz[0], SAHAY_CARETAKER.viz[2], SAHAY_CARETAKER.viz[5]])
   .clamp(true);
 
-function isHeatmapCell(value: unknown): value is HeatmapCell {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-  const record = value as Record<string, unknown>;
-  return (
-    typeof record.dayLabel === 'string' &&
-    typeof record.hour === 'number' &&
-    typeof record.density === 'number' &&
-    typeof record.latencyMs === 'number'
-  );
-}
+function cellFill(cell: HeatmapCell): string {
   if (cell.density < 0.08) {
     return SAHAY_CARETAKER.surfaceSunken;
   }
   return latencyScale(cell.latencyMs);
 }
 
-interface HeatShapeProps {
-  cx?: number;
-  cy?: number;
-  payload?: HeatmapCell;
-}
-
-function HeatShape({ cx, cy, payload }: HeatShapeProps): ReactElement | null {
-  if (cx === undefined || cy === undefined || !payload) {
-    return null;
+// Typing props as unknown matches Recharts' ScatterCustomizedShape '(props: unknown) => Element'
+function HeatShape(props: unknown): ReactElement {
+  if (typeof props !== 'object' || props === null) {
+    return <g />;
   }
+
+  const record = props as Record<string, unknown>;
+  const cx = typeof record.cx === 'number' ? record.cx : undefined;
+  const cy = typeof record.cy === 'number' ? record.cy : undefined;
+  const payload = record.payload as HeatmapCell | undefined;
+
+  if (cx === undefined || cy === undefined || !payload) {
+    return <g />;
+  }
+
   const size = 16;
   return (
     <rect
@@ -145,3 +139,5 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
     </ChartShell>
   );
 }
+
+export default ActivityHeatmap;
