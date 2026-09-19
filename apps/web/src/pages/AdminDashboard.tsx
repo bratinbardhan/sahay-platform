@@ -26,6 +26,8 @@ import {
   updateUserTier,
 } from '@/lib/adminApi';
 
+import { GDS_STAGE_COLOR_RAMP } from '@/lib/gdsUtils';
+
 import { StageBarChart } from './charts/StageBarChart';
 import { GameActivityChart } from './charts/GameActivityChart';
 
@@ -35,7 +37,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-const STAGE_COLORS = ['#27AE60', '#2ECC71', '#5DA600', '#E67E22', '#E67E22', '#E67E22', '#E67E22'];
+const STAGE_COLORS = GDS_STAGE_COLOR_RAMP;
 
 function formatDuration(seconds: number): string {
   if (seconds < 60) {
@@ -122,8 +124,8 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
 
   if (loading && !overview && !usersPage) {
     return (
-      <div className="flex min-h-screen bg-[#F8F6F0] items-center justify-center">
-        <p className="text-[#2C3E50] text-lg">Loading admin console…</p>
+      <div className="flex min-h-screen bg-sahay-bg items-center justify-center">
+        <p className="text-sahay-ink text-lg">Loading admin console…</p>
       </div>
     );
   }
@@ -132,20 +134,20 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
   const totalUsers = safeOverview?.total_users ?? usersPage?.total ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] p-4 sm:p-6 md:p-10 animate-fade-in">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-10 animate-fade-in">
       {/* Navigation bar */}
-      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#2C3E50] bg-[#FFFCF6] px-4 py-3 rounded-xl shadow-sm">
-        <div className="flex items-center gap-2 text-[#2C3E50]">
-          <ShieldCheck size={22} className="text-[#E67E22]" />
+      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-sahay-ink bg-sahay-surface px-4 py-3 rounded-xl shadow-sm">
+        <div className="flex items-center gap-2 text-sahay-ink">
+          <ShieldCheck size={22} className="text-sahay-accent" />
           <span className="font-bold text-lg">Sahāy Admin</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline text-sm text-[#2C3E50]/80">{user.full_name}</span>
+          <span className="hidden sm:inline text-sm text-sahay-ink/80">{user.full_name}</span>
           <TierBadge tier={user.tier} />
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 rounded-xl border-2 border-[#2C3E50] bg-[#F8F6F0] px-3 py-1.5 text-sm font-semibold text-[#2C3E50] hover:bg-[#edeae3] transition-colors"
+            className="flex items-center gap-2 rounded-xl border-2 border-sahay-ink bg-sahay-bg px-3 py-1.5 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken transition-colors"
           >
             <LogOut size={16} />
             Sign out
@@ -154,14 +156,14 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
       </nav>
 
       <header className="mt-6 mb-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-[#2C3E50]">Admin Console</h1>
-        <p className="text-[#2C3E50]/80 text-base mt-1">
+        <h1 className="text-3xl sm:text-4xl font-bold text-sahay-ink">Admin Console</h1>
+        <p className="text-sahay-ink/80 text-base mt-1">
           Live platform telemetry, user management, and cognitive analytics.
         </p>
       </header>
 
       {error ? (
-        <div className="mb-6 rounded-xl border-2 border-[#E67E22] bg-[#FFF6EA] px-4 py-3 text-sm text-[#b3452c] flex items-center justify-between gap-3">
+        <div className="mb-6 rounded-xl border-2 border-sahay-accent bg-sahay-accent-soft px-4 py-3 text-sm text-sahay-alert-ink flex items-center justify-between gap-3">
           <span>{error}</span>
           <button
             type="button"
@@ -211,22 +213,22 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
       {/* ─── Charts + Usage Summary ────────────────────────────────── */}
       {safeOverview ? (
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 animate-fade-up">
-          <div className="bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div className="flex items-center gap-2 text-[#2C3E50] mb-4">
+          <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-2 text-sahay-ink mb-4">
               <BarChart3 size={22} />
               <h2 className="text-lg font-bold">Patient Stage Distribution</h2>
             </div>
             <StageBarChart distribution={safeOverview.stage_distribution} colors={STAGE_COLORS} />
           </div>
-          <div className="bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-            <div className="flex items-center gap-2 text-[#2C3E50] mb-4">
+          <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
+            <div className="flex items-center gap-2 text-sahay-ink mb-4">
               <Activity size={22} />
               <h2 className="text-lg font-bold">Game Activity Breakdown</h2>
             </div>
             <GameActivityChart data={safeOverview.game_activity_breakdown} />
           </div>
-          <div className="bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow lg:col-span-2">
-            <div className="flex items-center gap-2 text-[#2C3E50] mb-4">
+          <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow lg:col-span-2">
+            <div className="flex items-center gap-2 text-sahay-ink mb-4">
               <RefreshCw size={22} />
               <h2 className="text-lg font-bold">Usage Summary</h2>
             </div>
@@ -244,16 +246,16 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
       ) : null}
 
       {/* ─── User Management Table ──────────────────────────────────── */}
-      <section className="bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-2xl p-4 sm:p-6 shadow-md animate-fade-up">
+      <section className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-6 shadow-md animate-fade-up">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-[#2C3E50]">
+          <div className="flex items-center gap-2 text-sahay-ink">
             <Users size={22} />
             <h2 className="text-lg font-bold">User Management</h2>
           </div>
           <button
             type="button"
             onClick={() => void loadUsers(page)}
-            className="p-2 rounded-lg border-2 border-[#2C3E50] text-[#2C3E50] hover:bg-[#edeae3] transition-colors"
+            className="p-2 rounded-lg border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken transition-colors"
             aria-label="Refresh users"
           >
             <RefreshCw size={18} />
@@ -263,7 +265,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2 border-[#2C3E50] text-[#2C3E50]">
+              <tr className="border-b-2 border-sahay-ink text-sahay-ink">
                 <th className="text-left p-2 font-semibold">Name</th>
                 <th className="text-left p-2 font-semibold">Email</th>
                 <th className="text-left p-2 font-semibold">Role</th>
@@ -274,14 +276,14 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
             </thead>
             <tbody>
               {(usersPage?.items ?? []).map((row) => (
-                <tr key={row.id} className="border-b border-[#2C3E50]/20 hover:bg-[#F8F6F0] transition-colors">
-                  <td className="p-2 font-medium text-[#2C3E50]">{row.full_name}</td>
-                  <td className="p-2 text-[#2C3E50]/80 break-all">{row.email}</td>
-                  <td className="p-2 text-[#2C3E50]">{row.role}</td>
+                <tr key={row.id} className="border-b border-sahay-ink/20 hover:bg-sahay-bg transition-colors">
+                  <td className="p-2 font-medium text-sahay-ink">{row.full_name}</td>
+                  <td className="p-2 text-sahay-ink/80 break-all">{row.email}</td>
+                  <td className="p-2 text-sahay-ink">{row.role}</td>
                   <td className="p-2">
                     <TierBadge tier={row.tier} />
                   </td>
-                  <td className="p-2 text-[#2C3E50]/70">
+                  <td className="p-2 text-sahay-ink/70">
                     {row.last_active_at ? new Date(row.last_active_at).toLocaleString() : '—'}
                   </td>
                   <td className="p-2">
@@ -296,7 +298,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
               ))}
               {usersPage && usersPage.items.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-6 text-center text-[#2C3E50]/60">
+                  <td colSpan={6} className="p-6 text-center text-sahay-ink/60">
                     No users found.
                   </td>
                 </tr>
@@ -306,7 +308,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
         </div>
 
         {usersPage && usersPage.pages > 1 ? (
-          <div className="flex items-center justify-between mt-4 text-sm text-[#2C3E50]">
+          <div className="flex items-center justify-between mt-4 text-sm text-sahay-ink">
             <span>
               Page {usersPage.page} of {usersPage.pages} · {usersPage.total} users
             </span>
@@ -315,7 +317,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1 rounded-lg border-2 border-[#2C3E50] disabled:opacity-40 hover:bg-[#edeae3] transition-colors"
+                className="px-3 py-1 rounded-lg border-2 border-sahay-ink disabled:opacity-40 hover:bg-sahay-surface-sunken transition-colors"
               >
                 Prev
               </button>
@@ -323,7 +325,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
                 type="button"
                 disabled={page >= usersPage.pages}
                 onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1 rounded-lg border-2 border-[#2C3E50] disabled:opacity-40 hover:bg-[#edeae3] transition-colors"
+                className="px-3 py-1 rounded-lg border-2 border-sahay-ink disabled:opacity-40 hover:bg-sahay-surface-sunken transition-colors"
               >
                 Next
               </button>
@@ -350,11 +352,11 @@ function MetricCard({
   pulse?: boolean;
   subtitle?: string;
 }) {
-  const accentClass = accent ? 'text-[#E67E22]' : 'text-[#2C3E50]';
+  const accentClass = accent ? 'text-sahay-accent' : 'text-sahay-ink';
   return (
-    <div className="bg-[#FFFCF6] border-2 border-[#2C3E50] rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+    <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-[#2C3E50]/70">
+        <span className="text-xs font-semibold uppercase tracking-wide text-sahay-ink/70">
           {label}
         </span>
         {icon ? <span className={accentClass}>{icon}</span> : null}
@@ -362,13 +364,13 @@ function MetricCard({
       <div className={`text-2xl sm:text-3xl font-extrabold ${accentClass} flex items-center gap-2`}>
         {pulse ? (
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E67E22] opacity-60" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#E67E22]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sahay-accent opacity-60" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-sahay-accent" />
           </span>
         ) : null}
         {value}
       </div>
-      {subtitle ? <div className="text-xs text-[#2C3E50]/60 mt-1">{subtitle}</div> : null}
+      {subtitle ? <div className="text-xs text-sahay-ink/60 mt-1">{subtitle}</div> : null}
     </div>
   );
 }
@@ -376,8 +378,8 @@ function MetricCard({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div>
-      <div className="text-xl sm:text-2xl font-bold text-[#E67E22]">{value}</div>
-      <div className="text-xs text-[#2C3E50]/70 mt-1">{label}</div>
+      <div className="text-xl sm:text-2xl font-bold text-sahay-accent">{value}</div>
+      <div className="text-xs text-sahay-ink/70 mt-1">{label}</div>
     </div>
   );
 }
@@ -394,7 +396,7 @@ function TierToggle({
   onChange: (next: UserTier) => void;
 }) {
   return (
-    <div className="inline-flex rounded-xl border-2 border-[#2C3E50] overflow-hidden">
+    <div className="inline-flex rounded-xl border-2 border-sahay-ink overflow-hidden">
       {(['FREE', 'PREMIUM'] as UserTier[]).map((tier) => {
         const active = tier === value;
         return (
@@ -406,9 +408,9 @@ function TierToggle({
             className={`px-3 py-1 text-xs font-bold transition-colors disabled:cursor-not-allowed ${
               active
                 ? tier === 'PREMIUM'
-                  ? 'bg-[#C4A35A] text-white'
-                  : 'bg-[#2C3E50] text-[#FFFCF6]'
-                : 'bg-[#F8F6F0] text-[#2C3E50] hover:bg-[#edeae3]'
+                  ? 'bg-sahay-gold text-white'
+                  : 'bg-sahay-ink text-sahay-surface'
+                : 'bg-sahay-bg text-sahay-ink hover:bg-sahay-surface-sunken'
             }`}
           >
             {tier}

@@ -60,3 +60,6 @@ htmlcov/
 
 # Turbo
 .turbo/
+
+# AI-generated prototype (superseded by apps/web) — never commit
+/sahay_claude/

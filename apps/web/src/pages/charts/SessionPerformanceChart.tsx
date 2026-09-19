@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import type { SessionRecord } from '@sahay/types';
 
+import { SAHAY_CARETAKER } from '@/lib/palette';
+
 interface SessionPerformanceChartProps {
   sessions: SessionRecord[];
 }
@@ -19,8 +21,10 @@ const HEIGHT = 260;
 const MARGIN = { top: 16, right: 18, bottom: 44, left: 46 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
-const AMBER = '#E67E22';
-const CHARCOAL = '#2C3E50';
+/** Accuracy series — caretaker action amber (palette token). */
+const AMBER = SAHAY_CARETAKER.accent;
+/** Latency series — deep ink, so the two series never rely on hue alone. */
+const CHARCOAL = SAHAY_CARETAKER.ink;
 /** Reaction-latency axis ceiling (ms) — matches the backend's cognitive-load cap. */
 const LATENCY_AXIS_MAX = 2000;
 
@@ -96,7 +100,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
 
   if (data.length === 0) {
     return (
-      <p className="text-sm text-[#2C3E50]/60 text-center py-8">
+      <p className="text-sm text-sahay-ink/60 text-center py-8">
         No gameplay sessions recorded yet.
       </p>
     );
@@ -170,7 +174,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
       </svg>
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-5 mt-1 text-xs text-[#2C3E50]">
+      <div className="flex items-center justify-center gap-5 mt-1 text-xs text-sahay-ink">
         <span className="flex items-center gap-1.5">
           <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: AMBER }} />
           Accuracy %
@@ -183,16 +187,16 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
 
       {hovered && hover && (
         <div
-          className="pointer-events-none absolute z-10 rounded-xl border-2 border-[#2C3E50] bg-[#FFFCF6] px-3 py-2 text-xs shadow-md"
+          className="pointer-events-none absolute z-10 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-3 py-2 text-xs shadow-md"
           style={{ left: '50%', bottom: 48, transform: 'translateX(-50%)' }}
         >
-          <p className="font-semibold text-[#2C3E50]">{hovered.label}</p>
+          <p className="font-semibold text-sahay-ink">{hovered.label}</p>
           {hover.series === 'accuracy' ? (
-            <p className="text-[#E67E22] font-bold">Accuracy: {hovered.accuracyPct.toFixed(1)}%</p>
+            <p className="text-sahay-accent font-bold">Accuracy: {hovered.accuracyPct.toFixed(1)}%</p>
           ) : (
-            <p className="font-bold text-[#2C3E50]">Reaction: {Math.round(hovered.latencyMs)} ms</p>
+            <p className="font-bold text-sahay-ink">Reaction: {Math.round(hovered.latencyMs)} ms</p>
           )}
-          <p className="text-[#2C3E50]/70">{hovered.sessionCount} session(s)</p>
+          <p className="text-sahay-ink/70">{hovered.sessionCount} session(s)</p>
         </div>
       )}
     </div>

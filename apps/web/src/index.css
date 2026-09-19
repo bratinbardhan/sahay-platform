@@ -2,8 +2,238 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  SAHĀY WEB — GLOBAL DESIGN TOKENS
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ *  Two palettes, one component tree. The ambient tokens below are consumed by
+ *  the `sahay-*` Tailwind colours (see `tailwind.config.js`) so a single class
+ *  renders differently depending on the nearest `[data-palette]` ancestor.
+ *
+ *  PATIENT APP      [data-palette="patient"]   — flat, shadow-free, no alarms
+ *  CARETAKER BOARD  [data-palette="caretaker"] — data-viz, alerts, elevation
+ *
+ *  `App.tsx` stamps `data-palette` on <html> per route/role; `<html>` also
+ *  carries a static default so the very first paint is already correct.
+ *
+ *  ── Token reference ────────────────────────────────────────────────────────
+ *  bg / surface / surface-raised / surface-sunken / panel  — page & card fills
+ *  ink / muted / border / line / axis                     — text & hairlines
+ *  accent / accent-strong / accent-soft                   — primary action
+ *  gold / gold-soft / gold-ink                            — premium tier
+ *  ok / ok-bright / ok-soft / ok-ink / lime               — healthy trend
+ *  warn / warn-soft / warn-ink                            — watch trend
+ *  alert / alert-soft / alert-ink                         — breach / SOS only
+ *  info / info-soft / teal / teal-soft / mood             — chart series
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+:root,
+[data-palette='caretaker'] {
+  /* ── PALETTE 2 · Caretaker Dashboard (portal default) ─────────────────── */
+  --sahay-bg: 248 246 240; /* #F8F6F0 */
+  --sahay-surface: 255 252 246; /* #FFFCF6 */
+  --sahay-surface-raised: 255 255 255; /* #FFFFFF */
+  --sahay-surface-sunken: 237 234 227; /* #EDEAE3 */
+  --sahay-panel: 241 242 244; /* #F1F2F4 */
+  --sahay-ink: 44 62 80; /* #2C3E50 */
+  --sahay-muted: 91 102 115; /* #5B6673 */
+  --sahay-border: 201 207 214; /* #C9CFD6 */
+  --sahay-line: 226 232 240; /* #E2E8F0 */
+  --sahay-axis: 100 116 139; /* #64748B */
+  --sahay-accent: 230 126 34; /* #E67E22 */
+  --sahay-accent-strong: 211 84 0; /* #D35400 */
+  --sahay-accent-soft: 255 246 234; /* #FFF6EA */
+  --sahay-gold: 196 163 90; /* #C4A35A */
+  --sahay-gold-soft: 255 248 230; /* #FFF8E6 */
+  --sahay-gold-ink: 138 108 29; /* #8A6C1D */
+  --sahay-ok: 39 174 96; /* #27AE60 */
+  --sahay-ok-bright: 46 204 113; /* #2ECC71 */
+  --sahay-ok-soft: 232 246 238; /* #E8F6EE */
+  --sahay-ok-ink: 30 122 69; /* #1E7A45 */
+  --sahay-lime: 93 166 0; /* #5DA600 */
+  --sahay-warn: 230 126 34; /* #E67E22 */
+  --sahay-warn-soft: 255 241 224; /* #FFF1E0 */
+  --sahay-warn-ink: 168 91 18; /* #A85B12 */
+  --sahay-alert: 231 76 60; /* #E74C3C */
+  --sahay-alert-soft: 253 236 234; /* #FDECEA */
+  --sahay-alert-ink: 179 69 44; /* #B3452C */
+  --sahay-info: 62 110 147; /* #3E6E93 */
+  --sahay-info-soft: 234 241 247; /* #EAF1F7 */
+  --sahay-teal: 13 148 136; /* #0D9488 */
+  --sahay-teal-soft: 230 245 243; /* #E6F5F3 */
+  --sahay-mood: 245 158 11; /* #F59E0B */
+
+  /* ── Surface behaviour ─────────────────────────────────────────────────── */
+  --sahay-shadow: 0 4px 12px rgba(44, 62, 80, 0.08);
+  --sahay-shadow-hover: 0 12px 28px rgba(44, 62, 80, 0.14);
+  --sahay-lift: -3px;
+  --sahay-motion: 220ms;
+  --sahay-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --sahay-gradient: none;
+}
+
+[data-palette='patient'] {
+  /* ── PALETTE 1 · Patient App — flat, shadow-free, never alarming ──────── */
+  --sahay-surface-raised: 255 252 246;
+  --sahay-accent-soft: 255 241 224; /* #FFF1E0 */
+
+  /* Severity tones collapse to the calm amber action language so a shared
+     component can never flash a medical alarm at a patient. */
+  --sahay-ok: 230 126 34;
+  --sahay-ok-bright: 196 163 90;
+  --sahay-ok-soft: 255 241 224;
+  --sahay-ok-ink: 168 91 18;
+  --sahay-lime: 196 163 90;
+  --sahay-warn: 230 126 34;
+  --sahay-warn-soft: 255 241 224;
+  --sahay-warn-ink: 168 91 18;
+  --sahay-alert: 230 126 34;
+  --sahay-alert-soft: 255 241 224;
+  --sahay-alert-ink: 168 91 18;
+  --sahay-info: 13 148 136;
+  --sahay-info-soft: 230 245 243;
+
+  /* Flat by construction: no elevation, no lift, no gradient, no motion. */
+  --sahay-shadow: none;
+  --sahay-shadow-hover: none;
+  --sahay-lift: 0;
+  --sahay-motion: 0ms;
+  --sahay-gradient: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  BASE
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
 body {
-  @apply bg-cream text-charcoal antialiased;
+  @apply bg-sahay-bg text-sahay-ink antialiased;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+}
+
+/* Hairlines inherit the palette line colour instead of Tailwind's grey default. */
+*,
+::before,
+::after {
+  border-color: rgb(var(--sahay-line));
+}
+
+/* Visible keyboard focus everywhere — non-negotiable for a caregiving product */
+:focus-visible {
+  outline: 2px solid rgb(var(--sahay-accent));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ *  PALETTE-AWARE SURFACES
+ *  These component classes read the ambient tokens, so the *same* markup is
+ *  flat on a patient screen and elevated on a caretaker screen. Prefer them
+ *  over hand-rolled `shadow-*` / `bg-*` stacks in shared components.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* Canonical card: 2px ink rule, palette fill, elevation per palette. */
+  .sahay-surface {
+    background-color: rgb(var(--sahay-surface));
+    background-image: var(--sahay-gradient);
+    border: 2px solid rgb(var(--sahay-ink));
+    border-radius: 1rem;
+    box-shadow: var(--sahay-shadow);
+    transition:
+      box-shadow var(--sahay-motion) var(--sahay-ease),
+      transform var(--sahay-motion) var(--sahay-ease),
+      border-color var(--sahay-motion) var(--sahay-ease);
+  }
+
+  /* Opt-in hover lift (caretaker). Patient palette resolves --sahay-lift to 0. */
+  .sahay-surface-lift:hover {
+    transform: translateY(var(--sahay-lift));
+    box-shadow: var(--sahay-shadow-hover);
+  }
+
+  /* Quiet inset panel for chart frames, list rows and table headers. */
+  .sahay-panel {
+    background-color: rgb(var(--sahay-panel));
+    border: 1px solid rgb(var(--sahay-line));
+    border-radius: 0.75rem;
+  }
+
+  /* Alert chip / banner. Under the patient palette this renders calm amber. */
+  .sahay-alert {
+    background-color: rgb(var(--sahay-alert-soft));
+    border: 2px solid rgb(var(--sahay-alert));
+    border-radius: 0.75rem;
+    color: rgb(var(--sahay-alert-ink));
+  }
+
+  /* Recharts glass tooltip body — pairs with `sahayTooltipStyle` in lib/palette. */
+  .sahay-viz-tooltip {
+    background-color: rgb(var(--sahay-surface) / 0.96);
+    border: 2px solid rgb(var(--sahay-ink));
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    box-shadow: var(--sahay-shadow-hover);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Amber action ring for focus/active states on interactive chart controls. */
+  .sahay-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgb(var(--sahay-accent) / 0.22);
+  }
+
+  /* Hover/press feedback whose *speed* follows the palette: 220 ms on the
+     caretaker dashboard, instantaneous on a patient surface. */
+  .sahay-interactive {
+    transition:
+      background-color var(--sahay-motion) var(--sahay-ease),
+      border-color var(--sahay-motion) var(--sahay-ease),
+      color var(--sahay-motion) var(--sahay-ease),
+      transform var(--sahay-motion) var(--sahay-ease),
+      box-shadow var(--sahay-motion) var(--sahay-ease),
+      opacity var(--sahay-motion) var(--sahay-ease);
+  }
+}
+
+/* ── Patient guard rails ─────────────────────────────────────────────────
+ * Belt-and-braces enforcement of .clinerules #2: on a patient surface nothing
+ * decorative may cast a shadow, lift, gradient or animate.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+[data-palette='patient'] .sahay-surface,
+[data-palette='patient'] .sahay-surface-lift:hover {
+  box-shadow: none;
+  transform: none;
+  background-image: none;
+}
+
+[data-palette='patient'] .sahay-viz-tooltip {
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-palette='patient'] .sahay-elevation-off,
+[data-palette='patient'] .sahay-motion-off {
+  box-shadow: none !important;
+  transition: none !important;
+  animation: none !important;
 }
 
 /* ─── Unified auth views (Phase 1) ──────────────────────────────────────── */
@@ -35,18 +265,18 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: linear-gradient(165deg, #f8f6f0 0%, #f3efe2 55%, #e9e2cf 100%);
+  background: rgb(var(--sahay-bg));
   animation: auth-fade-in 450ms ease-out both;
 }
 
 .auth-card {
   width: 100%;
   max-width: 440px;
-  background: #fffcf6;
-  border: 2px solid #2c3e50;
+  background: rgb(var(--sahay-surface));
+  border: 2px solid rgb(var(--sahay-ink));
   border-radius: 24px;
   padding: 32px 28px;
-  box-shadow: 0 14px 28px rgba(44, 62, 80, 0.12);
+  box-shadow: none;
   animation: auth-fade-up 560ms ease-out both;
   transition:
     border-color 300ms ease,
@@ -54,15 +284,15 @@ body {
 }
 
 .auth-card:hover {
-  border-color: #c4a35a;
-  box-shadow: 0 18px 34px rgba(44, 62, 80, 0.16);
+  border-color: rgb(var(--sahay-accent));
+  box-shadow: none;
 }
 
 .auth-title {
   font-size: 1.75rem;
   line-height: 1.25;
   font-weight: 800;
-  color: #2c3e50;
+  color: rgb(var(--sahay-ink));
   text-align: center;
 }
 
@@ -71,7 +301,7 @@ body {
   margin-bottom: 24px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(44, 62, 80, 0.72);
+  color: rgb(var(--sahay-ink) / 0.72);
   text-align: center;
 }
 
@@ -88,9 +318,9 @@ body {
   align-items: flex-start;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 2px solid #c9cfd6;
-  background: #fffcf6;
-  color: #2c3e50;
+  border: 2px solid rgb(var(--sahay-border));
+  background: rgb(var(--sahay-surface));
+  color: rgb(var(--sahay-ink));
   text-align: left;
   transition:
     border-color 220ms ease,
@@ -99,7 +329,7 @@ body {
 }
 
 .role-pill:hover {
-  border-color: #2c3e50;
+  border-color: rgb(var(--sahay-ink));
 }
 
 .role-pill:active {
@@ -107,8 +337,8 @@ body {
 }
 
 .role-pill-active {
-  border-color: #e67e22;
-  background: #fff1e0;
+  border-color: rgb(var(--sahay-accent));
+  background: rgb(var(--sahay-accent-soft));
 }
 
 .role-pill-title {
@@ -119,11 +349,11 @@ body {
 .role-pill-hint {
   margin-top: 3px;
   font-size: 0.7rem;
-  color: rgba(44, 62, 80, 0.68);
+  color: rgb(var(--sahay-ink) / 0.68);
 }
 
 .role-pill-active .role-pill-title {
-  color: #e67e22;
+  color: rgb(var(--sahay-accent));
 }
 
 .auth-form {
@@ -135,21 +365,21 @@ body {
 .auth-label {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: rgb(var(--sahay-ink));
 }
 
 .auth-hint {
   font-size: 0.7rem;
-  color: rgba(44, 62, 80, 0.6);
+  color: rgb(var(--sahay-ink) / 0.6);
 }
 
 .auth-input {
   width: 100%;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 2px solid #c9cfd6;
-  background: #fffcf6;
-  color: #2c3e50;
+  border: 2px solid rgb(var(--sahay-border));
+  background: rgb(var(--sahay-surface));
+  color: rgb(var(--sahay-ink));
   font-size: 1rem;
   outline: none;
   transition:
@@ -158,18 +388,18 @@ body {
 }
 
 .auth-input:focus {
-  border-color: #e67e22;
-  box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.18);
+  border-color: rgb(var(--sahay-accent));
+  box-shadow: 0 0 0 4px rgb(var(--sahay-accent) / 0.18);
 }
 
 .auth-input::placeholder {
-  color: #8890a0;
+  color: rgb(var(--sahay-muted));
 }
 
 .auth-error {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #b3452c;
+  color: rgb(var(--sahay-alert-ink));
   transition: opacity 200ms ease;
 }
 
@@ -178,9 +408,9 @@ body {
   min-height: 52px;
   padding: 14px;
   border-radius: 14px;
-  border: 2px solid #2c3e50;
-  background: #e67e22;
-  color: #fffcf6;
+  border: 2px solid rgb(var(--sahay-ink));
+  background: rgb(var(--sahay-accent));
+  color: rgb(var(--sahay-surface));
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
@@ -191,7 +421,7 @@ body {
 }
 
 .auth-submit:hover:not(:disabled) {
-  background: #d35400;
+  background: rgb(var(--sahay-accent-strong));
 }
 
 .auth-submit:active:not(:disabled) {
@@ -207,7 +437,7 @@ body {
   margin-top: 18px;
   text-align: center;
   font-size: 0.9rem;
-  color: rgba(44, 62, 80, 0.8);
+  color: rgb(var(--sahay-ink) / 0.8);
 }
 
 .auth-link {
@@ -215,14 +445,14 @@ body {
   border: none;
   padding: 0;
   margin: 0;
-  color: #e67e22;
+  color: rgb(var(--sahay-accent));
   font-weight: 700;
   cursor: pointer;
   transition: color 180ms ease;
 }
 
 .auth-link:hover {
-  color: #d35400;
+  color: rgb(var(--sahay-accent-strong));
 }
 
 @media (max-width: 480px) {

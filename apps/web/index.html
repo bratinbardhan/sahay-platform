@@ -1,9 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-palette="patient">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      `data-palette` selects the Sahāy colour palette (see src/index.css).
+      "patient" is the boot default so the entry/login surface is flat and
+      glare-reducing; App.tsx flips it to "caretaker" for signed-in dashboards.
+    -->
     <title>Sahāy — Caregiver Portal</title>
     <link
       rel="stylesheet"

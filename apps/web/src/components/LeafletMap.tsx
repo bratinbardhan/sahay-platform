@@ -8,6 +8,8 @@ import {
   type LeafletNamespace,
 } from '@/lib/leaflet';
 
+import { SAHAY_CARETAKER } from '@/lib/palette';
+
 interface LeafletMapProps {
   centerLat: number;
   centerLng: number;
@@ -16,8 +18,10 @@ interface LeafletMapProps {
   onPick: (lat: number, lng: number) => void;
 }
 
-const HOME_PIN_COLOR = '#E67E22';
-const ZONE_COLOR = '#2C3E50';
+/** Safe-zone anchor pin — the caretaker action amber, from the palette token. */
+const HOME_PIN_COLOR = SAHAY_CARETAKER.accent;
+/** Fence outline — the deep ink rule shared by every caretaker card. */
+const ZONE_COLOR = SAHAY_CARETAKER.ink;
 
 /**
  * Interactive Leaflet map for safe-zone configuration: OpenStreetMap tiles,
@@ -110,9 +114,9 @@ export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: Leafl
 
   return (
     <div className="relative">
-      <div id={containerIdRef.current} className="h-[420px] w-full rounded-xl border-2 border-[#2C3E50] z-0" />
+      <div id={containerIdRef.current} className="h-[420px] w-full rounded-xl border-2 border-sahay-ink z-0" />
       {mapError ? (
-        <p className="mt-2 text-sm text-[#2C3E50]/70">{mapError}</p>
+        <p className="mt-2 text-sm text-sahay-ink/70">{mapError}</p>
       ) : null}
     </div>
   );

@@ -1,3 +1,9 @@
+/**
+ * Shared GDS helpers — severity colours resolve from the caretaker palette in
+ * `lib/palette.ts`, the single source of truth for chart/SVG/Leaflet colours.
+ */
+import { SAHAY_CARETAKER, SAHAY_GDS_STAGE_COLORS } from './palette';
+
 export const GDS_STAGE_LABELS: Record<number, string> = {
   1: 'No Dementia',
   2: 'Very Mild',
@@ -8,18 +14,23 @@ export const GDS_STAGE_LABELS: Record<number, string> = {
   7: 'Very Severe',
 };
 
-export const GDS_STAGE_COLORS: Record<number, string> = {
-  1: '#27AE60',
-  2: '#2ECC71',
-  3: '#5DA600',
-  4: '#E67E22',
-  5: '#E67E22',
-  6: '#E67E22',
-  7: '#E67E22',
-};
+/**
+ * GDS severity ramp, sourced from the Caretaker Dashboard palette:
+ * healthy green → mild lime → watch amber. Deliberately no alert red here —
+ * `GDS_STAGE_COLORS` marks a clinical *stage*, not an emergency.
+ */
+export const GDS_STAGE_COLORS: Record<number, string> = SAHAY_GDS_STAGE_COLORS;
+
+/**
+ * The same ramp as a positional array (index 0 → GDS stage 1), for charts such
+ * as `StageBarChart` that take an ordered `string[]` of series colours.
+ */
+export const GDS_STAGE_COLOR_RAMP: string[] = [1, 2, 3, 4, 5, 6, 7].map(
+  (stage) => GDS_STAGE_COLORS[stage],
+);
 
 export function getGdsStageColor(stage: number): string {
-  return GDS_STAGE_COLORS[stage] ?? '#2C3E50';
+  return GDS_STAGE_COLORS[stage] ?? SAHAY_CARETAKER.ink;
 }
 
 export function getGdsStageLabel(stage: number): string {

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import type { DdaHistoryPoint } from '@sahay/types';
 
+import { SAHAY_CARETAKER } from '@/lib/palette';
+
 interface DdaDifficultyCurveProps {
   points: DdaHistoryPoint[];
   /** Recommended next difficulty from the cognitive summary (dashed guide). */
@@ -15,8 +17,10 @@ const HEIGHT = 250;
 const MARGIN = { top: 16, right: 18, bottom: 30, left: 46 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
-const AMBER = '#E67E22';
-const CHARCOAL = '#2C3E50';
+/** Caretaker action amber — difficulty step markers (palette token). */
+const AMBER = SAHAY_CARETAKER.accent;
+/** Ink rule — the rolling-average DDA curve itself. */
+const CHARCOAL = SAHAY_CARETAKER.ink;
 const MAX_DIFFICULTY = 10;
 
 /**
@@ -95,7 +99,7 @@ export function DdaDifficultyCurve({
 
   if (ordered.length === 0) {
     return (
-      <p className="text-sm text-[#2C3E50]/60 text-center py-8">
+      <p className="text-sm text-sahay-ink/60 text-center py-8">
         No DDA difficulty data yet — the curve calibrates after the first sessions sync.
       </p>
     );
@@ -164,7 +168,7 @@ export function DdaDifficultyCurve({
               cx={xs[i]}
               cy={ys[i]}
               r={hover === i ? 5.5 : 3.5}
-              fill={hover === i ? CHARCOAL : '#FFFCF6'}
+              fill={hover === i ? CHARCOAL : SAHAY_CARETAKER.surface}
               stroke={CHARCOAL}
               strokeWidth={2}
             />
@@ -193,18 +197,18 @@ export function DdaDifficultyCurve({
       </svg>
       {hoveredPoint && hover !== null && (
         <div
-          className="pointer-events-none absolute z-10 rounded-xl border-2 border-[#2C3E50] bg-[#FFFCF6] px-3 py-2 text-xs shadow-md"
+          className="pointer-events-none absolute z-10 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-3 py-2 text-xs shadow-md"
           style={{
             left: `${((MARGIN.left + xs[hover]) / WIDTH) * 100}%`,
             top: `${((MARGIN.top + ys[hover]) / HEIGHT) * 100}%`,
             transform: 'translate(-50%, -115%)',
           }}
         >
-          <p className="font-semibold text-[#2C3E50]">Round {roundNumber}</p>
-          <p className="text-[#E67E22] font-bold">
+          <p className="font-semibold text-sahay-ink">Round {roundNumber}</p>
+          <p className="text-sahay-accent font-bold">
             Difficulty: {hoveredPoint.difficulty_level.toFixed(2)}
           </p>
-          <p className="text-[#2C3E50]/70">Reaction: {Math.round(hoveredPoint.reaction_latency_ms)} ms</p>
+          <p className="text-sahay-ink/70">Reaction: {Math.round(hoveredPoint.reaction_latency_ms)} ms</p>
         </div>
       )}
     </div>

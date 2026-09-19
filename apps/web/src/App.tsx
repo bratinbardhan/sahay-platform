@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiFetchMe, AuthApiError } from '@/lib/auth';
+import { applyPalette, type SahayPalette } from '@/lib/palette';
 import { clearSession, loadSession, saveSession, type StoredSession } from '@/lib/session';
 import { Dashboard } from '@/pages/Dashboard';
 import { AnalyticsChart } from '@/pages/AnalyticsChart';
@@ -46,11 +47,30 @@ function roleHome(role: string): Route {
   return role === 'ADMIN' ? 'admin' : 'app';
 }
 
+/**
+ * Dual-palette routing rule — see `src/index.css` for the token definitions.
+ *
+ *   patient   → splash, login and signup: flat, shadow-free, never alarming
+ *   caretaker → dashboard + admin console: data-viz series, alerts, elevation
+ */
+function paletteFor(route: Route, isSignedIn: boolean): SahayPalette {
+  if (!isSignedIn || route === 'login' || route === 'signup') {
+    return 'patient';
+  }
+  return 'caretaker';
+}
+
 function App() {
   const [session, setSession] = useState<StoredSession | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   const [route, setRoute] = useState<Route>(routeFromPath());
   const [page, setPage] = useState<Page>('dashboard');
+
+  // Stamp `data-palette` on <html> so every `sahay-*` token resolves to the
+  // palette that matches the surface currently on screen.
+  useEffect(() => {
+    applyPalette(paletteFor(route, Boolean(session)));
+  }, [route, session]);
 
   // Restore the persisted session on cold start and re-validate it in the background.
   useEffect(() => {
@@ -130,8 +150,8 @@ function App() {
 
   if (!sessionReady) {
     return (
-      <div className="flex min-h-screen bg-[#F8F6F0] items-center justify-center">
-        <p className="text-[#2C3E50] text-lg">Waking up Sahāy…</p>
+      <div className="animate-patient-fade-in flex min-h-screen bg-sahay-bg items-center justify-center">
+        <p className="text-sahay-ink text-lg">Waking up Sahāy…</p>
       </div>
     );
   }

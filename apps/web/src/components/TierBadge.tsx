@@ -12,8 +12,8 @@ export function TierBadge({ tier, className = '' }: TierBadgeProps) {
     <span
       className={`inline-flex items-center rounded-full border-2 px-3 py-1 text-xs font-bold tracking-wide ${
         premium
-          ? 'bg-[#FFF8E6] border-[#C4A35A] text-[#8A6C1D]'
-          : 'bg-[#F1F2F4] border-[#C9CFD6] text-[#5B6673]'
+          ? 'bg-sahay-gold-soft border-sahay-gold text-sahay-gold-ink'
+          : 'bg-sahay-panel border-sahay-border text-sahay-muted'
       } ${className}`}
     >
       {premium ? '✦ Premium' : 'Free'}

@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { SAHAY_CARETAKER, sahayTooltipStyle } from '@/lib/palette';
 
 interface StageBarChartProps {
   distribution: Record<string, number>;
@@ -37,7 +38,7 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
 
   if (total === 0) {
     return (
-      <p className="text-sm text-[#2C3E50]/60 text-center py-8">
+      <p className="text-sm text-sahay-ink/60 text-center py-8">
         No patient data yet.
       </p>
     );
@@ -46,11 +47,11 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#2C3E50" opacity={0.2} />
-        <XAxis dataKey="stage" stroke="#2C3E50" fontSize={11} />
-        <YAxis allowDecimals={false} stroke="#2C3E50" fontSize={11} />
+        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.ink} opacity={0.2} />
+        <XAxis dataKey="stage" stroke={SAHAY_CARETAKER.ink} fontSize={11} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.ink} fontSize={11} />
         <Tooltip
-          contentStyle={{ backgroundColor: '#FFFCF6', border: '2px solid #2C3E50', borderRadius: 12 }}
+          contentStyle={sahayTooltipStyle}
           formatter={(value: number) => [`${value} patients`, 'Count']}
         />
         <Bar dataKey="count" radius={[8, 8, 0, 0]} isAnimationActive={false}>

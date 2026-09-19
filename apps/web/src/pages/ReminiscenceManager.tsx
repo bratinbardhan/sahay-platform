@@ -59,25 +59,25 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
   }, [token, patient]);
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] p-8">
+    <div className="min-h-screen bg-sahay-bg p-8">
       <div className="flex items-center mb-6">
         <button
           type="button"
-          className="mr-4 p-2 rounded-lg bg-[#FFFCF6] border-2 border-[#2C3E50] text-[#2C3E50] hover:bg-[#edeae3]"
+          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken"
           onClick={() => onNavigate('dashboard')}
           aria-label="Back to dashboard"
         >
           <ChevronLeft size={20} />
         </button>
-        <h1 className="text-3xl font-bold text-[#2C3E50]">Memory Album</h1>
+        <h1 className="text-3xl font-bold text-sahay-ink">Memory Album</h1>
         {isDemo && (
-          <span className="ml-auto rounded-full border-2 border-[#E67E22] bg-[#FFFCF6] px-3 py-1 text-xs font-semibold text-[#E67E22]">
+          <span className="ml-auto rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
             Demo data — live vault unavailable
           </span>
         )}
       </div>
 
-      <p className="text-[#2C3E50]/70 mb-6">
+      <p className="text-sahay-ink/70 mb-6">
         Curated reminders of happy moments — shared with the patient's mobile album
         for gentle reminiscence therapy sessions.
       </p>
@@ -88,7 +88,7 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-16 text-[#2C3E50]/70">
+        <div className="flex items-center justify-center py-16 text-sahay-ink/70">
           Loading memories…
         </div>
       ) : (
@@ -98,19 +98,19 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
               <img
                 src={memory.image_url}
                 alt={memory.title}
-                className="w-full h-48 object-cover rounded-t-2xl -mt-6 -mx-6 mb-3 border-b-2 border-[#2C3E50]"
+                className="w-full h-48 object-cover rounded-t-2xl -mt-6 -mx-6 mb-3 border-b-2 border-sahay-ink"
               />
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h3 className="text-xl font-bold text-[#2C3E50]">{memory.title}</h3>
-                  <p className="text-sm font-semibold text-[#E67E22] mt-1">
+                  <h3 className="text-xl font-bold text-sahay-ink">{memory.title}</h3>
+                  <p className="text-sm font-semibold text-sahay-accent mt-1">
                     {memory.relationship_tag}
-                    {memory.era_or_date ? <span className="text-[#2C3E50]/60"> · {memory.era_or_date}</span> : null}
+                    {memory.era_or_date ? <span className="text-sahay-ink/60"> · {memory.era_or_date}</span> : null}
                   </p>
                 </div>
                 {memory.audio_narration_url ? (
                   <span
-                    className="p-2 rounded-full bg-[#FFFCF6] border-2 border-[#2C3E50] text-[#E67E22] shrink-0"
+                    className="p-2 rounded-full bg-sahay-surface border-2 border-sahay-ink text-sahay-accent shrink-0"
                     aria-label="Audio narration available"
                     title="Audio narration available"
                   >
@@ -118,7 +118,7 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
                   </span>
                 ) : null}
               </div>
-              <p className="text-sm text-[#2C3E50]/70 mt-3">{memory.caption_text}</p>
+              <p className="text-sm text-sahay-ink/70 mt-3">{memory.caption_text}</p>
             </Card>
           ))}
         </div>

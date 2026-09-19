@@ -7,6 +7,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  SAHAY_CARETAKER,
+  sahayGlassTooltipStyle,
+  sahayTooltipLabelStyle,
+} from '@/lib/palette';
 
 interface MoodStabilityChartProps {
   data: { day: string; stability: number; mood: number }[];
@@ -22,27 +27,30 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
       <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
         <defs>
           <linearGradient id="stabilityGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0d9488" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="#0d9488" stopOpacity={0.02} />
+            <stop offset="0%" stopColor={SAHAY_CARETAKER.teal} stopOpacity={0.35} />
+            <stop offset="100%" stopColor={SAHAY_CARETAKER.teal} stopOpacity={0.02} />
           </linearGradient>
           <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.25} />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.02} />
+            <stop offset="0%" stopColor={SAHAY_CARETAKER.mood} stopOpacity={0.25} />
+            <stop offset="100%" stopColor={SAHAY_CARETAKER.mood} stopOpacity={0.02} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-        <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.line} vertical={false} />
+        <XAxis
+          dataKey="day"
+          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <YAxis
+          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          axisLine={false}
+          tickLine={false}
+          domain={[0, 100]}
+        />
         <Tooltip
-          contentStyle={{
-            background: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid #e2e8f0',
-            borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
-            padding: '10px 14px',
-          }}
-          labelStyle={{ fontWeight: 700, color: '#0f172a', marginBottom: 4 }}
+          contentStyle={sahayGlassTooltipStyle}
+          labelStyle={sahayTooltipLabelStyle}
           formatter={(value: number, name: string) => {
             const label = name === 'stability' ? 'Stability' : 'Mood';
             return [`${value}%`, label];
@@ -51,18 +59,18 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
         <Area
           type="monotone"
           dataKey="stability"
-          stroke="#0d9488"
+          stroke={SAHAY_CARETAKER.teal}
           strokeWidth={2.5}
           fill="url(#stabilityGradient)"
-          activeDot={{ r: 6, stroke: '#0d9488', strokeWidth: 2, fill: '#fff' }}
+          activeDot={{ r: 6, stroke: SAHAY_CARETAKER.teal, strokeWidth: 2, fill: SAHAY_CARETAKER.surfaceRaised }}
         />
         <Area
           type="monotone"
           dataKey="mood"
-          stroke="#f59e0b"
+          stroke={SAHAY_CARETAKER.mood}
           strokeWidth={2}
           fill="url(#moodGradient)"
-          activeDot={{ r: 5, stroke: '#f59e0b', strokeWidth: 2, fill: '#fff' }}
+          activeDot={{ r: 5, stroke: SAHAY_CARETAKER.mood, strokeWidth: 2, fill: SAHAY_CARETAKER.surfaceRaised }}
         />
       </AreaChart>
     </ResponsiveContainer>

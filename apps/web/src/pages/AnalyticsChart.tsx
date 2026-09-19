@@ -40,25 +40,25 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] p-8">
+    <div className="min-h-screen bg-sahay-bg p-8">
       <div className="flex items-center mb-6">
         <button
           type="button"
-          className="mr-4 p-2 rounded-lg bg-[#FFFCF6] border-2 border-[#2C3E50] text-[#2C3E50] hover:bg-[#edeae3]"
+          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken"
           onClick={() => onNavigate('dashboard')}
           aria-label="Back to dashboard"
         >
           <ChevronLeft size={20} />
         </button>
-        <h1 className="text-3xl font-bold text-[#2C3E50]">Cognitive Health Analytics</h1>
+        <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
         {isDemo && (
-          <span className="ml-auto rounded-full border-2 border-[#E67E22] bg-[#FFFCF6] px-3 py-1 text-xs font-semibold text-[#E67E22]">
+          <span className="ml-auto rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
             Demo data — live telemetry unavailable
           </span>
         )}
       </div>
 
-      <p className="text-[#2C3E50]/70 mb-6">
+      <p className="text-sahay-ink/70 mb-6">
         {patient ? `Live telemetry for ${patient.name}` : 'Live telemetry'} — cognitive load,
         reaction latency, and the Achaotic DDA difficulty curve.
       </p>
@@ -68,31 +68,31 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         <Card title="7-Day Cognitive Summary" className="mb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-2xl font-bold text-[#2C3E50]">
+              <div className="text-2xl font-bold text-sahay-ink">
                 {TREND_LABELS[cognitiveSummary.trend_direction] ?? cognitiveSummary.trend_direction}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">
+              <div className="text-sm text-sahay-ink/70">
                 {cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}
                 {cognitiveSummary.accuracy_delta_pct}% accuracy vs prior week
               </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#2C3E50]">
+              <div className="text-2xl font-bold text-sahay-ink">
                 {cognitiveSummary.stability_score.toFixed(0)}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Stability Score</div>
+              <div className="text-sm text-sahay-ink/70">Stability Score</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#E67E22]">
+              <div className="text-2xl font-bold text-sahay-accent">
                 {cognitiveSummary.recommended_difficulty}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Recommended Difficulty</div>
+              <div className="text-sm text-sahay-ink/70">Recommended Difficulty</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#2C3E50]">
+              <div className="text-2xl font-bold text-sahay-ink">
                 {Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Avg Latency (7 Days)</div>
+              <div className="text-sm text-sahay-ink/70">Avg Latency (7 Days)</div>
             </div>
           </div>
         </Card>
@@ -111,8 +111,8 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             onClick={() => setMetric('load')}
             className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-colors ${
               metric === 'load'
-                ? 'bg-[#E67E22] border-[#E67E22] text-white'
-                : 'bg-[#FFFCF6] border-[#2C3E50] text-[#2C3E50]'
+                ? 'bg-sahay-accent border-sahay-accent text-white'
+                : 'bg-sahay-surface border-sahay-ink text-sahay-ink'
             }`}
           >
             Cognitive Load
@@ -122,8 +122,8 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             onClick={() => setMetric('latency')}
             className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-colors ${
               metric === 'latency'
-                ? 'bg-[#E67E22] border-[#E67E22] text-white'
-                : 'bg-[#FFFCF6] border-[#2C3E50] text-[#2C3E50]'
+                ? 'bg-sahay-accent border-sahay-accent text-white'
+                : 'bg-sahay-surface border-sahay-ink text-sahay-ink'
             }`}
           >
             Reaction Latency
@@ -138,7 +138,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           points={ddaHistory?.points ?? []}
           recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null}
         />
-        <p className="text-xs text-[#2C3E50]/60 mt-2">
+        <p className="text-xs text-sahay-ink/60 mt-2">
           The Achaotic DDA engine applies a non-spiking weighted rolling average to touch latency
           and error frequency. Difficulty rises and falls only gradually as long-term performance
           improves; the dashed amber guide marks the recommended next level.
@@ -150,39 +150,39 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2 border-[#2C3E50]">
-                <th className="text-left p-2 text-[#2C3E50]">Session</th>
-                <th className="text-left p-2 text-[#2C3E50]">Game</th>
-                <th className="text-left p-2 text-[#2C3E50]">GDS</th>
-                <th className="text-right p-2 text-[#2C3E50]">Latency</th>
-                <th className="text-right p-2 text-[#2C3E50]">Clean/Total</th>
-                <th className="text-right p-2 text-[#2C3E50]">Tokens</th>
+              <tr className="border-b-2 border-sahay-ink">
+                <th className="text-left p-2 text-sahay-ink">Session</th>
+                <th className="text-left p-2 text-sahay-ink">Game</th>
+                <th className="text-left p-2 text-sahay-ink">GDS</th>
+                <th className="text-right p-2 text-sahay-ink">Latency</th>
+                <th className="text-right p-2 text-sahay-ink">Clean/Total</th>
+                <th className="text-right p-2 text-sahay-ink">Tokens</th>
               </tr>
             </thead>
             <tbody>
               {sessions.map((log, index) => {
                 const stageLabel = GDS_STAGE_LABELS[log.gds_stage] ?? `Stage ${log.gds_stage}`;
                 return (
-                  <tr key={log.session_log_id} className="border-b border-[#2C3E50]/20">
-                    <td className="p-2 font-medium text-[#2C3E50]">
+                  <tr key={log.session_log_id} className="border-b border-sahay-ink/20">
+                    <td className="p-2 font-medium text-sahay-ink">
                       {(page - 1) * SESSION_PAGE_SIZE + index + 1}
                     </td>
-                    <td className="p-2 text-[#2C3E50]">{log.game_module_id.replace(/_/g, ' ')}</td>
-                    <td className="p-2 text-[#2C3E50]">{stageLabel}</td>
-                    <td className="text-right p-2 text-[#E67E22] font-medium">
+                    <td className="p-2 text-sahay-ink">{log.game_module_id.replace(/_/g, ' ')}</td>
+                    <td className="p-2 text-sahay-ink">{stageLabel}</td>
+                    <td className="text-right p-2 text-sahay-accent font-medium">
                       {Math.round(log.avg_latency_ms)}ms
                     </td>
-                    <td className="text-right p-2 text-[#2C3E50]">
+                    <td className="text-right p-2 text-sahay-ink">
                       {log.tasks_completed_cleanly}/{log.tasks_presented}
                     </td>
-                    <td className="text-right p-2 text-[#2C3E50]">{log.score}</td>
-                    <td className="text-right p-2 text-[#2C3E50]">{log.demitokens_earned}</td>
+                    <td className="text-right p-2 text-sahay-ink">{log.score}</td>
+                    <td className="text-right p-2 text-sahay-ink">{log.demitokens_earned}</td>
                   </tr>
                 );
               })}
               {sessions.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-4 text-center text-[#2C3E50]/60">
+                  <td colSpan={7} className="p-4 text-center text-sahay-ink/60">
                     No gameplay sessions recorded yet.
                   </td>
                 </tr>
@@ -191,13 +191,13 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           </table>
         </div>
         {pages > 1 && (
-          <div className="flex items-center justify-end gap-3 mt-3 text-sm text-[#2C3E50]">
+          <div className="flex items-center justify-end gap-3 mt-3 text-sm text-sahay-ink">
             <span>
               Page {page} of {pages} — {total} sessions
             </span>
             <button
               type="button"
-              className="p-1.5 rounded-lg border-2 border-[#2C3E50] bg-[#FFFCF6] disabled:opacity-40"
+              className="p-1.5 rounded-lg border-2 border-sahay-ink bg-sahay-surface disabled:opacity-40"
               onClick={() => setPage(page - 1)}
               disabled={page <= 1}
               aria-label="Previous page"
@@ -206,7 +206,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             </button>
             <button
               type="button"
-              className="p-1.5 rounded-lg border-2 border-[#2C3E50] bg-[#FFFCF6] disabled:opacity-40"
+              className="p-1.5 rounded-lg border-2 border-sahay-ink bg-sahay-surface disabled:opacity-40"
               onClick={() => setPage(page + 1)}
               disabled={page >= pages}
               aria-label="Next page"

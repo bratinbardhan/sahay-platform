@@ -20,11 +20,11 @@ export function ActionButton({
   type = 'button',
 }: ActionButtonProps) {
   const base =
-    'flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base transition-all min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed';
+    'sahay-interactive flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed';
   const styles =
     variant === 'primary'
-      ? 'bg-[#E67E22] text-white hover:bg-[#D35400] border-2 border-[#2C3E50] disabled:hover:bg-[#E67E22]'
-      : 'bg-[#F8F6F0] text-[#2C3E50] hover:bg-[#edeae3] border-2 border-[#2C3E50]';
+      ? 'bg-sahay-accent text-white hover:bg-sahay-accent-strong border-2 border-sahay-ink disabled:hover:bg-sahay-accent'
+      : 'bg-sahay-bg text-sahay-ink hover:bg-sahay-surface-sunken border-2 border-sahay-ink';
 
   return (
     <button type={type} className={`${base} ${styles} ${className}`} onClick={onClick} disabled={disabled}>

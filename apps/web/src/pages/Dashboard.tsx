@@ -83,17 +83,17 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
 
   if (!patient) {
     return (
-      <div className="flex min-h-screen bg-[#F8F6F0] items-center justify-center">
-        <p className="text-[#2C3E50] text-lg">Loading patient portal…</p>
+      <div className="flex min-h-screen bg-sahay-bg items-center justify-center">
+        <p className="text-sahay-ink text-lg">Loading patient portal…</p>
       {activeAlert && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-red-600 text-white p-8 rounded-xl max-w-lg w-full">
+          <div className="bg-sahay-alert text-white p-8 rounded-xl max-w-lg w-full">
             <h2 className="text-3xl font-bold flex items-center gap-2"><AlertTriangle /> EMERGENCY SOS</h2>
             {patient && <p className="text-xl">Patient {(patient as any).name} has triggered an SOS!</p>}
             <p>Reason: {activeAlert.trigger_reason}</p>
             <p>Coordinates: {activeAlert.latitude}, {activeAlert.longitude}</p>
             <div className="mt-6 flex gap-4">
-              <button onClick={() => handleResolve('ACKNOWLEDGED')} className="bg-white text-red-600 px-4 py-2 rounded">Acknowledge</button>
+              <button onClick={() => handleResolve('ACKNOWLEDGED')} className="bg-sahay-surface-raised text-sahay-alert px-4 py-2 rounded">Acknowledge</button>
               <button onClick={() => handleResolve('RESOLVED')} className="bg-black text-white px-4 py-2 rounded">Resolve</button>
             </div>
           </div>
@@ -124,20 +124,20 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
   const recentSessions = sessions.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-[#F8F6F0] p-4 sm:p-6 md:p-8 animate-fade-in">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-8 animate-fade-in">
       {/* Navigation bar with account role + tier status */}
-      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-[#2C3E50] bg-[#FFFCF6] px-4 py-3 rounded-xl shadow-sm">
+      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-sahay-ink bg-sahay-surface px-4 py-3 rounded-xl shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="text-2xl leading-none text-[#E67E22]">✦</span>
-          <span className="font-bold text-xl text-[#2C3E50]">Sahāy Caregiver Portal</span>
+          <span className="text-2xl leading-none text-sahay-accent">✦</span>
+          <span className="font-bold text-xl text-sahay-ink">Sahāy Caregiver Portal</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline text-sm text-[#2C3E50]/80">{user.full_name}</span>
+          <span className="hidden sm:inline text-sm text-sahay-ink/80">{user.full_name}</span>
           <TierBadge tier={user.tier} />
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 rounded-xl border-2 border-[#2C3E50] bg-[#F8F6F0] px-3 py-1.5 text-sm font-semibold text-[#2C3E50] hover:bg-[#edeae3] transition-colors"
+            className="flex items-center gap-2 rounded-xl border-2 border-sahay-ink bg-sahay-bg px-3 py-1.5 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken transition-colors"
           >
             <LogOut size={16} />
             Sign out
@@ -148,11 +148,11 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       {/* Header */}
       <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#2C3E50]">Patient Overview</h1>
-          <p className="text-[#2C3E50]/80 text-base sm:text-lg mt-1">Patient: {patient.name}</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-sahay-ink">Patient Overview</h1>
+          <p className="text-sahay-ink/80 text-base sm:text-lg mt-1">Patient: {patient.name}</p>
         </div>
         {isDemo && (
-          <span className="rounded-full border-2 border-[#E67E22] bg-[#FFFCF6] px-3 py-1 text-xs font-semibold text-[#E67E22]">
+          <span className="rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
             Demo data — live telemetry unavailable
           </span>
         )}
@@ -172,24 +172,24 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
           <CognitiveTrendChart points={ddaHistory?.points ?? []} />
         </Card>
         <Card title="Daily Activity Log">
-          <ul className="divide-y divide-[#2C3E50]/20">
+          <ul className="divide-y divide-sahay-ink/20">
             {recentSessions.map((session) => (
               <li key={session.session_log_id} className="py-2.5 flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-[#2C3E50] truncate">
+                  <p className="text-sm font-medium text-sahay-ink truncate">
                     {session.game_module_id.replace(/_/g, ' ')}
                   </p>
-                  <p className="text-xs text-[#2C3E50]/60">
+                  <p className="text-xs text-sahay-ink/60">
                     {new Date(session.timestamp).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="shrink-0 text-xs font-bold text-[#E67E22]">
+                <span className="shrink-0 text-xs font-bold text-sahay-accent">
                   {Math.round(session.accuracy_pct)}%
                 </span>
               </li>
             ))}
             {recentSessions.length === 0 && (
-              <li className="py-2.5 text-sm text-[#2C3E50]/60">No sessions recorded yet.</li>
+              <li className="py-2.5 text-sm text-sahay-ink/60">No sessions recorded yet.</li>
             )}
           </ul>
         </Card>
@@ -208,36 +208,36 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
               <div
                 className={`text-2xl font-bold ${
                   cognitiveSummary.trend_direction === 'IMPROVING'
-                    ? 'text-[#27AE60]'
+                    ? 'text-sahay-ok'
                     : cognitiveSummary.trend_direction === 'DECLINING'
-                      ? 'text-[#E67E22]'
-                      : 'text-[#2C3E50]'
+                      ? 'text-sahay-accent'
+                      : 'text-sahay-ink'
                 }`}
               >
                 {cognitiveSummary.trend_direction.replace('_', ' ')}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">
+              <div className="text-sm text-sahay-ink/70">
                 {cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}
                 {cognitiveSummary.accuracy_delta_pct}% accuracy
               </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#2C3E50]">
+              <div className="text-2xl font-bold text-sahay-ink">
                 {cognitiveSummary.stability_score.toFixed(0)}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Stability Score</div>
+              <div className="text-sm text-sahay-ink/70">Stability Score</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#E67E22]">
+              <div className="text-2xl font-bold text-sahay-accent">
                 {cognitiveSummary.recommended_difficulty}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Recommended Difficulty</div>
+              <div className="text-sm text-sahay-ink/70">Recommended Difficulty</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#2C3E50]">
+              <div className="text-2xl font-bold text-sahay-ink">
                 {cognitiveSummary.last_7_days.sessions}
               </div>
-              <div className="text-sm text-[#2C3E50]/70">Sessions (Last 7 Days)</div>
+              <div className="text-sm text-sahay-ink/70">Sessions (Last 7 Days)</div>
             </div>
           </div>
         </Card>
@@ -247,20 +247,20 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       <Card title="Cognitive Health Overview" className="mb-6 animate-fade-up">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-2xl font-bold text-[#2C3E50]">{sessions.length}</div>
-            <div className="text-sm text-[#2C3E50]/70">Sessions Recorded</div>
+            <div className="text-2xl font-bold text-sahay-ink">{sessions.length}</div>
+            <div className="text-sm text-sahay-ink/70">Sessions Recorded</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-[#E67E22]">{Math.round(avgLatency)}ms</div>
-            <div className="text-sm text-[#2C3E50]/70">Avg Touch Latency</div>
+            <div className="text-2xl font-bold text-sahay-accent">{Math.round(avgLatency)}ms</div>
+            <div className="text-sm text-sahay-ink/70">Avg Touch Latency</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-[#2C3E50]">{latestSession?.difficulty_level || 0}</div>
-            <div className="text-sm text-[#2C3E50]/70">Current Difficulty</div>
+            <div className="text-2xl font-bold text-sahay-ink">{latestSession?.difficulty_level || 0}</div>
+            <div className="text-sm text-sahay-ink/70">Current Difficulty</div>
           </div>
           <div>
             <div className={`text-2xl font-bold ${stageColor}`}>{latestSession?.tasks_completed_cleanly || 0}/{latestSession?.tasks_presented || 0}</div>
-            <div className="text-sm text-[#2C3E50]/70">Clean Tasks (Latest)</div>
+            <div className="text-sm text-sahay-ink/70">Clean Tasks (Latest)</div>
           </div>
         </div>
       </Card>

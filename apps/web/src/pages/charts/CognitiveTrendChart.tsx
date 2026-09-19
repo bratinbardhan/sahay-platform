@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import type { DdaHistoryPoint } from '@sahay/types';
 
+import { SAHAY_CARETAKER } from '@/lib/palette';
+
 interface CognitiveTrendChartProps {
   points: DdaHistoryPoint[];
   /** Which cognitive metric to plot on the Y axis. */
@@ -13,8 +15,10 @@ const HEIGHT = 240;
 const MARGIN = { top: 16, right: 18, bottom: 30, left: 46 };
 const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
-const AMBER = '#E67E22';
-const CHARCOAL = '#2C3E50';
+/** Caretaker action amber — the primary series colour (palette token). */
+const AMBER = SAHAY_CARETAKER.accent;
+/** Ink rule for axis/hover guides and the secondary series. */
+const CHARCOAL = SAHAY_CARETAKER.ink;
 
 export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendChartProps) {
   const [hover, setHover] = useState<number | null>(null);
@@ -91,7 +95,7 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
 
   if (ordered.length === 0) {
     return (
-      <p className="text-sm text-[#2C3E50]/60 text-center py-8">
+      <p className="text-sm text-sahay-ink/60 text-center py-8">
         No cognitive telemetry recorded yet — charts appear after the first gameplay sync.
       </p>
     );
@@ -136,7 +140,7 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
               cx={xs[i]}
               cy={ys[i]}
               r={hover === i ? 5.5 : 3.5}
-              fill={hover === i ? AMBER : '#FFFCF6'}
+              fill={hover === i ? AMBER : SAHAY_CARETAKER.surface}
               stroke={AMBER}
               strokeWidth={2}
             />
@@ -165,22 +169,22 @@ export function CognitiveTrendChart({ points, metric = 'load' }: CognitiveTrendC
       </svg>
       {hoveredPoint && hover !== null && (
         <div
-          className="pointer-events-none absolute z-10 rounded-xl border-2 border-[#2C3E50] bg-[#FFFCF6] px-3 py-2 text-xs shadow-md"
+          className="pointer-events-none absolute z-10 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-3 py-2 text-xs shadow-md"
           style={{
             left: `${((MARGIN.left + xs[hover]) / WIDTH) * 100}%`,
             top: `${((MARGIN.top + ys[hover]) / HEIGHT) * 100}%`,
             transform: 'translate(-50%, -115%)',
           }}
         >
-          <p className="font-semibold text-[#2C3E50]">
+          <p className="font-semibold text-sahay-ink">
             {new Date(hoveredPoint.timestamp).toLocaleDateString()}
           </p>
-          <p className="text-[#E67E22] font-bold">
+          <p className="text-sahay-accent font-bold">
             {metric === 'latency'
               ? `Reaction: ${Math.round(hoveredPoint.reaction_latency_ms)} ms`
               : `Cognitive load: ${hoveredPoint.cognitive_load_index.toFixed(1)} / 100`}
           </p>
-          <p className="text-[#2C3E50]/70">Difficulty: {hoveredPoint.difficulty_level.toFixed(2)}</p>
+          <p className="text-sahay-ink/70">Difficulty: {hoveredPoint.difficulty_level.toFixed(2)}</p>
         </div>
       )}
     </div>

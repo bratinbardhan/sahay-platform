@@ -7,6 +7,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  SAHAY_CARETAKER,
+  sahayGlassTooltipStyle,
+  sahayTooltipLabelStyle,
+} from '@/lib/palette';
 
 interface CognitiveEngagementChartProps {
   data: { day: string; minutes: number; accuracy: number }[];
@@ -22,24 +27,26 @@ export function CognitiveEngagementChart({ data }: CognitiveEngagementChartProps
       <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
         <defs>
           <linearGradient id="engagementGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0d9488" stopOpacity={0.95} />
-            <stop offset="100%" stopColor="#0d9488" stopOpacity={0.55} />
+            <stop offset="0%" stopColor={SAHAY_CARETAKER.teal} stopOpacity={0.95} />
+            <stop offset="100%" stopColor={SAHAY_CARETAKER.teal} stopOpacity={0.55} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-        <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#64748b' }} axisLine={false} tickLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.line} vertical={false} />
+        <XAxis
+          dataKey="day"
+          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          axisLine={false}
+          tickLine={false}
+        />
+        <YAxis
+          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          axisLine={false}
+          tickLine={false}
+        />
         <Tooltip
-          cursor={{ fill: 'rgba(13, 148, 136, 0.08)' }}
-          contentStyle={{
-            background: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid #e2e8f0',
-            borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
-            padding: '10px 14px',
-          }}
-          labelStyle={{ fontWeight: 700, color: '#0f172a', marginBottom: 4 }}
+          cursor={{ fill: SAHAY_CARETAKER.tealWash }}
+          contentStyle={sahayGlassTooltipStyle}
+          labelStyle={sahayTooltipLabelStyle}
           formatter={(value: number, name: string) => {
             const label = name === 'minutes' ? 'Session Time' : 'Accuracy';
             const unit = name === 'minutes' ? ' mins' : '%';

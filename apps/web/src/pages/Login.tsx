@@ -85,7 +85,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </button>
         </form>
 
-        <p className="text-sm text-gray-500 text-center mt-2">
+        <p className="text-sm text-sahay-muted text-center mt-2">
           Demo Caretaker: <b>ram</b> / <b>12345678</b>
         </p>
 
