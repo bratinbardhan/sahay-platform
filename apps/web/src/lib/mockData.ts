@@ -1,83 +1,87 @@
 import type { PatientProfile, GameplaySessionLog, ReminiscenceMedia, GeofenceZone } from '@sahay/types';
 
-/** Local id generator (removes runtime `uuid` dependency). */
-function randomId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-  return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+import {
+  DEMO_CAREGIVER_CONTACT,
+  DEMO_CARETAKER,
+  DEMO_GEOFENCE,
+  DEMO_MEMORIES,
+  DEMO_PATIENT_ID,
+  getDemoActivityHeatmap,
+  getDemoCognitiveLoad14d,
+  getDemoGdsDistribution,
+  getDemoGeofence,
+  getDemoMoodStability14d,
+  getDemoPatient,
+  getDemoPatientTimestamps,
+  getDemoSessionMetrics14d,
+  getDemoSessionRecords,
+  type MemoryGalleryTag,
+} from '@/lib/demoSeed';
+
+export {
+  DEMO_CAREGIVER_CONTACT,
+  DEMO_GEOFENCE,
+  getDemoActivityHeatmap,
+  getDemoCognitiveLoad14d,
+  getDemoGdsDistribution,
+  getDemoGeofence,
+  getDemoMoodStability14d,
+  getDemoPatientTimestamps,
+  getDemoSessionMetrics14d,
+};
+
+export type { MemoryGalleryTag };
+
+export interface GalleryMediaItem extends ReminiscenceMedia {
+  title: string;
+  filter_tag: MemoryGalleryTag;
+  captured_on: string;
 }
 
 export function getMockPatient(): Promise<PatientProfile> {
-  return Promise.resolve({
-    id: 'demo-patient-aditya',
-    caregiver_id: 'demo-caretaker-ram',
-    name: 'Aditya',
-    age: 72,
-    assigned_gds_stage: 4,
-    primary_language: 'en',
-    demitoken_balance: 128,
-    streak_days: 14,
-    created_at: '2024-01-15T10:00:00Z',
-  });
+  return Promise.resolve(getDemoPatient());
 }
 
-const GAME_MODULES = ['rapid_fire_sorting', 'serial_number_scatter', 'face_name_match', 'environmental_sound_match'];
-
 export function getMockSessionLogs(): Promise<GameplaySessionLog[]> {
-  const sessions: GameplaySessionLog[] = [];
-  for (let i = 9; i >= 0; i -= 1) {
-    const presented = 12 + Math.floor(Math.random() * 8);
-    const guided = Math.floor(Math.random() * 3);
-    const clean = presented - guided;
-    const latency = 900 + Math.floor(Math.random() * 1400) - i * 80;
-    sessions.push({
-      id: randomId(),
-      patient_id: 'patient-001',
-      game_module_id: GAME_MODULES[i % GAME_MODULES.length],
-      gds_stage: 4,
-      difficulty_level: 3 + Math.floor(Math.random() * 3),
-      tasks_presented: presented,
-      tasks_completed_cleanly: clean,
-      tasks_guided: guided,
-      avg_latency_ms: Math.max(200, latency),
-      demitokens_earned: clean * 2 + guided * 1,
-      sync_status: 'SYNCED',
-      timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-    });
-  }
+  const sessions: GameplaySessionLog[] = getDemoSessionRecords().map((record) => ({
+    id: record.session_log_id,
+    patient_id: DEMO_PATIENT_ID,
+    game_module_id: record.game_module_id,
+    gds_stage: record.gds_stage,
+    difficulty_level: record.difficulty_level,
+    tasks_presented: record.tasks_presented,
+    tasks_completed_cleanly: record.tasks_completed_cleanly,
+    tasks_guided: record.tasks_presented - record.tasks_completed_cleanly,
+    avg_latency_ms: record.avg_latency_ms,
+    demitokens_earned: record.demitokens_earned,
+    sync_status: 'SYNCED',
+    timestamp: record.timestamp,
+  }));
   return Promise.resolve(sessions);
 }
 
-export const MOCK_MEDIA: ReminiscenceMedia[] = [
-  {
-    id: 'media-001',
-    patient_id: 'patient-001',
-    media_type: 'PHOTO',
-    file_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',
-    label_text: 'Grandson Rahul at school',
-    relation_tag: 'Grandson Rahul',
-    event_year: 2023,
-    checksum_sha256: 'abc123',
-  },
-  {
-    id: 'media-002',
-    patient_id: 'patient-001',
-    media_type: 'VOICE',
-    file_url: 'https://example.com/media/voice-note-001.mp3',
-    label_text: 'Rahul singing rhymes',
-    relation_tag: 'Grandson Rahul',
-    event_year: 2023,
-    checksum_sha256: 'def456',
-  },
-];
+export const MOCK_MEDIA: GalleryMediaItem[] = DEMO_MEMORIES.map((memory, index) => {
+  const isAudio = memory.audio_narration_url !== null && index % 3 === 2;
+  const tag = (memory.relationship_tag === 'Travel' || memory.relationship_tag === 'Music'
+    ? memory.relationship_tag
+    : 'Family') as MemoryGalleryTag;
+  const yearMatch = memory.era_or_date?.match(/\d{4}/);
+  return {
+    id: memory.id,
+    patient_id: memory.patient_id,
+    media_type: isAudio ? 'VOICE' : 'PHOTO',
+    file_url: isAudio ? (memory.audio_narration_url ?? memory.image_url) : memory.image_url,
+    label_text: memory.caption_text,
+    relation_tag: tag,
+    event_year: yearMatch ? Number(yearMatch[0]) : null,
+    checksum_sha256: `sha256-demo-${memory.id}`,
+    title: memory.title,
+    filter_tag: tag,
+    captured_on: memory.created_at,
+  };
+});
 
-export const MOCK_GEOFENCE: GeofenceZone = {
-  id: 'fence-001',
-  patient_id: 'patient-001',
-  zone_name: 'Home Perimeter',
-  center_lat: 25.5941,
-  center_lng: 91.7362,
-  radius_meters: 200,
-  is_active: true,
-};
+/** Home perimeter in Shillong (Police Bazar / Laitumkhrah basin). */
+export const MOCK_GEOFENCE: GeofenceZone = getDemoGeofence();
+
+export const MOCK_CAREGIVER = DEMO_CARETAKER;

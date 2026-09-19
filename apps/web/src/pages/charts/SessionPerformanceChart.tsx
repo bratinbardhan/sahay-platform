@@ -1,204 +1,116 @@
-import { useMemo, useState } from 'react';
-import * as d3 from 'd3';
+import { useMemo } from 'react';
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import type { SessionRecord } from '@sahay/types';
 
-import { SAHAY_CARETAKER } from '@/lib/palette';
+import { SAHAY_CARETAKER, sahayTooltipLabelStyle, sahayTooltipStyle } from '@/lib/palette';
+import { CHART_ANIMATION_MS, ChartShell } from './ChartShell';
 
 interface SessionPerformanceChartProps {
   sessions: SessionRecord[];
 }
 
-interface GameAggregate {
-  game: string;
-  label: string;
-  accuracyPct: number;
-  latencyMs: number;
-  sessionCount: number;
+interface DailyBars {
+  day: string;
+  attempts: number;
+  completed: number;
+  durationMin: number;
+  sortAccuracy: number;
+  avgLatencyMs: number;
 }
 
-const WIDTH = 560;
-const HEIGHT = 260;
-const MARGIN = { top: 16, right: 18, bottom: 44, left: 46 };
-const INNER_W = WIDTH - MARGIN.left - MARGIN.right;
-const INNER_H = HEIGHT - MARGIN.top - MARGIN.bottom;
-/** Accuracy series — caretaker action amber (palette token). */
-const AMBER = SAHAY_CARETAKER.accent;
-/** Latency series — deep ink, so the two series never rely on hue alone. */
-const CHARCOAL = SAHAY_CARETAKER.ink;
-/** Reaction-latency axis ceiling (ms) — matches the backend's cognitive-load cap. */
-const LATENCY_AXIS_MAX = 2000;
-
-function formatLabel(moduleId: string): string {
-  return moduleId.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+function formatDay(timestamp: string): string {
+  return new Date(timestamp).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
 }
 
-/** Aggregate sessions per game module: mean accuracy + mean reaction latency. */
-function aggregate(sessions: SessionRecord[]): GameAggregate[] {
-  const groups = new Map<string, SessionRecord[]>();
-  for (const session of sessions) {
-    const bucket = groups.get(session.game_module_id) ?? [];
-    bucket.push(session);
-    groups.set(session.game_module_id, bucket);
+function aggregateDaily(sessions: SessionRecord[]): DailyBars[] {
+  const buckets = new Map<string, DailyBars>();
+  const ordered = [...sessions].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+  for (const session of ordered) {
+    const day = formatDay(session.timestamp);
+    const current = buckets.get(day) ?? {
+      day,
+      attempts: 0,
+      completed: 0,
+      durationMin: 0,
+      sortAccuracy: 0,
+      avgLatencyMs: 0,
+    };
+    const priorAttempts = current.attempts;
+    current.attempts += session.tasks_presented;
+    current.completed += session.tasks_completed_cleanly;
+    current.durationMin += session.duration_seconds / 60;
+    current.sortAccuracy =
+      current.attempts > 0
+        ? Math.round((current.completed / current.attempts) * 1000) / 10
+        : 0;
+    current.avgLatencyMs =
+      priorAttempts + session.tasks_presented > 0
+        ? Math.round(
+            (current.avgLatencyMs * priorAttempts +
+              session.avg_latency_ms * session.tasks_presented) /
+              (priorAttempts + session.tasks_presented)
+          )
+        : session.avg_latency_ms;
+    buckets.set(day, current);
   }
-  return Array.from(groups.entries())
-    .map(([game, rows]) => ({
-      game,
-      label: formatLabel(game),
-      accuracyPct: rows.reduce((sum, r) => sum + r.accuracy_pct, 0) / Math.max(1, rows.length),
-      latencyMs: rows.reduce((sum, r) => sum + r.avg_latency_ms, 0) / Math.max(1, rows.length),
-      sessionCount: rows.length,
-    }))
-    .sort((a, b) => b.sessionCount - a.sessionCount);
+  return Array.from(buckets.values());
 }
 
-/**
- * Session Performance Breakdown — grouped D3 bar chart comparing accuracy
- * (amber, left axis, %) and reaction speed (charcoal, right axis, ms) across
- * game modules, e.g. Rapid-Fire Sorting vs Serial Number Scatter.
- */
 export function SessionPerformanceChart({ sessions }: SessionPerformanceChartProps) {
-  const [hover, setHover] = useState<{ game: string; series: 'accuracy' | 'latency' } | null>(null);
-
-  const data = useMemo(() => aggregate(sessions), [sessions]);
-
-  const { gameScale, accuracyY, latencyY, bars } = useMemo(() => {
-    const gameScale = d3
-      .scaleBand<string>()
-      .domain(data.map((d) => d.game))
-      .range([0, INNER_W])
-      .paddingInner(0.25)
-      .paddingOuter(0.15);
-    const innerScale = d3
-      .scaleBand<string>()
-      .domain(['accuracy', 'latency'])
-      .range([0, gameScale.bandwidth()])
-      .padding(0.08);
-    const accuracyY = d3.scaleLinear().domain([0, 100]).nice().range([INNER_H, 0]);
-    const latencyY = d3.scaleLinear().domain([0, LATENCY_AXIS_MAX]).nice().range([INNER_H, 0]);
-    const bars = data.flatMap((d) => [
-      {
-        game: d.game,
-        series: 'accuracy' as const,
-        x: (gameScale(d.game) ?? 0) + (innerScale('accuracy') ?? 0),
-        y: accuracyY(d.accuracyPct),
-        width: innerScale.bandwidth(),
-        height: INNER_H - accuracyY(d.accuracyPct),
-        fill: AMBER,
-      },
-      {
-        game: d.game,
-        series: 'latency' as const,
-        x: (gameScale(d.game) ?? 0) + (innerScale('latency') ?? 0),
-        y: latencyY(d.latencyMs),
-        width: innerScale.bandwidth(),
-        height: INNER_H - latencyY(d.latencyMs),
-        fill: CHARCOAL,
-      },
-    ]);
-    return { gameScale, accuracyY, latencyY, bars };
-  }, [data]);
+  const data = useMemo(() => aggregateDaily(sessions), [sessions]);
 
   if (data.length === 0) {
     return (
-      <p className="text-sm text-sahay-ink/60 text-center py-8">
-        No gameplay sessions recorded yet.
-      </p>
+      <p className="text-sm text-sahay-ink/60 text-center py-8">No gameplay sessions recorded yet.</p>
     );
   }
 
-  const hovered = hover ? data.find((d) => d.game === hover.game) : null;
+  const attemptsColor = SAHAY_CARETAKER.viz[1];
+  const completedColor = SAHAY_CARETAKER.viz[0];
 
   return (
-    <div className="relative">
-      <svg
-        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        className="w-full"
-        role="img"
-        aria-label="Session performance breakdown by game"
-      >
-        <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
-          <g
-            ref={(el) => {
-              if (el) {
-                d3.select(el)
-                  .call(d3.axisLeft(accuracyY).ticks(5).tickFormat((v) => `${v}%`))
-                  .selectAll('text, line')
-                  .attr('stroke', CHARCOAL)
-                  .attr('fill', CHARCOAL);
-              }
-            }}
-          />
-          <g
-            ref={(el) => {
-              if (el) {
-                d3.select(el)
-                  .call(d3.axisRight(latencyY).ticks(5))
-                  .selectAll('text, line')
-                  .attr('stroke', CHARCOAL)
-                  .attr('fill', CHARCOAL);
-              }
-            }}
-            transform={`translate(${INNER_W}, 0)`}
-          />
-          <g
-            ref={(el) => {
-              if (el) {
-                d3.select(el)
-                  .call(d3.axisBottom(gameScale).tickSize(0).tickFormat((d) => d as string))
-                  .selectAll('text')
-                  .attr('fill', CHARCOAL)
-                  .attr('dy', '1.1em')
-                  .style('font-size', '10px');
-              }
-            }}
-            transform={`translate(0, ${INNER_H})`}
-          />
-          {bars.map((bar) => {
-            const isHovered = hover?.game === bar.game && hover?.series === bar.series;
-            return (
-              <rect
-                key={`${bar.game}-${bar.series}`}
-                x={bar.x}
-                y={bar.y}
-                width={bar.width}
-                height={Math.max(0, bar.height)}
-                fill={bar.fill}
-                opacity={hover && !isHovered ? 0.55 : 1}
-                rx={4}
-                onMouseEnter={() => setHover({ game: bar.game, series: bar.series })}
-                onMouseLeave={() => setHover(null)}
-              />
-            );
-          })}
-        </g>
-      </svg>
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-5 mt-1 text-xs text-sahay-ink">
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: AMBER }} />
-          Accuracy %
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: CHARCOAL }} />
-          Reaction speed (ms, right axis)
-        </span>
-      </div>
-
-      {hovered && hover && (
-        <div
-          className="pointer-events-none absolute z-10 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-3 py-2 text-xs shadow-md"
-          style={{ left: '50%', bottom: 48, transform: 'translateX(-50%)' }}
-        >
-          <p className="font-semibold text-sahay-ink">{hovered.label}</p>
-          {hover.series === 'accuracy' ? (
-            <p className="text-sahay-accent font-bold">Accuracy: {hovered.accuracyPct.toFixed(1)}%</p>
-          ) : (
-            <p className="font-bold text-sahay-ink">Reaction: {Math.round(hovered.latencyMs)} ms</p>
-          )}
-          <p className="text-sahay-ink/70">{hovered.sessionCount} session(s)</p>
-        </div>
-      )}
-    </div>
+    <ChartShell>
+      <BarChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <Tooltip
+          contentStyle={sahayTooltipStyle}
+          labelStyle={sahayTooltipLabelStyle}
+          formatter={(value: unknown, name: unknown) => {
+            const numeric = typeof value === 'number' ? value : Number(value ?? 0);
+            return [`${numeric}`, String(name)];
+          }}
+          labelFormatter={(label, payload) => {
+            const row = Array.isArray(payload) ? payload[0]?.payload : undefined;
+            if (!row) {
+              return String(label);
+            }
+            return `${row.day} · ${row.durationMin.toFixed(1)} min · ${row.sortAccuracy}% sort · ${row.avgLatencyMs}ms`;
+          }}
+        />
+        <Legend />
+        <Bar
+          dataKey="attempts"
+          name="Attempts"
+          fill={attemptsColor}
+          radius={[6, 6, 0, 0]}
+          maxBarSize={22}
+          isAnimationActive={true}
+          animationDuration={CHART_ANIMATION_MS}
+        />
+        <Bar
+          dataKey="completed"
+          name="Completed"
+          fill={completedColor}
+          radius={[6, 6, 0, 0]}
+          maxBarSize={22}
+          isAnimationActive={true}
+          animationDuration={CHART_ANIMATION_MS}
+        />
+      </BarChart>
+    </ChartShell>
   );
 }

@@ -1,163 +1,228 @@
-import { useState } from 'react';
-import type { ReminiscenceMedia } from '@sahay/types';
-import { ChevronLeft, Upload, Mic, Save } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Check, ChevronLeft, Mic, Upload, X } from 'lucide-react';
 import { Card } from '@/components/Card';
 import { ActionButton } from '@/components/ActionButton';
-import { MOCK_MEDIA } from '@/lib/mockData';
+import { MOCK_MEDIA, type GalleryMediaItem, type MemoryGalleryTag } from '@/lib/mockData';
+import { DEMO_PATIENT_ID } from '@/lib/demoSeed';
 
-interface MediaManagerProps { onNavigate: (page: string) => void; }
+interface MediaManagerProps {
+  onNavigate: (page: string) => void;
+}
+
+const FILTERS: Array<'All' | MemoryGalleryTag> = ['All', 'Family', 'Travel', 'Music'];
 
 export function MediaManager({ onNavigate }: MediaManagerProps) {
-  const [mediaList, setMediaList] = useState<ReminiscenceMedia[]>(MOCK_MEDIA);
+  const [mediaList, setMediaList] = useState<GalleryMediaItem[]>(MOCK_MEDIA);
+  const [filter, setFilter] = useState<'All' | MemoryGalleryTag>('All');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [lastSyncPayload, setLastSyncPayload] = useState<ReminiscenceMedia | null>(null);
-
   const [form, setForm] = useState({
-    relation_tag: '', event_year: '', label_text: '',
-    media_type: 'PHOTO' as 'PHOTO' | 'VOICE', file: null as File | null,
+    title: '',
+    filter_tag: 'Family' as MemoryGalleryTag,
+    audio_note: '',
+    file: null as File | null,
+    audioFile: null as File | null,
   });
 
-    const mockUpload = async (file: File): Promise<string> => {
-    setIsUploading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsUploading(false);
-    return `https://s3.sahay.local/reminiscence/${file.name}-${Date.now()}`;
+  const visible = useMemo(
+    () => (filter === 'All' ? mediaList : mediaList.filter((item) => item.filter_tag === filter)),
+    [filter, mediaList]
+  );
+
+  const showToast = (message: string) => {
+    setToast(message);
+    window.setTimeout(() => setToast(null), 2800);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.file) return;
-    const fileUrl = await mockUpload(form.file);
-    const newMedia: ReminiscenceMedia = {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!form.file) {
+      return;
+    }
+    setIsUploading(true);
+    await new Promise((resolve) => window.setTimeout(resolve, 700));
+    const objectUrl = URL.createObjectURL(form.file);
+    const item: GalleryMediaItem = {
       id: `media-${Date.now()}`,
-      patient_id: 'patient-001',
-      media_type: form.media_type,
-      file_url: fileUrl,
-      label_text: form.label_text,
-      relation_tag: form.relation_tag,
-      event_year: form.event_year ? parseInt(form.event_year, 10) : null,
-      checksum_sha256: 'sha256-placeholder',
+      patient_id: DEMO_PATIENT_ID,
+      media_type: form.file.type.startsWith('audio') ? 'VOICE' : 'PHOTO',
+      file_url: objectUrl,
+      label_text: form.audio_note || form.title,
+      relation_tag: form.filter_tag,
+      event_year: new Date().getFullYear(),
+      checksum_sha256: `sha256-${form.file.name}${form.audioFile ? `-${form.audioFile.name}` : ''}`,
+      title: form.title || form.file.name,
+      filter_tag: form.filter_tag,
+      captured_on: new Date().toISOString(),
     };
-    setMediaList([newMedia, ...mediaList]);
-    setLastSyncPayload(newMedia);
-    setShowForm(false);
-    setForm({ relation_tag: '', event_year: '', label_text: '', media_type: 'PHOTO', file: null });
+    setMediaList((prev) => [item, ...prev]);
+    setIsUploading(false);
+    setModalOpen(false);
+    setForm({ title: '', filter_tag: 'Family', audio_note: '', file: null, audioFile: null });
+    showToast('Memory saved — queued for delta sync to the patient album.');
   };
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-8">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in" data-palette="caretaker">
       <div className="flex items-center mb-6">
         <button
           type="button"
-          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken"
+          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken transition-all duration-care ease-care"
           onClick={() => onNavigate('dashboard')}
           aria-label="Back to dashboard"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Reminiscence Media Manager</h1>
       </div>
 
       <p className="text-sahay-ink/70 mb-6">
-        Upload family photos and voice notes. These sync to the patient's mobile app
-        for Face &amp; Name Match and Environmental Sound games.
+        Six historical memories tagged Family, Travel, and Music. Filter the gallery or upload a new
+        photo with an optional audio note.
       </p>
 
-      {!showForm && (
-        <ActionButton label="Add New Media" icon={<Upload size={20} />} onClick={() => setShowForm(true)} className="mb-6" />
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setFilter(tab)}
+              className={`px-4 py-2 rounded-full border-2 text-sm font-semibold min-h-[44px] transition-all duration-care ease-care ${
+                filter === tab
+                  ? 'bg-sahay-accent text-white border-sahay-ink'
+                  : 'bg-sahay-surface text-sahay-ink border-sahay-ink'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        <ActionButton
+          label="Upload New Memory"
+          icon={<Upload className="w-5 h-5 md:w-6 md:h-6" />}
+          onClick={() => setModalOpen(true)}
+        />
+      </div>
 
-      {showForm && (
-        <Card title="Upload New Media" className="mb-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-sahay-ink mb-1">Relation Tag</label>
-                <input type="text" value={form.relation_tag}
-                  onChange={(e) => setForm({ ...form, relation_tag: e.target.value })}
-                  placeholder="e.g., Grandson Rahul" required
-                  className="w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface text-sahay-ink focus:outline-none focus:ring-2 focus:ring-sahay-accent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-sahay-ink mb-1">Event Year</label>
-                <input type="number" value={form.event_year}
-                  onChange={(e) => setForm({ ...form, event_year: e.target.value })}
-                  placeholder="e.g., 2023" min="1900" max="2030"
-                  className="w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface text-sahay-ink focus:outline-none focus:ring-2 focus:ring-sahay-accent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-sahay-ink mb-1">Label Text</label>
-                <input type="text" value={form.label_text}
-                  onChange={(e) => setForm({ ...form, label_text: e.target.value })}
-                  placeholder="e.g., Rahul at school graduation" required
-                  className="w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface text-sahay-ink focus:outline-none focus:ring-2 focus:ring-sahay-accent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-sahay-ink mb-1">Media Type</label>
-                <select value={form.media_type}
-                  onChange={(e) => setForm({ ...form, media_type: e.target.value as 'PHOTO' | 'VOICE' })}
-                  className="w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface text-sahay-ink focus:outline-none focus:ring-2 focus:ring-sahay-accent">
-                  <option value="PHOTO">Photo</option>
-                  <option value="VOICE">Voice Note</option>
-                </select>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-sahay-ink mb-1">
-                  {form.media_type === 'PHOTO' ? 'Photo File' : 'Voice Note File'}
-                </label>
-                <input type="file"
-                  accept={form.media_type === 'PHOTO' ? 'image/*' : 'audio/*'}
-                  onChange={(e) => setForm({ ...form, file: e.target.files?.[0] ?? null })} required
-                  className="w-full px-4 py-3 border-2 border-dashed border-sahay-ink rounded-xl bg-sahay-surface text-sahay-ink file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sahay-accent file:text-white hover:file:bg-sahay-accent-strong" />
-              </div>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <ActionButton label="Cancel" variant="secondary" onClick={() => setShowForm(false)} />
-              <ActionButton
-                type="submit"
-                label={isUploading ? 'Uploading…' : 'Save Media'}
-                icon={<Save size={20} />}
-                disabled={isUploading}
-              />
-            </div>
-          </form>
-        </Card>
-      )}
-
-      {/* Sync payload preview */}
-      {lastSyncPayload && (
-        <Card title="Prepared Sync Payload — POST /api/v1/reminiscence/media" className="mb-8">
-          <pre className="p-4 bg-sahay-bg border-2 border-sahay-ink rounded-xl text-xs text-sahay-ink overflow-x-auto">
-            {JSON.stringify(lastSyncPayload, null, 2)}
-          </pre>
-          <p className="text-xs text-sahay-ink/60 mt-2">
-            This payload conforms to the backend <code>ReminiscenceMedia</code> schema and is queued
-            for the offline-first delta sync whenever connectivity is available.
-          </p>
-        </Card>
-      )}
-
-      {/* Media List */}
-      <Card title={`Uploaded Media (${mediaList.length})`}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {mediaList.map((m) => (
-            <div key={m.id} className="text-center p-4 bg-sahay-surface border-2 border-sahay-ink rounded-xl">
-              {m.media_type === 'PHOTO' ? (
-                <img src={m.file_url} alt={m.label_text} className="w-full h-32 object-cover rounded-lg mb-2 border-2 border-sahay-ink" />
+      <Card title={`Gallery (${visible.length})`} className="bg-sahay-surface shadow-caretaker-card">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {visible.map((item) => (
+            <article
+              key={item.id}
+              className="text-left bg-sahay-surface-raised border-2 border-sahay-ink rounded-xl overflow-hidden shadow-caretaker-card transition-all duration-care ease-care hover:shadow-caretaker-raised"
+            >
+              {item.media_type === 'PHOTO' ? (
+                <img src={item.file_url} alt={item.title} className="w-full h-40 object-cover" />
               ) : (
-                <div className="w-full h-32 border-2 border-dashed border-sahay-ink rounded-lg mb-2 flex items-center justify-center">
-                  <Mic size={40} className="text-sahay-ink" />
+                <div className="w-full h-40 border-b-2 border-sahay-ink flex items-center justify-center bg-sahay-panel">
+                  <Mic className="w-5 h-5 md:w-6 md:h-6 text-sahay-ink" />
                 </div>
               )}
-              <div className="font-bold text-sahay-ink">{m.relation_tag}</div>
-              <div className="text-xs text-sahay-ink/70 mt-1">{m.label_text}</div>
-              <div className="text-xs text-sahay-accent font-medium">{m.event_year}</div>
-            </div>
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-bold text-sahay-ink">{item.title}</h3>
+                  <span className="text-[11px] font-bold uppercase tracking-wide text-sahay-accent">
+                    {item.filter_tag}
+                  </span>
+                </div>
+                <p className="text-xs text-sahay-ink/70 mt-1">{item.label_text}</p>
+                <p className="text-xs text-sahay-muted mt-2">
+                  {item.event_year ?? new Date(item.captured_on).getFullYear()} ·{' '}
+                  {new Date(item.captured_on).toLocaleDateString('en-IN')}
+                </p>
+              </div>
+            </article>
           ))}
         </div>
       </Card>
+
+      {modalOpen ? (
+        <div className="fixed inset-0 z-40 bg-sahay-ink/40 flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-6 shadow-caretaker-raised animate-slide-up">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-sahay-ink">Upload New Memory</h2>
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="p-2 rounded-lg border-2 border-sahay-ink"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5 md:w-6 md:h-6" />
+              </button>
+            </div>
+            <form onSubmit={(event) => void handleSubmit(event)} className="space-y-4">
+              <label className="block text-sm font-semibold text-sahay-ink">
+                Title
+                <input
+                  type="text"
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  className="mt-1 w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface"
+                />
+              </label>
+              <label className="block text-sm font-semibold text-sahay-ink">
+                Tag
+                <select
+                  value={form.filter_tag}
+                  onChange={(e) =>
+                    setForm({ ...form, filter_tag: e.target.value as MemoryGalleryTag })
+                  }
+                  className="mt-1 w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface"
+                >
+                  <option value="Family">Family</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Music">Music</option>
+                </select>
+              </label>
+              <label className="block text-sm font-semibold text-sahay-ink">
+                Photo selector
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setForm({ ...form, file: e.target.files?.[0] ?? null })}
+                  className="mt-1 w-full px-4 py-3 border-2 border-dashed border-sahay-ink rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-sahay-accent file:text-white"
+                />
+              </label>
+              <label className="block text-sm font-semibold text-sahay-ink">
+                Audio note
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={(e) => setForm({ ...form, audioFile: e.target.files?.[0] ?? null })}
+                  className="mt-1 w-full px-4 py-3 border-2 border-dashed border-sahay-ink rounded-xl file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-sahay-accent file:text-white"
+                />
+                <textarea
+                  value={form.audio_note}
+                  onChange={(e) => setForm({ ...form, audio_note: e.target.value })}
+                  rows={3}
+                  placeholder="A short spoken memory to play on the patient tablet…"
+                  className="mt-2 w-full px-4 py-3 border-2 border-sahay-ink rounded-xl bg-sahay-surface"
+                />
+              </label>
+              <div className="flex gap-3">
+                <ActionButton label="Cancel" variant="secondary" onClick={() => setModalOpen(false)} />
+                <ActionButton
+                  type="submit"
+                  label={isUploading ? 'Saving…' : 'Save Memory'}
+                  icon={<Upload className="w-5 h-5 md:w-6 md:h-6" />}
+                  disabled={isUploading}
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
+      {toast ? (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-4 py-3 shadow-caretaker-toast animate-slide-up">
+          <Check className="w-5 h-5 md:w-6 md:h-6 text-sahay-ok-ink" />
+          <span className="text-sm font-semibold text-sahay-ink">{toast}</span>
+        </div>
+      ) : null}
     </div>
   );
 }
-

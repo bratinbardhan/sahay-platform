@@ -22,12 +22,26 @@ export interface LeafletCircle {
   addTo(map: LeafletMap): LeafletCircle;
   setLatLng(latlng: LeafletLatLng): LeafletCircle;
   setRadius(radius: number): LeafletCircle;
+  setStyle(options: {
+    color?: string;
+    fillColor?: string;
+    fillOpacity?: number;
+    weight?: number;
+  }): LeafletCircle;
   remove(): void;
+}
+
+export interface LeafletDivIcon {
+  options?: {
+    className?: string;
+    html?: string;
+  };
 }
 
 export interface LeafletMarker {
   addTo(map: LeafletMap): LeafletMarker;
   setLatLng(latlng: LeafletLatLng): LeafletMarker;
+  setIcon(icon: LeafletDivIcon): LeafletMarker;
   bindTooltip(content: string): LeafletMarker;
   on(
     event: 'dragend',
@@ -57,8 +71,14 @@ export interface LeafletNamespace {
   ): LeafletCircle;
   marker(
     center: [number, number],
-    options?: { draggable?: boolean; title?: string }
+    options?: { draggable?: boolean; title?: string; icon?: LeafletDivIcon }
   ): LeafletMarker;
+  divIcon(options: {
+    className?: string;
+    html?: string;
+    iconSize?: [number, number];
+    iconAnchor?: [number, number];
+  }): LeafletDivIcon;
 }
 
 declare global {

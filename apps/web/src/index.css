@@ -505,6 +505,10 @@ body {
   animation: fade-up 560ms ease-out both;
 }
 
+.animate-slide-up {
+  animation: fade-up 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .animate-soft-pulse {
   animation: soft-pulse 2.4s ease-in-out infinite;
 }
@@ -512,6 +516,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-fade-up,
+  .animate-slide-up,
   .animate-soft-pulse {
     animation: none;
   }

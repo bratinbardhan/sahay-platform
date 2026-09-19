@@ -5,16 +5,20 @@ import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
 import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
+import { getDemoActivityHeatmap, getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
+import { MoodStabilityChart } from './charts/MoodStabilityChart';
+import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
+import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 interface AnalyticsChartProps {
   onNavigate: (page: string) => void;
   token: string;
 }
 
-const SESSION_PAGE_SIZE = 10;
+const SESSION_PAGE_SIZE = 14;
 
 const TREND_LABELS: Record<string, string> = {
   IMPROVING: 'Improving',
@@ -26,7 +30,6 @@ const TREND_LABELS: Record<string, string> = {
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
 
-  // Live telemetry: caretaker's patient → DDA history + paginated session logs.
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
   const { ddaHistory, cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
     token,
@@ -38,34 +41,35 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     SESSION_PAGE_SIZE
   );
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
+  const moodSeries = getDemoMoodStability14d();
+  const heatmapCells = getDemoActivityHeatmap();
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-8">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in" data-palette="caretaker">
       <div className="flex items-center mb-6">
         <button
           type="button"
-          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken"
+          className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken transition-all duration-care ease-care"
           onClick={() => onNavigate('dashboard')}
           aria-label="Back to dashboard"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
-        {isDemo && (
+        {isDemo ? (
           <span className="ml-auto rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
-            Demo data — live telemetry unavailable
+            Demo data — 14-day seed
           </span>
-        )}
+        ) : null}
       </div>
 
       <p className="text-sahay-ink/70 mb-6">
         {patient ? `Live telemetry for ${patient.name}` : 'Live telemetry'} — cognitive load,
-        reaction latency, and the Achaotic DDA difficulty curve.
+        Achaotic DDA, sundowning mood, session throughput, and touch-latency heat.
       </p>
 
-      {/* 7-day Cognitive Summary */}
-      {cognitiveSummary && (
-        <Card title="7-Day Cognitive Summary" className="mb-8">
+      {cognitiveSummary ? (
+        <Card title="7-Day Cognitive Summary" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-2xl font-bold text-sahay-ink">
@@ -78,7 +82,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             </div>
             <div>
               <div className="text-2xl font-bold text-sahay-ink">
-                {cognitiveSummary.stability_score.toFixed(0)}
+                {cognitiveSummary.stability_score.toFixed(0)}%
               </div>
               <div className="text-sm text-sahay-ink/70">Stability Score</div>
             </div>
@@ -96,20 +100,17 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
 
-      {/* Cognitive trajectory (load index or reaction latency) */}
       <Card
-        title={
-          metric === 'load' ? 'Cognitive Load Index Trend' : 'Reaction Latency Trend'
-        }
-        className="mb-8"
+        title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
+        className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up"
       >
         <div className="flex gap-2 mb-2">
           <button
             type="button"
             onClick={() => setMetric('load')}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-colors ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-all duration-care ease-care ${
               metric === 'load'
                 ? 'bg-sahay-accent border-sahay-accent text-white'
                 : 'bg-sahay-surface border-sahay-ink text-sahay-ink'
@@ -120,7 +121,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <button
             type="button"
             onClick={() => setMetric('latency')}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-colors ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 transition-all duration-care ease-care ${
               metric === 'latency'
                 ? 'bg-sahay-accent border-sahay-accent text-white'
                 : 'bg-sahay-surface border-sahay-ink text-sahay-ink'
@@ -129,24 +130,45 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             Reaction Latency
           </button>
         </div>
-        <CognitiveTrendChart points={ddaHistory?.points ?? []} metric={metric} />
+        <CognitiveTrendChart
+          points={ddaHistory?.points ?? []}
+          loadSeries={getDemoCognitiveLoad14d()}
+          metric={metric}
+        />
       </Card>
 
-      {/* Achaotic DDA Difficulty Curve (last 10 rounds) */}
-      <Card title="Achaotic DDA Difficulty Curve — Last 10 Rounds" className="mb-8">
+      <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
         <DdaDifficultyCurve
           points={ddaHistory?.points ?? []}
           recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null}
         />
         <p className="text-xs text-sahay-ink/60 mt-2">
-          The Achaotic DDA engine applies a non-spiking weighted rolling average to touch latency
-          and error frequency. Difficulty rises and falls only gradually as long-term performance
-          improves; the dashed amber guide marks the recommended next level.
+          Difficulty follows a 3-session trailing average of error rate and a 5-session latency
+          average (~420 ms). The engine never jumps a full level in a single round.
         </p>
       </Card>
 
-      {/* Session Logs Table */}
-      <Card title="Session Logs">
+      <Card title="Mood Stability — Diurnal Sundowning Pattern" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <MoodStabilityChart data={moodSeries} />
+        <p className="text-xs text-sahay-ink/60 mt-2">
+          Late-afternoon scores dip 18–28 points below morning observations, consistent with
+          sundowning. Evening partially recovers.
+        </p>
+      </Card>
+
+      <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <SessionPerformanceChart sessions={sessions} />
+      </Card>
+
+      <Card title="Activity & Touch Latency Heatmap (7 × 24)" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <ActivityHeatmap cells={heatmapCells} />
+        <p className="text-xs text-sahay-ink/60 mt-2">
+          7×24 grid coloured with a D3 latency scale: calm teal (fast) through ~420 ms, amber clusters in
+          late afternoon (sundowning).
+        </p>
+      </Card>
+
+      <Card title="Session Logs" className="bg-sahay-surface shadow-caretaker-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -156,6 +178,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                 <th className="text-left p-2 text-sahay-ink">GDS</th>
                 <th className="text-right p-2 text-sahay-ink">Latency</th>
                 <th className="text-right p-2 text-sahay-ink">Clean/Total</th>
+                <th className="text-right p-2 text-sahay-ink">Score</th>
                 <th className="text-right p-2 text-sahay-ink">Tokens</th>
               </tr>
             </thead>
@@ -180,17 +203,17 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                   </tr>
                 );
               })}
-              {sessions.length === 0 && (
+              {sessions.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-4 text-center text-sahay-ink/60">
                     No gameplay sessions recorded yet.
                   </td>
                 </tr>
-              )}
+              ) : null}
             </tbody>
           </table>
         </div>
-        {pages > 1 && (
+        {pages > 1 ? (
           <div className="flex items-center justify-end gap-3 mt-3 text-sm text-sahay-ink">
             <span>
               Page {page} of {pages} — {total} sessions
@@ -202,7 +225,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
               disabled={page <= 1}
               aria-label="Previous page"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
             <button
               type="button"
@@ -211,13 +234,11 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
               disabled={page >= pages}
               aria-label="Next page"
             >
-              <ChevronRight size={16} />
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );
 }
-
-

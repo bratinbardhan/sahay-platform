@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { GeofenceZone, GeofenceZoneUpsertPayload } from '@sahay/types';
-import { BellRing, ChevronLeft, Loader2, MapPin, Plus, Search } from 'lucide-react';
+import { BellRing, ChevronLeft, Loader2, MapPin, Plus, Search, ShieldAlert, Siren } from 'lucide-react';
 
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
@@ -64,6 +64,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   const [searching, setSearching] = useState(false);
   const [smsArmed, setSmsArmed] = useState(true);
   const [smsToggling, setSmsToggling] = useState(false);
+  const [breachSimulated, setBreachSimulated] = useState(false);
 
   const flashNotice = (message: string) => {
     setNotice(message);
@@ -199,13 +200,23 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   };
 
   return (
-    <div>
+    <div
+      className={`min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in ${breachSimulated ? 'pt-20' : ''}`}
+      data-palette="caretaker"
+    >
+      {breachSimulated ? (
+        <div className="fixed top-0 inset-x-0 z-50 bg-sahay-alert text-white px-4 py-3 font-bold shadow-caretaker-card flex items-center justify-center gap-3 animate-slide-up">
+          <Siren className="w-5 h-5 md:w-6 md:h-6 animate-ping" />
+          SOS — geofence breach simulated. Home pin is alert crimson. Offline SMS payload queued for Twilio.
+        </div>
+      ) : null}
+
       <button
         type="button"
         onClick={() => onNavigate('dashboard')}
-        className="flex items-center gap-2 text-sahay-ink font-semibold mb-6 hover:text-sahay-accent transition-colors"
+        className="flex items-center gap-2 text-sahay-ink font-semibold mb-6 hover:text-sahay-accent transition-all duration-care ease-care"
       >
-        <ChevronLeft size={20} /> Back to Dashboard
+        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> Back to Dashboard
       </button>
 
       <h1 className="text-3xl font-bold text-sahay-ink mb-2">Anti-Wandering Geofencing</h1>
@@ -235,7 +246,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
           />
           <ActionButton
             label={searching ? 'Searching…' : 'Search'}
-            icon={searching ? <Loader2 size={20} className="animate-spin" /> : <Search size={20} />}
+            icon={searching ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : <Search className="w-5 h-5 md:w-6 md:h-6" />}
             onClick={() => void handleSearch()}
             disabled={searching}
           />
@@ -249,7 +260,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                   onClick={() => applyPlace(place)}
                   className="w-full text-left px-4 py-3 bg-sahay-surface hover:bg-sahay-accent/10 transition-colors text-sm text-sahay-ink"
                 >
-                  <MapPin size={16} className="inline mr-2 text-sahay-accent" />
+                  <MapPin className="w-5 h-5 md:w-6 md:h-6 inline mr-2 text-sahay-accent" />
                   {place.displayName}
                 </button>
               </li>
@@ -267,6 +278,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
               centerLng={draft.center_lng}
               radiusMeters={draft.radius_meters}
               onPick={handlePick}
+              breached={breachSimulated}
             />
             <p className="mt-3 text-sm text-sahay-ink/70">
               Click the map or drag the pin to move the home anchor. The shaded circle is the safe
@@ -334,14 +346,14 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
             <div className="flex flex-wrap gap-3">
               <ActionButton
                 label={saving ? 'Saving…' : draft.id ? 'Update Zone' : 'Save Zone'}
-                icon={<MapPin size={20} />}
+                icon={<MapPin className="w-5 h-5 md:w-6 md:h-6" />}
                 onClick={() => void handleSaveZone()}
                 disabled={saving}
               />
               <ActionButton
                 label="Add New Zone"
                 variant="secondary"
-                icon={<Plus size={20} />}
+                icon={<Plus className="w-5 h-5 md:w-6 md:h-6" />}
                 onClick={startNewZone}
               />
             </div>
@@ -350,7 +362,30 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       </Card>
 
       {/* Twilio SMS toggle */}
-      <Card title="Background Anti-Wandering SMS Alerts (Twilio)" className="mb-8">
+      <Card title="Simulate Geofence Breach" className="mb-8 bg-sahay-surface shadow-caretaker-card">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <p className="font-semibold text-sahay-ink">Prototype SOS drill</p>
+            <p className="text-sm text-sahay-ink/70 mt-1">
+              Swaps the home pin to alert crimson with a pulse, raises the SOS banner, and
+              demonstrates the offline SMS queue that Twilio will flush on reconnect.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setBreachSimulated((prev) => !prev)}
+            aria-pressed={breachSimulated}
+            className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-sahay-ink font-semibold min-h-[56px] transition-all duration-care ease-care ${
+              breachSimulated ? 'bg-sahay-alert text-white' : 'bg-sahay-surface text-sahay-ink'
+            }`}
+          >
+            <ShieldAlert className="w-5 h-5 md:w-6 md:h-6" />
+            {breachSimulated ? 'Clear simulated breach' : 'Simulate Geofence Breach'}
+          </button>
+        </div>
+      </Card>
+
+      <Card title="Background SMS Notification (Twilio Gateway)" className="mb-8 bg-sahay-surface shadow-caretaker-card">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-sahay-ink">
@@ -415,8 +450,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                   className="!min-h-0 !py-2 !px-3 text-xs"
                 />
                 <BellRing
-                  size={18}
-                  className={zone.is_active ? 'text-sahay-accent' : 'text-sahay-ink/40'}
+                  className={`w-5 h-5 md:w-6 md:h-6 ${zone.is_active ? 'text-sahay-accent' : 'text-sahay-ink/40'}`}
                 />
               </div>
             </div>

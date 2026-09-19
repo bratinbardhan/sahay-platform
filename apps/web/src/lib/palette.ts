@@ -99,15 +99,15 @@ export const SAHAY_SEVERITY = {
   breach: SAHAY_CARETAKER.alert,
 } as const;
 
-/** GDS 1-7 stage colours for charts, legends and map markers. */
+/** GDS 1–7 stage colours for charts, legends and map markers (no SOS crimson). */
 export const SAHAY_GDS_STAGE_COLORS: Record<number, string> = {
-  1: SAHAY_CARETAKER.ok,
-  2: SAHAY_CARETAKER.okBright,
+  1: SAHAY_CARETAKER.viz[0],
+  2: SAHAY_CARETAKER.viz[1],
   3: SAHAY_CARETAKER.lime,
   4: SAHAY_CARETAKER.warn,
-  5: SAHAY_CARETAKER.warn,
-  6: SAHAY_CARETAKER.warn,
-  7: SAHAY_CARETAKER.warn,
+  5: SAHAY_CARETAKER.info,
+  6: SAHAY_CARETAKER.accent,
+  7: SAHAY_CARETAKER.muted,
 };
 
 /** Recharts `<Tooltip contentStyle>` — near-opaque card surface, ink rule. */

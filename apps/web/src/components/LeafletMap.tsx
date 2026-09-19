@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   waitForLeaflet,
   type LeafletCircle,
+  type LeafletDivIcon,
   type LeafletMap as LeafletMapInstance,
   type LeafletMarker,
   type LeafletNamespace,
@@ -16,28 +17,48 @@ interface LeafletMapProps {
   radiusMeters: number;
   /** Called when the caregiver clicks the map or drags the pin. */
   onPick: (lat: number, lng: number) => void;
+  breached?: boolean;
 }
 
-/** Safe-zone anchor pin — the caretaker action amber, from the palette token. */
-const HOME_PIN_COLOR = SAHAY_CARETAKER.accent;
-/** Fence outline — the deep ink rule shared by every caretaker card. */
-const ZONE_COLOR = SAHAY_CARETAKER.ink;
+/** Clinical teal home pin — caretaker geofence spec. */
+const HOME_PIN_COLOR = '#00B0B0';
+/** Safe-radius outline — caretaker muted / border token. */
+const ZONE_COLOR = '#60747E';
+const BREACH_PIN_COLOR = SAHAY_CARETAKER.alert;
 
-/**
- * Interactive Leaflet map for safe-zone configuration: OpenStreetMap tiles,
- * a draggable home anchor pin, a live radius circle, and click-to-reposition.
- */
-export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: LeafletMapProps) {
+function pinHtml(color: string, pulse: boolean): string {
+  const ping = pulse
+    ? `<span style="position:absolute;inset:-8px;border-radius:9999px;background:${color};opacity:0.45;animation:sahay-pin-ping 1.2s cubic-bezier(0,0,0.2,1) infinite;"></span>`
+    : '';
+  return `<div style="position:relative;width:22px;height:22px;">${ping}<span style="position:absolute;inset:0;border-radius:9999px;background:${color};border:2px solid #2C3E50;box-shadow:0 2px 8px rgba(44,62,80,0.28);"></span></div>`;
+}
+
+function makePin(L: LeafletNamespace, breached: boolean): LeafletDivIcon {
+  return L.divIcon({
+    className: 'sahay-home-pin',
+    html: pinHtml(breached ? BREACH_PIN_COLOR : HOME_PIN_COLOR, breached),
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+}
+
+export function LeafletMap({
+  centerLat,
+  centerLng,
+  radiusMeters,
+  onPick,
+  breached = false,
+}: LeafletMapProps) {
   const containerIdRef = useRef(`sahay-map-${Math.random().toString(36).slice(2)}`);
   const mapRef = useRef<LeafletMapInstance | null>(null);
   const markerRef = useRef<LeafletMarker | null>(null);
   const circleRef = useRef<LeafletCircle | null>(null);
+  const leafletRef = useRef<LeafletNamespace | null>(null);
   const pickRef = useRef(onPick);
   pickRef.current = onPick;
 
   const [mapError, setMapError] = useState<string | null>(null);
 
-  // Create map once.
   useEffect(() => {
     let cancelled = false;
 
@@ -47,9 +68,12 @@ export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: Leafl
         return;
       }
       if (!L) {
-        setMapError('Map tiles could not be loaded (offline?). Coordinates can still be entered manually.');
+        setMapError(
+          'Map tiles could not be loaded (offline?). Coordinates can still be entered manually.'
+        );
         return;
       }
+      leafletRef.current = L;
       const map = L.map(containerIdRef.current, {
         center: [centerLat, centerLng],
         zoom: 16,
@@ -62,6 +86,7 @@ export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: Leafl
       const marker = L.marker([centerLat, centerLng], {
         draggable: true,
         title: 'Home anchor',
+        icon: makePin(L, breached),
       }).addTo(map);
       marker.bindTooltip('Home anchor — drag to reposition');
       marker.on('dragend', (event) => {
@@ -73,8 +98,8 @@ export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: Leafl
         radius: radiusMeters,
         color: ZONE_COLOR,
         weight: 2,
-        fillColor: HOME_PIN_COLOR,
-        fillOpacity: 0.18,
+        fillColor: breached ? BREACH_PIN_COLOR : HOME_PIN_COLOR,
+        fillOpacity: breached ? 0.22 : 0.16,
       }).addTo(map);
 
       map.on('click', (event) => {
@@ -98,29 +123,46 @@ export function LeafletMap({ centerLat, centerLng, radiusMeters, onPick }: Leafl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync pin + circle when props change.
   useEffect(() => {
     const marker = markerRef.current;
     const circle = circleRef.current;
     const map = mapRef.current;
+    const L = leafletRef.current;
     if (!marker || !circle || !map) {
       return;
     }
     marker.setLatLng({ lat: centerLat, lng: centerLng });
+    if (L) {
+      marker.setIcon(makePin(L, breached));
+    }
     circle.setLatLng({ lat: centerLat, lng: centerLng });
     circle.setRadius(radiusMeters);
+    circle.setStyle({
+      color: ZONE_COLOR,
+      fillColor: breached ? BREACH_PIN_COLOR : HOME_PIN_COLOR,
+      fillOpacity: breached ? 0.22 : 0.16,
+    });
     map.setView([centerLat, centerLng]);
-  }, [centerLat, centerLng, radiusMeters]);
+  }, [centerLat, centerLng, radiusMeters, breached]);
 
   return (
     <div className="relative">
-      <div id={containerIdRef.current} className="h-[420px] w-full rounded-xl border-2 border-sahay-ink z-0" />
-      {mapError ? (
-        <p className="mt-2 text-sm text-sahay-ink/70">{mapError}</p>
+      <style>
+        {`@keyframes sahay-pin-ping { 0% { transform: scale(1); opacity: 0.55; } 75%, 100% { transform: scale(2.1); opacity: 0; } }`}
+      </style>
+      <div
+        id={containerIdRef.current}
+        className="h-[420px] w-full rounded-xl border-2 border-sahay-ink z-0"
+      />
+      {breached ? (
+        <span
+          className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sahay-alert animate-ping"
+          aria-hidden
+        />
       ) : null}
+      {mapError ? <p className="mt-2 text-sm text-sahay-ink/70">{mapError}</p> : null}
     </div>
   );
 }
 
-/** Re-export so the page can apply the same colors to the draggable marker. */
 export { HOME_PIN_COLOR, ZONE_COLOR, type LeafletNamespace };

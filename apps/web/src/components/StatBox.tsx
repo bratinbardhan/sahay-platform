@@ -13,7 +13,7 @@ export function StatBox({ label, value, icon, accent = false, subtitle }: StatBo
   const bgClass = accent ? 'bg-sahay-accent-soft' : 'bg-sahay-bg';
 
   return (
-    <div className={`sahay-surface p-5 text-center min-h-[120px] flex flex-col items-center justify-center ${bgClass}`}>
+    <div className={`sahay-surface shadow-caretaker-card p-5 text-center min-h-[120px] flex flex-col items-center justify-center transition-all duration-care ease-care ${bgClass}`}>
       {icon && <div className="mb-2 text-3xl text-sahay-ink">{icon}</div>}
       <div className={`text-3xl font-extrabold ${accentClass}`}>{value}</div>
       <div className="text-sm font-semibold text-sahay-ink mt-1">{label}</div>
