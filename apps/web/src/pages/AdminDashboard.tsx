@@ -354,7 +354,7 @@ function MetricCard({
 }) {
   const accentClass = accent ? 'text-sahay-accent' : 'text-sahay-ink';
   return (
-    <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-5 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+    <div className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-5 shadow-caretaker-card hover:shadow-caretaker-raised hover:-translate-y-0.5 transition-all duration-care ease-care">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-sahay-ink/70">
           {label}

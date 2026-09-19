@@ -13,7 +13,7 @@ interface CardProps {
  */
 export function Card({ title, children, className = '' }: CardProps) {
   return (
-    <div className={`sahay-surface p-6 ${className}`}>
+    <div className={`sahay-surface p-6 shadow-caretaker-card hover:shadow-caretaker-raised hover:-translate-y-1 transition-all duration-care ease-care ${className}`}>
       {title && <h3 className="text-lg font-semibold text-sahay-ink mb-3">{title}</h3>}
       {children}
     </div>

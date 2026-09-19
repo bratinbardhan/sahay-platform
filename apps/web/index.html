@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="en" data-palette="patient">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--
-      `data-palette` selects the Sahāy colour palette (see src/index.css).
-      "patient" is the boot default so the entry/login surface is flat and
-      glare-reducing; App.tsx flips it to "caretaker" for signed-in dashboards.
-    -->
+    <!-- Injected by App.tsx useEffect; kept here as a no-op placeholder so the
+         document element exists before React hydrates. The real value is set
+        dynamically per route/role in App.tsx. -->
+    <script>
+      try { document.documentElement.setAttribute('data-palette', 'patient'); } catch (e) {}
+    </script>
     <title>Sahāy — Caregiver Portal</title>
     <link
       rel="stylesheet"

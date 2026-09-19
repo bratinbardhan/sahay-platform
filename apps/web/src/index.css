@@ -30,31 +30,31 @@
 :root,
 [data-palette='caretaker'] {
   /* ── PALETTE 2 · Caretaker Dashboard (portal default) ─────────────────── */
-  --sahay-bg: 248 246 240; /* #F8F6F0 */
-  --sahay-surface: 255 252 246; /* #FFFCF6 */
-  --sahay-surface-raised: 255 255 255; /* #FFFFFF */
+  --sahay-bg: 133 112 106; /* #85706A - warm neutral background/structure */
+  --sahay-surface: 248 246 240; /* #F8F6F0 - warm neutral surface */
+  --sahay-surface-raised: 255 252 246; /* #FFFCF6 */
   --sahay-surface-sunken: 237 234 227; /* #EDEAE3 */
   --sahay-panel: 241 242 244; /* #F1F2F4 */
   --sahay-ink: 44 62 80; /* #2C3E50 */
-  --sahay-muted: 91 102 115; /* #5B6673 */
-  --sahay-border: 201 207 214; /* #C9CFD6 */
-  --sahay-line: 226 232 240; /* #E2E8F0 */
+  --sahay-muted: 96 116 126; /* #60747E - cool neutral for borders/text */
+  --sahay-border: 96 116 126; /* #60747E - cool neutral borders */
+  --sahay-line: 201 207 214; /* #C9CFD6 */
   --sahay-axis: 100 116 139; /* #64748B */
-  --sahay-accent: 230 126 34; /* #E67E22 */
-  --sahay-accent-strong: 211 84 0; /* #D35400 */
-  --sahay-accent-soft: 255 246 234; /* #FFF6EA */
-  --sahay-gold: 196 163 90; /* #C4A35A */
-  --sahay-gold-soft: 255 248 230; /* #FFF8E6 */
-  --sahay-gold-ink: 138 108 29; /* #8A6C1D */
-  --sahay-ok: 39 174 96; /* #27AE60 */
-  --sahay-ok-bright: 46 204 113; /* #2ECC71 */
+  --sahay-accent: 233 157 121; /* #E99D79 - data accent 1 */
+  --sahay-accent-strong: 214 97 68; /* #D66144 - critical alert */
+  --sahay-accent-soft: 255 245 197; /* #FFF5C5 - data accent 2 */
+  --sahay-gold: 246 189 226; /* #F6BDE2 - data accent 3 */
+  --sahay-gold-soft: 189 224 175; /* #BDE0AF - data accent 4 */
+  --sahay-gold-ink: 122 159 150; /* #7A9F96 - data accent 5 */
+  --sahay-ok: 120 141 196; /* #788DC4 - data accent 6 */
+  --sahay-ok-bright: 155 109 214; /* #9B6DD6 - data accent 7 */
   --sahay-ok-soft: 232 246 238; /* #E8F6EE */
   --sahay-ok-ink: 30 122 69; /* #1E7A45 */
   --sahay-lime: 93 166 0; /* #5DA600 */
   --sahay-warn: 230 126 34; /* #E67E22 */
   --sahay-warn-soft: 255 241 224; /* #FFF1E0 */
   --sahay-warn-ink: 168 91 18; /* #A85B12 */
-  --sahay-alert: 231 76 60; /* #E74C3C */
+  --sahay-alert: 214 97 68; /* #D66144 - critical alert */
   --sahay-alert-soft: 253 236 234; /* #FDECEA */
   --sahay-alert-ink: 179 69 44; /* #B3452C */
   --sahay-info: 62 110 147; /* #3E6E93 */
