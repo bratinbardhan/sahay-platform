@@ -6,13 +6,8 @@ import {
   Brain,
   Camera,
   Clock,
-  Coins,
   Images,
-  MessageSquare,
-  Flame,
   LogOut,
-  MapPin,
-  Phone,
   Bell,
   LayoutDashboard,
   Mic,
@@ -20,23 +15,13 @@ import {
   Plus,
   User as UserIcon,
 } from 'lucide-react';
-import { ActionButton } from '@/components/ActionButton';
-import { Card } from '@/components/Card';
-import { StatBox } from '@/components/StatBox';
-import { TierBadge } from '@/components/TierBadge';
-import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
-import { SubscriptionModal } from '@/components/SubscriptionModal';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
-import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
-import { sendHeartbeat } from '@/lib/adminApi';
 import {
-  DEMO_CAREGIVER_CONTACT,
-  getDemoPatientTimestamps,
   getDemoActivityHeatmap,
 } from '@/lib/demoSeed';
 
@@ -70,9 +55,8 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
   );
 }
 
-export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps) {
+export function Dashboard({ user: _user, token, onNavigate, onLogout }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
-  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -110,10 +94,9 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
     token,
     patient?.id ?? null
   );
-  const { sessions, isDemo: sessionsIsDemo } = useGameplaySessions(token, patient?.id ?? null, 14);
+  const { isDemo: sessionsIsDemo } = useGameplaySessions(token, patient?.id ?? null, 14);
 
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
-  const timestamps = getDemoPatientTimestamps();
 
   useEffect(() => {
     void sendHeartbeat(token);
@@ -130,20 +113,6 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       </div>
     );
   }
-
-  const stage = patient.assigned_gds_stage;
-  const stageLabel = GDS_STAGE_LABELS[stage] || 'Unknown';
-  const stability = cognitiveSummary?.stability_score ?? 88;
-  const avgLatency =
-    sessions.length > 0
-      ? Math.round(sessions.reduce((sum, s) => sum + s.avg_latency_ms, 0) / sessions.length)
-      : 420;
-  const pendingQueue = isDemo ? 3 : 0;
-  const latencyTrend = avgLatency <= 420 ? 'improving' : 'watch';
-  const greeting = (() => {
-    const hour = new Date().getHours();
-    return hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
-  })();
 
   return (
     <div className="flex bg-[#FDFBF7]" style={{ height: '100vh', overflow: 'hidden' }} data-palette="caretaker">
