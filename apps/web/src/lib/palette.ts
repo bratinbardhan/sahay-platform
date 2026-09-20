@@ -83,7 +83,7 @@ export const SAHAY_CARETAKER = {
   mood: '#F59E0B',
   slate: '#5B6673',
   /** Categorical chart scale — index 8 (alert red) is breach/SOS series only. */
-  viz: ['#0D9488', '#8B5CF6', '#10B981', '#14B8A6', '#1E3A8A', '#F59E0B', '#64748B', '#EF4444'],
+  viz: ['#0D9488', '#3B82F6', '#F59E0B', '#8B5CF6', '#64748B', '#0F766E', '#475569', '#EF4444'],
   shadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
   shadowHover: '0 12px 28px rgba(15, 23, 42, 0.12)',
   motion: '220ms',

@@ -1,19 +1,16 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, Maximize2, ShieldAlert, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, X } from 'lucide-react';
 import { Card } from '@/components/Card';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
 import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
-import { getDemoActivityHeatmap, getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
+import { getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { MoodStabilityChart } from './charts/MoodStabilityChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
-import { ActivityHeatmap } from './charts/ActivityHeatmap';
-import { LeafletMap } from '@/components/LeafletMap';
-import { MOCK_GEOFENCE } from '@/lib/mockData';
 
 interface AnalyticsChartProps {
   onNavigate: (page: string) => void;
@@ -32,6 +29,7 @@ const TREND_LABELS: Record<string, string> = {
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
+  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency'>('latency');
   const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
@@ -46,9 +44,23 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   );
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
   const moodSeries = getDemoMoodStability14d();
-  const heatmapCells = getDemoActivityHeatmap();
   const showReportToast = () => {
-    setToast('Detailed clinical telemetry PDF report generated.');
+    const report = {
+      generatedAt: new Date().toISOString(),
+      patient: patient?.name ?? 'Demo patient',
+      trend: cognitiveSummary?.trend_direction ?? 'INSUFFICIENT_DATA',
+      averageLatencyMs: Math.round(cognitiveSummary?.last_7_days.avg_latency_ms ?? 420),
+      sessionCount: total,
+      dataWindow: '14 days',
+    };
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `sahay-clinical-report-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    setToast('Detailed clinical telemetry report downloaded.');
     window.setTimeout(() => setToast(null), 2800);
   };
   const trendChart = (
@@ -163,32 +175,32 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <Card title="Security & Geofence Breaches" className="bg-sahay-surface shadow-caretaker-card">
-          <div className="space-y-3 text-sm">
-            <div className="flex gap-3 rounded-lg border border-red-100 bg-red-50 p-3">
-              <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
-              <p><strong>19 Sept 05:14 PM</strong> — Outer Safe Zone breached (Displaced 140m) — <span className="font-semibold text-emerald-700">Resolved</span></p>
-            </div>
-            <div className="flex gap-3 rounded-lg border border-slate-200 p-3 text-slate-600">18 Sept 02:08 PM — Garden perimeter check-in — Resolved</div>
-          </div>
-        </Card>
-        <Card title="Spatial Roaming & Live Patient Tracking" className="bg-sahay-surface shadow-caretaker-card">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> Live Tracking Active</div>
-          <LeafletMap centerLat={MOCK_GEOFENCE.center_lat} centerLng={MOCK_GEOFENCE.center_lng} radiusMeters={MOCK_GEOFENCE.radius_meters} onPick={() => undefined} />
-        </Card>
-      </div>
+      <Card title="Clinical Breakdown Views" className="mb-8 bg-sahay-surface shadow-caretaker-card">
+        <div className="flex flex-wrap gap-2 mb-5" role="tablist" aria-label="Analytics breakdowns">
+          {[
+            ['latency', 'Daily Reaction Latency'],
+            ['rebound', 'Touch Errorless Rebound'],
+            ['consistency', 'Session Consistency'],
+          ].map(([key, label]) => (
+            <button key={key} type="button" role="tab" aria-selected={breakdown === key} onClick={() => setBreakdown(key as typeof breakdown)}
+              className={`rounded-lg border px-3 py-2 text-sm font-semibold ${breakdown === key ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {breakdown === 'latency' ? (
+            [['Morning', '360 ms'], ['Afternoon', '418 ms'], ['Evening', '486 ms'], ['Watch band', '520 ms+']].map(([label, value]) => <div key={label} className="rounded-xl bg-slate-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-slate-900">{value}</p></div>)
+          ) : breakdown === 'rebound' ? (
+            [['Errorless attempts', '82%'], ['Guided recovery', '14%'], ['Repeat errors', '4%'], ['Trend', 'Improving']].map(([label, value]) => <div key={label} className="rounded-xl bg-teal-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-teal-800">{value}</p></div>)
+          ) : (
+            [['Active days', '12 / 14'], ['Avg sessions', '2.4 / day'], ['Completion', '91%'], ['Stability', `${Math.round(cognitiveSummary?.stability_score ?? 88)}%`]].map(([label, value]) => <div key={label} className="rounded-xl bg-indigo-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-indigo-800">{value}</p></div>)
+          )}
+        </div>
+      </Card>
 
       <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
         <SessionPerformanceChart sessions={sessions} />
-      </Card>
-
-      <Card title="Activity & Touch Latency Heatmap (7 × 24)" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
-        <ActivityHeatmap cells={heatmapCells} />
-        <p className="text-xs text-sahay-ink/60 mt-2">
-          7×24 grid coloured with a D3 latency scale: calm teal (fast) through ~420 ms, amber clusters in
-          late afternoon (sundowning).
-        </p>
       </Card>
 
       <Card title="Session Logs" className="bg-sahay-surface shadow-caretaker-card">

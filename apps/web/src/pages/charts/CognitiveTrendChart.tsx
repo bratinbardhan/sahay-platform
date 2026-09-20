@@ -44,7 +44,7 @@ export function CognitiveTrendChart({
     );
   }
 
-  const fromPoints = ordered.map((point) => ({
+  const fromPoints = ordered.filter((point) => Number.isFinite(point.cognitive_load_index) && Number.isFinite(point.reaction_latency_ms)).map((point) => ({
     day: formatDay(point.timestamp),
     load: point.cognitive_load_index,
     latency: Math.round(point.reaction_latency_ms),
@@ -54,12 +54,12 @@ export function CognitiveTrendChart({
 
   const data =
     loadSeries.length > 0
-      ? loadSeries.map((row, index) => ({
+      ? loadSeries.slice(-14).map((row, index) => ({
           day: row.day,
-          load: row.load,
-          latency: fromPoints[index]?.latency,
-          engagement: row.engagement,
-          fatigue: row.fatigue,
+          load: Number.isFinite(row.load) ? row.load : null,
+          latency: fromPoints[index]?.latency ?? null,
+          engagement: Number.isFinite(row.engagement) ? row.engagement : null,
+          fatigue: Number.isFinite(row.fatigue) ? row.fatigue : null,
         }))
       : fromPoints;
 

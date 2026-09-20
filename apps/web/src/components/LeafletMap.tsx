@@ -53,6 +53,7 @@ export function LeafletMap({
   const mapRef = useRef<LeafletMapInstance | null>(null);
   const markerRef = useRef<LeafletMarker | null>(null);
   const circleRef = useRef<LeafletCircle | null>(null);
+  const heatCirclesRef = useRef<LeafletCircle[]>([]);
   const leafletRef = useRef<LeafletNamespace | null>(null);
   const pickRef = useRef(onPick);
   pickRef.current = onPick;
@@ -101,6 +102,20 @@ export function LeafletMap({
         fillColor: breached ? BREACH_PIN_COLOR : HOME_PIN_COLOR,
         fillOpacity: breached ? 0.22 : 0.16,
       }).addTo(map);
+      const heatZones = [
+        [centerLat + 0.0012, centerLng + 0.0008, 95],
+        [centerLat - 0.0009, centerLng + 0.0014, 70],
+        [centerLat + 0.0005, centerLng - 0.0015, 55],
+      ] as const;
+      heatCirclesRef.current = heatZones.map(([lat, lng, radius]) =>
+        L.circle([lat, lng], {
+          radius,
+          color: '#F59E0B',
+          fillColor: '#F59E0B',
+          fillOpacity: 0.18,
+          weight: 1,
+        }).addTo(map)
+      );
 
       map.on('click', (event) => {
         pickRef.current(event.latlng.lat, event.latlng.lng);
@@ -119,6 +134,7 @@ export function LeafletMap({
       mapRef.current = null;
       markerRef.current = null;
       circleRef.current = null;
+      heatCirclesRef.current = [];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

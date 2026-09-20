@@ -73,7 +73,7 @@ export const MOCK_MEDIA: GalleryMediaItem[] = DEMO_MEMORIES.map((memory, index) 
     file_url: isAudio
       ? (memory.audio_narration_url ?? memory.image_url)
       : (memory.image_url.startsWith('https://example.com')
-        ? `https://images.unsplash.com/photo-${['1500530855697-b586d89ba3ee', '1519681393784-d120267933ba', '1507525428034-b723cf961d3e', '1497366754035-f200968a6e72'][index % 4]}?auto=format&fit=crop&w=800&q=80`
+        ? `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="${['#0D9488', '#3B82F6', '#8B5CF6', '#F59E0B'][index % 4]}"/><stop offset="1" stop-color="#E0F2FE"/></linearGradient></defs><rect width="800" height="420" fill="url(#g)"/><circle cx="${180 + index * 90}" cy="170" r="72" fill="#FEF3C7"/><circle cx="${155 + index * 90}" cy="155" r="9" fill="#0F172A"/><circle cx="${205 + index * 90}" cy="155" r="9" fill="#0F172A"/><path d="M155 195 Q180 220 205 195" fill="none" stroke="#0F172A" stroke-width="8" stroke-linecap="round"/><path d="M0 365 Q180 280 360 365 T800 350 V420 H0Z" fill="#A7F3D0" opacity=".75"/><text x="400" y="70" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif">Sahāy memory album</text></svg>`)}`
         : memory.image_url),
     label_text: memory.caption_text,
     relation_tag: tag,

@@ -29,17 +29,9 @@ import { GDS_STAGE_LABELS, getGdsStageColor } from '@/lib/gdsUtils';
 import { sendHeartbeat } from '@/lib/adminApi';
 import {
   DEMO_CAREGIVER_CONTACT,
-  getDemoActivityHeatmap,
-  getDemoCognitiveLoad14d,
-  getDemoMoodStability14d,
   getDemoPatientTimestamps,
 } from '@/lib/demoSeed';
 
-import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
-import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
-import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
-import { MoodStabilityChart } from './charts/MoodStabilityChart';
-import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 interface DashboardProps {
   user: User;
@@ -106,7 +98,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
   };
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
-  const { ddaHistory, cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
+  const { cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
     token,
     patient?.id ?? null
   );
@@ -175,10 +167,10 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         </div>
       ) : null}
 
-      <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-sahay-ink bg-sahay-surface px-4 py-3 rounded-xl shadow-caretaker-card">
+      <nav className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3 rounded-xl shadow-sm">
         <div className="flex items-center gap-2">
           <span className="text-2xl leading-none text-sahay-accent">✦</span>
-          <span className="font-bold text-xl text-sahay-ink">Sahāy Caregiver Command Center</span>
+          <span className="font-semibold text-lg text-slate-900">Sahāy Caregiver Command Center</span>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <SyncStatusIndicator
@@ -191,7 +183,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 rounded-xl border-2 border-sahay-ink bg-sahay-bg px-3 py-1.5 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken transition-all duration-care ease-care"
+            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <LogOut className="w-5 h-5 md:w-6 md:h-6" />
             Sign out
@@ -199,10 +191,21 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         </div>
       </nav>
 
+      {cognitiveSummary ? (
+        <Card title="Cognitive Summary — 7 Day Trend" className="mt-6 mb-6 bg-white border border-slate-200 shadow-sm animate-slide-up">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.trend_direction.replace('_', ' ')}</div><div className="text-sm text-slate-600">{cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}{cognitiveSummary.accuracy_delta_pct}% accuracy</div></div>
+            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.stability_score.toFixed(0)}%</div><div className="text-sm text-slate-600">Stability Score</div></div>
+            <div><div className="text-2xl font-bold text-teal-700">{cognitiveSummary.recommended_difficulty}</div><div className="text-sm text-slate-600">Recommended Difficulty</div></div>
+            <div><div className="text-2xl font-bold text-slate-900">{Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms</div><div className="text-sm text-slate-600">Avg Latency (7 Days)</div></div>
+          </div>
+        </Card>
+      ) : null}
+
       <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3 animate-slide-up">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-sahay-ink">Medical Overview</h1>
-          <p className="text-sahay-ink/80 text-base sm:text-lg mt-1">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Medical Overview</h1>
+          <p className="text-slate-600 text-base sm:text-lg mt-1">
             {patient.name}, {patient.age} · last session{' '}
             {new Date(timestamps.last_session_at).toLocaleString('en-IN')}
           </p>
@@ -275,19 +278,15 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '280ms' }}>
-        <Card title="Cognitive Load — 14 Day Trend" className="lg:col-span-2 bg-sahay-surface shadow-caretaker-card">
-          <CognitiveTrendChart
-            points={ddaHistory?.points ?? []}
-            loadSeries={getDemoCognitiveLoad14d()}
-          />
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '280ms' }}>
         <Card title="Emergency Help" className="bg-sahay-surface shadow-caretaker-card">
           <div className="space-y-3 text-sm text-sahay-ink">
             {[
               ['Ram Sharma', 'Primary Caregiver / Son', '+91 98620 44110'],
               ['Dr. S. K. Sen', 'Consultant Neurologist', '+91 94340 12345'],
-              ['Emergency Helpline', 'Siliguri Emergency Services', '112'],
+              ['NEIGRIHMS Hospital Emergency / Cardiology', 'Shillong, Meghalaya', '+91 364 253 8025'],
+              ['Shillong Civil Hospital Emergency Desk', 'Shillong, Meghalaya', '+91 364 222 2395'],
+              ['Police Control Room Shillong', 'Shillong emergency response', '112'],
             ].map(([name, relation, phone]) => (
               <div key={phone} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 p-3">
                 <div>
@@ -305,59 +304,6 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         </Card>
       </div>
 
-      <Card title="Session Performance — Attempts vs Completed" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '340ms' }}>
-        <SessionPerformanceChart sessions={sessions} />
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '430ms' }}>
-        <Card title="DDA Difficulty & Reaction Curve" className="bg-sahay-surface shadow-caretaker-card">
-          <DdaDifficultyCurve
-            points={ddaHistory?.points ?? []}
-            recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null}
-          />
-        </Card>
-        <Card title="Diurnal Mood Stability" className="bg-sahay-surface shadow-caretaker-card">
-          <MoodStabilityChart data={getDemoMoodStability14d()} />
-        </Card>
-      </div>
-
-      <Card title="Activity Heatmap — 7 × 24" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '445ms' }}>
-        <ActivityHeatmap cells={getDemoActivityHeatmap()} />
-      </Card>
-
-      {cognitiveSummary ? (
-        <Card title="Cognitive Summary — 7 Day Trend" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '460ms' }}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div className="text-2xl font-bold text-sahay-ink">
-                {cognitiveSummary.trend_direction.replace('_', ' ')}
-              </div>
-              <div className="text-sm text-sahay-ink/70">
-                {cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}
-                {cognitiveSummary.accuracy_delta_pct}% accuracy
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-sahay-ink">
-                {cognitiveSummary.stability_score.toFixed(0)}%
-              </div>
-              <div className="text-sm text-sahay-ink/70">Stability Score</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-sahay-accent">
-                {cognitiveSummary.recommended_difficulty}
-              </div>
-              <div className="text-sm text-sahay-ink/70">Recommended Difficulty</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-sahay-ink">
-                {cognitiveSummary.last_7_days.sessions}
-              </div>
-              <div className="text-sm text-sahay-ink/70">Sessions (Last 7 Days)</div>
-            </div>
-          </div>
-        </Card>
-      ) : null}
       {subscriptionOpen ? <SubscriptionModal onClose={() => setSubscriptionOpen(false)} /> : null}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: '520ms' }}>

@@ -361,6 +361,21 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
         </div>
       </Card>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <Card title="Live Tracking Status" className="bg-sahay-surface shadow-caretaker-card">
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> Live tracking active
+          </div>
+          <p className="mt-4 text-sm text-slate-600">Amber heat zones show simulated high-density visits and recent breach locations around Shillong.</p>
+        </Card>
+        <Card title="Security Breach Log" className="bg-sahay-surface shadow-caretaker-card">
+          <div className="space-y-3 text-sm">
+            <div className="rounded-lg border border-red-100 bg-red-50 p-3"><strong>19 Sept · 05:14 PM</strong><p className="text-slate-600">Outer Safe Zone · displaced 140 m · <span className="font-semibold text-emerald-700">Resolved</span></p></div>
+            <div className="rounded-lg border border-slate-200 p-3"><strong>18 Sept · 02:08 PM</strong><p className="text-slate-600">Garden perimeter check-in · Resolved</p></div>
+          </div>
+        </Card>
+      </div>
+
       {/* Twilio SMS toggle */}
       <Card title="Simulate Geofence Breach" className="mb-8 bg-sahay-surface shadow-caretaker-card">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
