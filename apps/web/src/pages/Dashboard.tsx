@@ -271,7 +271,10 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                       max="100"
                       value={hydrationStats[row.key as keyof typeof hydrationStats]}
                       onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
-                      className="flex-1 ml-4 h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#1E293B]"
+                      className="flex-1 ml-4 h-2 rounded-full appearance-none cursor-pointer accent-[#1E293B]"
+                      style={{
+                        background: `linear-gradient(to right, #1E293B 0%, #1E293B ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 100%)`
+                      }}
                     />
                   </div>
                 ))}
