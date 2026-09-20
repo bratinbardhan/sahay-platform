@@ -6,6 +6,7 @@ import { Card } from '@/components/Card';
 import { API_BASE } from '@/lib/api';
 import { DEMO_MEMORIES } from '@/lib/demoSeed';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
+import { MemoryIllustration } from '@/components/MemoryIllustration';
 
 interface ReminiscenceManagerProps {
   onNavigate: (page: string) => void;
@@ -96,11 +97,9 @@ export function ReminiscenceManager({ onNavigate, token }: ReminiscenceManagerPr
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {memories.map((memory) => (
             <Card key={memory.id} className="overflow-hidden">
-              <img
-                src={memory.image_url}
-                alt={memory.title}
-                className="w-full h-48 object-cover rounded-t-2xl -mt-6 -mx-6 mb-3 border-b-2 border-sahay-ink"
-              />
+              <div className="w-full h-48 rounded-t-2xl -mt-6 -mx-6 mb-3 overflow-hidden border-b-2 border-sahay-ink">
+                <MemoryIllustration tag={memory.relationship_tag} title={memory.title} />
+              </div>
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-bold text-sahay-ink">{memory.title}</h3>

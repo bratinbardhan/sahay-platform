@@ -45,32 +45,38 @@ export function CognitiveTrendChart({
     );
   }
 
-  const fromPoints = ordered.filter((point) => Number.isFinite(point.cognitive_load_index) && Number.isFinite(point.reaction_latency_ms)).map((point) => ({
-    day: formatDay(point.timestamp),
-    load: point.cognitive_load_index,
-    latency: Math.round(point.reaction_latency_ms),
-    engagement: undefined as number | undefined,
-    fatigue: undefined as number | undefined,
-  }));
+  const fromPoints = ordered.map((d) => {
+    const record = d as unknown as Record<string, unknown>;
+    return {
+      day: formatDay(d.timestamp),
+      cognitiveLoad: Number(record.cognitiveLoad ?? record.score ?? d.cognitive_load_index ?? 70),
+      latency: Number(record.latency ?? d.reaction_latency_ms ?? 420),
+      engagement: undefined as number | undefined,
+      fatigue: undefined as number | undefined,
+    };
+  });
 
   // Keep telemetry aligned by date. Index-based merging shifts latency when a
   // session is missing and makes the chart clinically misleading.
   const pointByDay = new Map(fromPoints.map((point) => [point.day, point]));
   const data =
     loadSeries.length > 0
-      ? loadSeries.slice(-14).map((row) => ({
-          day: row.day,
-          load: Number.isFinite(row.load) ? row.load : null,
-          latency: pointByDay.get(row.day)?.latency ?? null,
-          engagement: Number.isFinite(row.engagement) ? row.engagement : null,
-          fatigue: Number.isFinite(row.fatigue) ? row.fatigue : null,
-        }))
+      ? loadSeries.slice(-14).map((d) => {
+          const record = d as unknown as Record<string, unknown>;
+          return {
+            day: d.day,
+            cognitiveLoad: Number(record.cognitiveLoad ?? record.score ?? d.load ?? 70),
+            latency: Number(record.latency ?? pointByDay.get(d.day)?.latency ?? 420),
+            engagement: Number.isFinite(d.engagement) ? d.engagement : null,
+            fatigue: Number.isFinite(d.fatigue) ? d.fatigue : null,
+          };
+        })
       : fromPoints;
 
   const loadColor = SAHAY_CARETAKER.viz[0];
   const engagementColor = SAHAY_CARETAKER.viz[3];
   const fatigueColor = SAHAY_CARETAKER.viz[5];
-  const latencyColor = '#4F46E5';
+  const latencyColor = SAHAY_CARETAKER.viz[1];
   const watchColor = SAHAY_CARETAKER.viz[5];
   const fatigueLineColor = SAHAY_CARETAKER.viz[7];
 
@@ -103,7 +109,7 @@ export function CognitiveTrendChart({
             if (key === 'latency') {
               return [`${Math.round(numeric)} ms`, 'Touch latency'];
             }
-            if (key === 'load') {
+            if (key === 'cognitiveLoad') {
               return [`${numeric.toFixed(1)}`, 'Cognitive load'];
             }
             if (key === 'engagement') {
@@ -132,7 +138,7 @@ export function CognitiveTrendChart({
             <Line
               type="monotone"
               yAxisId="left"
-              dataKey="load"
+              dataKey="cognitiveLoad"
               name="Cognitive load"
               stroke={loadColor}
               strokeWidth={2.6}

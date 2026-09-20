@@ -4,6 +4,7 @@ import { Card } from '@/components/Card';
 import { ActionButton } from '@/components/ActionButton';
 import { MOCK_MEDIA, type GalleryMediaItem, type MemoryGalleryTag } from '@/lib/mockData';
 import { DEMO_PATIENT_ID } from '@/lib/demoSeed';
+import { MemoryIllustration } from '@/components/MemoryIllustration';
 
 interface MediaManagerProps {
   onNavigate: (page: string) => void;
@@ -122,14 +123,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
             >
               {item.media_type === 'PHOTO' ? (
                 <div className="w-full h-40 bg-slate-50 flex items-center justify-center" aria-label={`${item.filter_tag} memory illustration`}>
-                  <svg viewBox="0 0 320 160" role="img" aria-hidden="true" className="h-full w-full">
-                    <rect width="320" height="160" fill="#F8FAFC" />
-                    <circle cx="255" cy="42" r="22" fill="#F4C95D" />
-                    <path d="M0 124c48-35 75-22 116-10 45 13 73-18 111-17 35 1 56 19 93 7v56H0Z" fill="#99F6E4" />
-                    <path d="M0 138c50-18 87-9 126 2 48 13 76-12 112-10 30 1 51 10 82 4v26H0Z" fill="#0D9488" opacity=".7" />
-                    <text x="18" y="34" fill="#334155" fontSize="14" fontFamily="system-ui" fontWeight="700">{item.filter_tag}</text>
-                    <text x="18" y="54" fill="#64748B" fontSize="11" fontFamily="system-ui">{item.title}</text>
-                  </svg>
+                  <MemoryIllustration tag={item.filter_tag} title={item.title} />
                 </div>
               ) : (
                 <div className="w-full h-40 border-b-2 border-sahay-ink flex items-center justify-center bg-sahay-panel">

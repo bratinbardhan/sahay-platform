@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Maximize2, Printer, X } from 'lucide-react';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ReferenceLine, Tooltip, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/Card';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
 import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
-import { getDemoActivityHeatmap, getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
-import { ActivityHeatmap } from './charts/ActivityHeatmap';
+import { getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { MoodStabilityChart } from './charts/MoodStabilityChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
+import { SAHAY_CARETAKER, sahayTooltipLabelStyle, sahayTooltipStyle } from '@/lib/palette';
 
 interface AnalyticsChartProps {
   onNavigate: (page: string) => void;
@@ -30,7 +31,7 @@ const TREND_LABELS: Record<string, string> = {
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
-  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency' | 'heatmap'>('latency');
+  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency'>('latency');
   const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
@@ -46,7 +47,34 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
   const moodSeries = isDemo ? getDemoMoodStability14d() : [];
   const loadSeries = isDemo ? getDemoCognitiveLoad14d() : [];
-  const heatmapSeries = isDemo ? getDemoActivityHeatmap() : [];
+  const liveLoadSeries = ddaHistory?.points.map((point) => ({
+    day: new Date(point.timestamp).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }),
+    date: point.timestamp,
+    engagement: Math.max(0, Math.min(100, point.cognitive_load_index * 100)),
+    fatigue: Math.max(0, Math.min(100, point.reaction_latency_ms / 8)),
+    load: point.cognitive_load_index,
+  })) ?? [];
+  const boundLoadSeries = isDemo ? loadSeries : liveLoadSeries;
+  const boundMoodSeries = isDemo
+    ? moodSeries
+    : [...sessions.reduce((days, session) => {
+          const key = new Date(session.timestamp).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+          const current = days.get(key) ?? { day: key, date: session.timestamp, morning: 0, afternoon: 0, evening: 0, stability: 0, count: 0 };
+          const hour = new Date(session.timestamp).getHours();
+          const target: 'morning' | 'afternoon' | 'evening' = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+          current[target] += session.accuracy_pct;
+          current.count += 1;
+          current.stability += session.accuracy_pct;
+          days.set(key, current);
+          return days;
+        }, new Map<string, { day: string; date: string; morning: number; afternoon: number; evening: number; stability: number; count: number }>()).values()]
+      .map(({ count, ...day }) => ({
+        ...day,
+        morning: day.morning / Math.max(1, count),
+        afternoon: day.afternoon / Math.max(1, count),
+        evening: day.evening / Math.max(1, count),
+        stability: day.stability / Math.max(1, count),
+      }));
   const showReportToast = () => {
     const report = {
       generatedAt: new Date().toISOString(),
@@ -72,12 +100,54 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     window.setTimeout(() => setToast(null), 2800);
   };
   const trendChart = (
-    <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={loadSeries} metric={metric} />
+    <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric={metric} />
   );
   const ddaChart = (
     <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
   );
-  const moodChart = <MoodStabilityChart data={moodSeries} />;
+  const moodChart = <MoodStabilityChart data={boundMoodSeries} />;
+  const days = Array.from({ length: 14 }, (_, index) => `Day ${index + 1}`);
+  const latencyData = days.map((day, index) => {
+    const session = sessions[index % Math.max(1, sessions.length)];
+    return { day, latency: Math.round(session?.avg_latency_ms ?? ddaHistory?.points[index]?.reaction_latency_ms ?? 420) };
+  });
+  const reboundData = days.map((day, index) => {
+    const session = sessions[index % Math.max(1, sessions.length)];
+    const success = session ? Math.round(session.tasks_completed_cleanly) : 8;
+    return { day, success, guided: Math.max(0, Math.round((session?.tasks_presented ?? 12) - success)) };
+  });
+  const consistencyData = days.map((day, index) => ({
+    day,
+    consistency: Math.round(boundMoodSeries[index]?.stability ?? (cognitiveSummary?.stability_score ?? 88)),
+  }));
+  const breakdownChart = breakdown === 'latency' ? (
+    <BarChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+      <YAxis domain={[250, 550]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+      <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', fill: SAHAY_CARETAKER.ok }} />
+      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+      <Bar dataKey="latency" name="Reaction latency (ms)" fill={SAHAY_CARETAKER.viz[1]} radius={[4, 4, 0, 0]} />
+    </BarChart>
+  ) : breakdown === 'rebound' ? (
+    <BarChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+      <YAxis stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+      <Bar dataKey="success" name="Independent success" stackId="rebound" fill={SAHAY_CARETAKER.ok} />
+      <Bar dataKey="guided" name="Guided rebound" stackId="rebound" fill={SAHAY_CARETAKER.warn} radius={[4, 4, 0, 0]} />
+    </BarChart>
+  ) : (
+    <AreaChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+      <defs><linearGradient id="consistencyGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={SAHAY_CARETAKER.accent} stopOpacity={0.35} /><stop offset="100%" stopColor={SAHAY_CARETAKER.accent} stopOpacity={0.03} /></linearGradient></defs>
+      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+      <YAxis domain={[0, 100]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+      <Area type="monotone" dataKey="consistency" name="Session consistency" stroke={SAHAY_CARETAKER.accent} fill="url(#consistencyGradient)" strokeWidth={2.5} />
+    </AreaChart>
+  );
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
@@ -192,7 +262,6 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             ['latency', 'Daily Reaction Latency'],
             ['rebound', 'Touch Errorless Rebound'],
             ['consistency', 'Session Consistency'],
-            ['heatmap', 'Activity heatmap'],
           ].map(([key, label]) => (
             <button key={key} type="button" role="tab" aria-selected={breakdown === key} onClick={() => setBreakdown(key as typeof breakdown)}
               className={`rounded-lg border px-3 py-2 text-sm font-semibold ${breakdown === key ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
@@ -200,17 +269,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {breakdown === 'latency' ? (
-            [['Morning', '360 ms'], ['Afternoon', '418 ms'], ['Evening', '486 ms'], ['Watch band', '520 ms+']].map(([label, value]) => <div key={label} className="rounded-xl bg-slate-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-slate-900">{value}</p></div>)
-          ) : breakdown === 'rebound' ? (
-            [['Errorless attempts', '82%'], ['Guided recovery', '14%'], ['Repeat errors', '4%'], ['Trend', 'Improving']].map(([label, value]) => <div key={label} className="rounded-xl bg-teal-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-teal-800">{value}</p></div>)
-          ) : breakdown === 'consistency' ? (
-            [['Active days', '12 / 14'], ['Avg sessions', '2.4 / day'], ['Completion', '91%'], ['Stability', `${Math.round(cognitiveSummary?.stability_score ?? 88)}%`]].map(([label, value]) => <div key={label} className="rounded-xl bg-indigo-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-indigo-800">{value}</p></div>)
-          ) : (
-            <div className="col-span-2 md:col-span-4"><ActivityHeatmap cells={heatmapSeries} /></div>
-          )}
-        </div>
+        <div className="min-h-[250px]">{breakdownChart}</div>
       </Card>
 
       <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none">

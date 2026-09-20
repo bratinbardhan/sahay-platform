@@ -21,6 +21,7 @@ import { TierBadge } from '@/components/TierBadge';
 import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
 import { SubscriptionModal } from '@/components/SubscriptionModal';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
+import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
@@ -30,6 +31,7 @@ import { sendHeartbeat } from '@/lib/adminApi';
 import {
   DEMO_CAREGIVER_CONTACT,
   getDemoPatientTimestamps,
+  getDemoActivityHeatmap,
 } from '@/lib/demoSeed';
 
 
@@ -196,7 +198,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
 
       <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Good {greeting}, Mr. Ram Sharma</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Good {greeting}, {user.full_name}</h1>
           <p className="text-xs sm:text-sm text-slate-500 italic mt-0.5">“They may not remember the conversation, but they will never forget how you made them feel.”</p>
           <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-800">
             <span className="font-semibold">{patient.name}, {patient.age}</span>
@@ -261,6 +263,13 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
           </div>
         </Card>
       ) : null}
+
+      <Card title="Activity rhythm — interaction density by hour" className="mb-6 bg-white border border-slate-200 shadow-none">
+        <p className="mb-3 text-sm text-sahay-muted">
+          A quick view of when {patient.name} is most comfortable engaging with Sahāy.
+        </p>
+        <ActivityHeatmap cells={isDemo ? getDemoActivityHeatmap() : []} />
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <Card title="Care Circle & Emergency Help" className="bg-white border border-slate-200 shadow-none">

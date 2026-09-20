@@ -33,6 +33,10 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    fontFamily: {
+      sans: ['Manrope', 'sans-serif'],
+      mono: ['"IBM Plex Mono"', 'monospace'],
+    },
     extend: {
       colors: {
         // ── Legacy aliases (pre-palette code kept compiling) ────────────────
