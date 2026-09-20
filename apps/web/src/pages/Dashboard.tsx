@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { User } from '@sahay/types';
 import {
   Activity,
@@ -66,6 +66,15 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
   const [isMedModalOpen, setMedModalOpen] = useState(false);
   const [hydrationStats, setHydrationStats] = useState({ medication: 100, hydration: 75, water: 90, participation: 60 });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>(['https://i.pravatar.cc/150?u=1', 'https://i.pravatar.cc/150?u=2']);
+  const [isRecording, setIsRecording] = useState(false);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setUploadedImages(prev => [...prev, URL.createObjectURL(e.target.files![0])]);
+    }
+  };
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -285,12 +294,18 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
               <h3 className="font-semibold text-lg text-[#1F2937] mb-6">Family Media Uploads</h3>
               <div className="grid grid-cols-3 gap-3">
-                <div className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B]"><Images className="w-6 h-6" /></div>
-                <div className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B]"><Mic className="w-6 h-6" /></div>
-                <div className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B]"><Play className="w-6 h-6" /></div>
-                <div className="aspect-square bg-slate-200 rounded-[16px] flex items-center justify-center overflow-hidden"><img src="https://i.pravatar.cc/150?u=1" alt="thumb1" className="w-full h-full object-cover" /></div>
-                <div className="aspect-square bg-slate-200 rounded-[16px] flex items-center justify-center overflow-hidden"><img src="https://i.pravatar.cc/150?u=2" alt="thumb2" className="w-full h-full object-cover" /></div>
-                <div className="aspect-square bg-[#F5E6D3] rounded-[16px] flex flex-col items-center justify-center text-[#1E293B] font-medium text-xs"><Plus className="w-5 h-5 mb-1" /> Add</div>
+                <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
+                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Images className="w-6 h-6" /></div>
+                <div onClick={() => setIsRecording(!isRecording)} className={`aspect-square rounded-[16px] flex items-center justify-center cursor-pointer transition-transform active:scale-95 hover:shadow-sm ${isRecording ? 'bg-red-50 text-red-600 animate-pulse ring-2 ring-red-400' : 'bg-[#F5E6D3] text-[#1E293B]'}`}><Mic className="w-6 h-6" /></div>
+                <div onClick={() => onNavigate('reminiscence')} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Play className="w-6 h-6" /></div>
+
+                {uploadedImages.slice(0, 2).map((imgUrl, idx) => (
+                  <div key={idx} className="aspect-square bg-slate-200 rounded-[16px] flex items-center justify-center overflow-hidden cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
+                    <img src={imgUrl} alt={`thumb${idx}`} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+
+                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex flex-col items-center justify-center text-[#1E293B] font-medium text-xs cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Plus className="w-5 h-5 mb-1" /> Add</div>
               </div>
             </div>
           </div>
