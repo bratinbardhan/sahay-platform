@@ -6,9 +6,7 @@ import {
   Brain,
   Check,
   Images,
-  LogOut,
   Bell,
-  LayoutDashboard,
   Mic,
   Play,
   Plus,
@@ -29,10 +27,6 @@ import {
   Flame,
   Clock,
   MapPin,
-  Map,
-  Sparkles,
-  Users,
-  Settings,
 } from 'lucide-react';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -50,7 +44,6 @@ interface DashboardProps {
   user: User;
   token: string;
   onNavigate: (page: string) => void;
-  onLogout: () => void;
 }
 
 interface EmergencySosPayload {
@@ -75,7 +68,7 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
   );
 }
 
-export function Dashboard({ user: _user, token, onNavigate, onLogout }: DashboardProps) {
+export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
   const [isMedModalOpen, setMedModalOpen] = useState(false);
   const [hydrationStats, setHydrationStats] = useState({ medication: 100, hydration: 75, water: 90, participation: 60 });
@@ -149,37 +142,9 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   }
 
   return (
-    <div className="flex bg-[#FDFBF7]" style={{ height: '100vh', overflow: 'hidden' }} data-palette="caretaker">
-      {/* Sidebar */}
-      <aside className="bg-[#FAF8F5] border-r border-[#EADBCC] w-16 flex flex-col items-center py-6 gap-6 h-screen sticky top-0 shrink-0 z-20">
-        <div className="w-10 h-10 bg-[#1E293B] rounded-xl flex items-center justify-center">
-          <Brain className="w-5 h-5 text-white" />
-        </div>
-        <div className="flex-1 flex flex-col items-center space-y-4 w-full px-3">
-          <button title="Dashboard" className="w-10 h-10 bg-[#1E293B] text-white rounded-xl shadow-sm flex items-center justify-center shrink-0 transition-colors p-2" onClick={() => onNavigate('dashboard')}>
-            <LayoutDashboard className="w-5 h-5" />
-          </button>
-          <button title="Geofencing" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => onNavigate('geofence')}>
-            <Map className="w-5 h-5" />
-          </button>
-          <button title="Reminiscence Therapy" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => onNavigate('reminiscence')}>
-            <Sparkles className="w-5 h-5" />
-          </button>
-          <button title="Care Circle" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsEmergencyOpen(true)}>
-            <Users className="w-5 h-5" />
-          </button>
-          <div className="flex-1"></div>
-          <button title="Settings" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2">
-            <Settings className="w-5 h-5" />
-          </button>
-          <button title="Logout" onClick={onLogout} className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2">
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-      </aside>
-
+    <div className="flex flex-col h-full bg-[#FDFBF7]" data-palette="caretaker">
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Top Header */}
         <header className="flex items-center justify-between px-8 py-6 shrink-0">
           <div className="text-[#1F2937] font-medium text-lg">Caretaker Dashboard</div>
@@ -276,9 +241,9 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                 <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
                 <button
                   onClick={() => onNavigate('geofence')}
-                  className="flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 px-4 py-2 rounded-lg shadow-sm transition-all"
+                  className="flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg shadow-sm transition-all"
                 >
-                  <span className="relative flex h-2.5 w-2.5 mr-3">
+                  <span className="relative flex h-2.5 w-2.5 mr-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                   </span>

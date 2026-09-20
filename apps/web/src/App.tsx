@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, Brain, LayoutGrid, Map, Sparkles, Image as ImageIcon, Users } from 'lucide-react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiFetchMe, AuthApiError } from '@/lib/auth';
@@ -25,6 +26,7 @@ function paletteFor(pathname: string, isSignedIn: boolean): SahayPalette {
 function InnerApp() {
   const [session, setSession] = useState<StoredSession | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,24 +83,86 @@ function InnerApp() {
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={session ? <Navigate to="/" /> : <Login onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
-      <Route path="/signup" element={session ? <Navigate to="/" /> : <Signup onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
+    <div className="flex h-screen w-full bg-slate-50 overflow-hidden">
+      {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
+        <aside className={`bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'}`}>
+          <button
+            type="button"
+            onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
 
-      {/* Protected Routes */}
-      {session ? (
-        <>
-          <Route path="/admin" element={session.user.role === 'ADMIN' ? <AdminDashboard user={session.user} token={session.accessToken} onLogout={logout} /> : <Navigate to="/" />} />
-          <Route path="/" element={<Dashboard user={session.user} token={session.accessToken} onLogout={logout} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
-          <Route path="/analytics" element={<AnalyticsChart token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
-          <Route path="/media" element={<MediaManager onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
-          <Route path="/geofence" element={<GeofenceMap onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
-          <Route path="/reminiscence" element={<ReminiscenceManager token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
-        </>
-      ) : (
-        <Route path="*" element={<Navigate to="/login" />} />
-      )}
-    </Routes>
+          <div className="w-10 h-10 bg-[#1E293B] rounded-xl flex flex-shrink-0 items-center justify-center">
+            <Brain className="w-5 h-5 text-white" />
+          </div>
+
+          <div className="flex-1 flex flex-col space-y-4 w-full px-3 mt-4">
+            <button
+              title="Dashboard"
+              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              onClick={() => navigate('/')}
+            >
+              <LayoutGrid className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Dashboard</span>}
+            </button>
+            <button
+              title="Geofence Map"
+              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              onClick={() => navigate('/geofence')}
+            >
+              <Map className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Geofence Map</span>}
+            </button>
+            <button
+              title="Memory Album"
+              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              onClick={() => navigate('/reminiscence')}
+            >
+              <Sparkles className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Memory Album</span>}
+            </button>
+            <button
+              title="Media Manager"
+              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              onClick={() => navigate('/media')}
+            >
+              <ImageIcon className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Media Manager</span>}
+            </button>
+            <button
+              title="Care Circle"
+              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+            >
+              <Users className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Care Circle</span>}
+            </button>
+          </div>
+        </aside>
+      ) : null}
+
+      <div className="flex-1 overflow-y-auto relative">
+        <Routes>
+          <Route path="/login" element={session ? <Navigate to="/" /> : <Login onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
+          <Route path="/signup" element={session ? <Navigate to="/" /> : <Signup onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
+
+          {/* Protected Routes */}
+          {session ? (
+            <>
+              <Route path="/admin" element={session.user.role === 'ADMIN' ? <AdminDashboard user={session.user} token={session.accessToken} onLogout={logout} /> : <Navigate to="/" />} />
+              <Route path="/" element={<Dashboard user={session.user} token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/analytics" element={<AnalyticsChart token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/media" element={<MediaManager onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/geofence" element={<GeofenceMap onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/reminiscence" element={<ReminiscenceManager token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+            </>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" />} />
+          )}
+        </Routes>
+      </div>
+    </div>
   );
 }
 
