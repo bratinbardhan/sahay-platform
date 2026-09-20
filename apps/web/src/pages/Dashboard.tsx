@@ -30,7 +30,6 @@ import {
   Clock,
   MapPin,
   Map,
-  ChevronLeft,
   Sparkles,
   Users,
   Settings,
@@ -86,8 +85,6 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
-  const [isTherapyOpen, setIsTherapyOpen] = useState(false);
-  const [isGeofencingOpen, setIsGeofencingOpen] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -159,13 +156,13 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           <Brain className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1 flex flex-col items-center space-y-4 w-full px-3">
-          <button title="Dashboard" className="w-10 h-10 bg-[#1E293B] text-white rounded-xl shadow-sm flex items-center justify-center shrink-0 transition-colors p-2">
+          <button title="Dashboard" className="w-10 h-10 bg-[#1E293B] text-white rounded-xl shadow-sm flex items-center justify-center shrink-0 transition-colors p-2" onClick={() => onNavigate('dashboard')}>
             <LayoutDashboard className="w-5 h-5" />
           </button>
-          <button title="Geofencing" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsGeofencingOpen(true)}>
+          <button title="Geofencing" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => onNavigate('geofence')}>
             <Map className="w-5 h-5" />
           </button>
-          <button title="Reminiscence Therapy" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsTherapyOpen(true)}>
+          <button title="Reminiscence Therapy" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => onNavigate('reminiscence')}>
             <Sparkles className="w-5 h-5" />
           </button>
           <button title="Care Circle" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsEmergencyOpen(true)}>
@@ -278,7 +275,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                 <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
                 <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
                 <button
-                  onClick={() => setIsGeofencingOpen(true)}
+                  onClick={() => onNavigate('geofence')}
                   className="flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 px-4 py-2 rounded-lg shadow-sm transition-all"
                 >
                   <span className="relative flex h-2.5 w-2.5 mr-3">
@@ -420,79 +417,6 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          ) : null}
-
-          {isGeofencingOpen ? (
-            <div className="fixed inset-0 z-[70] bg-[#FAF8F5] overflow-y-auto p-8">
-              <div className="max-w-5xl mx-auto">
-                <button onClick={() => setIsGeofencingOpen(false)} className="flex items-center text-sm font-medium text-slate-500 hover:text-[#1E293B] mb-6">
-                  <ChevronLeft className="w-4 h-4 mr-1" /> Back to Dashboard
-                </button>
-                <h1 className="text-3xl font-extrabold text-[#1E293B] mb-2">Anti-Wandering Geofencing</h1>
-                <p className="text-slate-500 mb-8">Place the home anchor pin and set a safe radius. Emergency contacts receive an SMS with a live link upon breach.</p>
-                <div className="space-y-6">
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-end gap-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-bold text-[#1E293B] mb-2">Find Home Address</label>
-                      <input type="text" placeholder="e.g. 123 Main St..." className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-teal-600 transition-colors" />
-                    </div>
-                    <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-lg transition-colors">Search</button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-slate-200 rounded-2xl border border-slate-300 min-h-[400px] flex items-center justify-center text-slate-400">
-                      Map Placeholder
-                    </div>
-                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-bold text-[#1E293B] mb-2">Zone Name</label>
-                          <input type="text" defaultValue="Home Base" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none" />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-bold text-[#1E293B] mb-2">Latitude</label>
-                            <input type="text" readOnly defaultValue="25.5788" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-500" />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-bold text-[#1E293B] mb-2">Longitude</label>
-                            <input type="text" readOnly defaultValue="91.8933" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-500" />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-bold text-[#1E293B] mb-2">Safe Radius (meters): 250m</label>
-                          <input type="range" min="50" max="1000" defaultValue="250" className="w-full accent-teal-600" />
-                        </div>
-                      </div>
-                      <button className="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-3 rounded-lg transition-colors mt-6">Save Zone</button>
-                    </div>
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
-                    <button className="bg-rose-50 text-rose-700 font-bold px-6 py-2.5 rounded-lg border border-rose-200 hover:bg-rose-100 transition-colors">Simulate Geofence Breach</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          {isTherapyOpen ? (
-            <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
-              <div className="bg-white w-[500px] rounded-2xl p-6 shadow-xl relative text-center">
-                <button onClick={() => setIsTherapyOpen(false)} className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-                <div className="w-16 h-16 bg-[#F5E6D3] rounded-full flex items-center justify-center mx-auto mb-4 mt-2">
-                  <Sparkles className="w-8 h-8 text-[#1E293B]" />
-                </div>
-                <h3 className="text-xl font-bold text-[#1E293B] mb-2">Reminiscence Session Active</h3>
-                <p className="text-sm text-slate-500 mb-6">Playing guided photo memory session for Robert.</p>
-                <div className="w-full bg-[#FAF8F5] border border-slate-100 rounded-xl p-8 mb-6 flex items-center justify-center">
-                  <div className="flex items-end space-x-1.5 h-12 opacity-80">
-                    {[4, 8, 5, 3, 7, 10, 8, 4, 2, 5, 7, 4].map((h, i) => (
-                      <div key={i} className="w-3 bg-[#0E7490] rounded-full animate-pulse" style={{ height: `${h * 10}%`, animationDelay: `${i * 100}ms` }} />
-                    ))}
-                  </div>
-                </div>
-                <button onClick={() => setIsTherapyOpen(false)} className="w-full bg-[#1E293B] text-white py-3 rounded-xl font-bold hover:bg-[#334155] transition-colors shadow-sm">Complete Session</button>
               </div>
             </div>
           ) : null}
