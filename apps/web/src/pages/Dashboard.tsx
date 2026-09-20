@@ -29,7 +29,12 @@ import {
   Coins,
   Flame,
   Clock,
-
+  MapPin,
+  Map,
+  ChevronLeft,
+  Sparkles,
+  Users,
+  Settings,
 } from 'lucide-react';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -82,6 +87,8 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
+  const [isTherapyOpen, setIsTherapyOpen] = useState(false);
+  const [isGeofencingOpen, setIsGeofencingOpen] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -148,34 +155,38 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   return (
     <div className="flex bg-[#FDFBF7]" style={{ height: '100vh', overflow: 'hidden' }} data-palette="caretaker">
       {/* Sidebar */}
-      <aside className="w-20 bg-white shadow-sm flex flex-col items-center py-6 border-r border-[#E2E8F0]/30 shrink-0 z-20">
-        <div className="w-12 h-12 bg-[#1E293B] rounded-xl flex items-center justify-center mb-8">
-          <Brain className="w-6 h-6 text-white" />
+      <aside className="bg-[#FAF8F5] border-r border-[#EADBCC] w-16 flex flex-col items-center py-6 gap-6 h-screen sticky top-0 shrink-0 z-20">
+        <div className="w-10 h-10 bg-[#1E293B] rounded-xl flex items-center justify-center">
+          <Brain className="w-5 h-5 text-white" />
         </div>
-        <div className="flex-1 flex flex-col items-center space-y-4">
-          <button className="w-12 h-12 bg-[#F5E6D3] rounded-xl flex items-center justify-center text-[#1E293B] transition-colors shadow-sm">
-            <LayoutDashboard className="w-6 h-6" />
+        <div className="flex-1 flex flex-col items-center space-y-4 w-full px-3">
+          <button title="Dashboard" className="w-10 h-10 bg-[#1E293B] text-white rounded-xl shadow-sm flex items-center justify-center shrink-0 transition-colors p-2">
+            <LayoutDashboard className="w-5 h-5" />
           </button>
-          <button className="w-12 h-12 bg-transparent hover:bg-slate-50 rounded-xl flex items-center justify-center text-[#1F2937] transition-colors" onClick={() => onNavigate('analytics')}>
-            <Activity className="w-6 h-6" />
+          <button title="Geofencing" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsGeofencingOpen(true)}>
+            <Map className="w-5 h-5" />
           </button>
-          <button className="w-12 h-12 bg-transparent hover:bg-slate-50 rounded-xl flex items-center justify-center text-[#1F2937] transition-colors" onClick={() => onNavigate('media')}>
-            <Images className="w-6 h-6" />
+          <button title="Reminiscence Therapy" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsTherapyOpen(true)}>
+            <Sparkles className="w-5 h-5" />
           </button>
-          <button className="w-12 h-12 bg-transparent hover:bg-slate-50 rounded-xl flex items-center justify-center text-[#1F2937] transition-colors" onClick={() => onNavigate('reminiscence')}>
-            <Camera className="w-6 h-6" />
+          <button title="Care Circle" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2" onClick={() => setIsEmergencyOpen(true)}>
+            <Users className="w-5 h-5" />
+          </button>
+          <div className="flex-1"></div>
+          <button title="Settings" className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2">
+            <Settings className="w-5 h-5" />
+          </button>
+          <button title="Logout" onClick={onLogout} className="w-10 h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-center shrink-0 p-2">
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
-        <button onClick={onLogout} className="w-12 h-12 hover:bg-slate-50 rounded-xl flex items-center justify-center text-slate-500 transition-colors mt-auto">
-          <LogOut className="w-6 h-6" />
-        </button>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Top Header */}
         <header className="flex items-center justify-between px-8 py-6 shrink-0">
-          <div className="text-[#1F2937] font-medium text-lg">Caretaker</div>
+          <div className="text-[#1F2937] font-medium text-lg">Caretaker Dashboard</div>
           <div className="flex items-center space-x-6">
             <div className="relative inline-block">
               <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
@@ -260,14 +271,24 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           {/* Dashboard Title Area */}
           <div className="flex items-start justify-between mb-10">
             <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-3">Good morning, Ram</h1>
-              <p className="text-base md:text-lg italic text-slate-500">"They may not remember the conversation, but they will never forget how you made them feel."</p>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
+              <p className="text-base md:text-lg italic text-slate-500 leading-relaxed">"They may not remember the conversation, but they will never forget how you made them feel."</p>
 
-              <div className="flex flex-wrap items-center gap-5 mt-6">
+              <div className="flex flex-wrap items-center gap-6 mt-8">
                 <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
                 <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
                 <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
-                <button className="text-sm font-bold text-white tracking-wide bg-[#0E7490] hover:bg-[#155E75] px-4 py-2 rounded-lg shadow-sm transition-colors">Live Tracking</button>
+                <button
+                  onClick={() => setIsGeofencingOpen(true)}
+                  className="flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 px-4 py-2 rounded-lg shadow-sm transition-all"
+                >
+                  <span className="relative flex h-2.5 w-2.5 mr-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                  </span>
+                  <MapPin className="w-4 h-4 mr-1.5 text-slate-500" />
+                  Live Tracking
+                </button>
               </div>
             </div>
             <button
@@ -400,6 +421,79 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                     </button>
                   </div>
                 </div>
+              </div>
+            </div>
+          ) : null}
+
+          {isGeofencingOpen ? (
+            <div className="fixed inset-0 z-[70] bg-[#FAF8F5] overflow-y-auto p-8">
+              <div className="max-w-5xl mx-auto">
+                <button onClick={() => setIsGeofencingOpen(false)} className="flex items-center text-sm font-medium text-slate-500 hover:text-[#1E293B] mb-6">
+                  <ChevronLeft className="w-4 h-4 mr-1" /> Back to Dashboard
+                </button>
+                <h1 className="text-3xl font-extrabold text-[#1E293B] mb-2">Anti-Wandering Geofencing</h1>
+                <p className="text-slate-500 mb-8">Place the home anchor pin and set a safe radius. Emergency contacts receive an SMS with a live link upon breach.</p>
+                <div className="space-y-6">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-end gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-bold text-[#1E293B] mb-2">Find Home Address</label>
+                      <input type="text" placeholder="e.g. 123 Main St..." className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-teal-600 transition-colors" />
+                    </div>
+                    <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-lg transition-colors">Search</button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-slate-200 rounded-2xl border border-slate-300 min-h-[400px] flex items-center justify-center text-slate-400">
+                      Map Placeholder
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-bold text-[#1E293B] mb-2">Zone Name</label>
+                          <input type="text" defaultValue="Home Base" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm outline-none" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-bold text-[#1E293B] mb-2">Latitude</label>
+                            <input type="text" readOnly defaultValue="25.5788" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-500" />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-bold text-[#1E293B] mb-2">Longitude</label>
+                            <input type="text" readOnly defaultValue="91.8933" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-500" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-[#1E293B] mb-2">Safe Radius (meters): 250m</label>
+                          <input type="range" min="50" max="1000" defaultValue="250" className="w-full accent-teal-600" />
+                        </div>
+                      </div>
+                      <button className="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-3 rounded-lg transition-colors mt-6">Save Zone</button>
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center">
+                    <button className="bg-rose-50 text-rose-700 font-bold px-6 py-2.5 rounded-lg border border-rose-200 hover:bg-rose-100 transition-colors">Simulate Geofence Breach</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {isTherapyOpen ? (
+            <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
+              <div className="bg-white w-[500px] rounded-2xl p-6 shadow-xl relative text-center">
+                <button onClick={() => setIsTherapyOpen(false)} className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                <div className="w-16 h-16 bg-[#F5E6D3] rounded-full flex items-center justify-center mx-auto mb-4 mt-2">
+                  <Sparkles className="w-8 h-8 text-[#1E293B]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#1E293B] mb-2">Reminiscence Session Active</h3>
+                <p className="text-sm text-slate-500 mb-6">Playing guided photo memory session for Robert.</p>
+                <div className="w-full bg-[#FAF8F5] border border-slate-100 rounded-xl p-8 mb-6 flex items-center justify-center">
+                  <div className="flex items-end space-x-1.5 h-12 opacity-80">
+                    {[4, 8, 5, 3, 7, 10, 8, 4, 2, 5, 7, 4].map((h, i) => (
+                      <div key={i} className="w-3 bg-[#0E7490] rounded-full animate-pulse" style={{ height: `${h * 10}%`, animationDelay: `${i * 100}ms` }} />
+                    ))}
+                  </div>
+                </div>
+                <button onClick={() => setIsTherapyOpen(false)} className="w-full bg-[#1E293B] text-white py-3 rounded-xl font-bold hover:bg-[#334155] transition-colors shadow-sm">Complete Session</button>
               </div>
             </div>
           ) : null}
