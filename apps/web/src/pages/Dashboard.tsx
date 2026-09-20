@@ -4,7 +4,6 @@ import {
   Activity,
   AlertTriangle,
   Brain,
-  Camera,
   Check,
   Images,
   LogOut,
