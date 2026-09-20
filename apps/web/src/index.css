@@ -30,35 +30,35 @@
 :root,
 [data-palette='caretaker'] {
   /* ── PALETTE 2 · Caretaker Dashboard (portal default) ─────────────────── */
-  --sahay-bg: 133 112 106; /* #85706A - warm neutral background/structure */
-  --sahay-surface: 248 246 240; /* #F8F6F0 - warm neutral surface */
-  --sahay-surface-raised: 255 252 246; /* #FFFCF6 */
-  --sahay-surface-sunken: 237 234 227; /* #EDEAE3 */
+  --sahay-bg: 248 250 252; /* #F8FAFC */
+  --sahay-surface: 255 255 255; /* #FFFFFF */
+  --sahay-surface-raised: 255 255 255; /* #FFFFFF */
+  --sahay-surface-sunken: 241 245 249; /* #F1F5F9 */
   --sahay-panel: 241 242 244; /* #F1F2F4 */
-  --sahay-ink: 44 62 80; /* #2C3E50 */
-  --sahay-muted: 96 116 126; /* #60747E - cool neutral for borders/text */
-  --sahay-border: 96 116 126; /* #60747E - cool neutral borders */
-  --sahay-line: 201 207 214; /* #C9CFD6 */
+  --sahay-ink: 15 23 42; /* #0F172A */
+  --sahay-muted: 71 85 105; /* #475569 */
+  --sahay-border: 226 232 240; /* #E2E8F0 */
+  --sahay-line: 226 232 240; /* #E2E8F0 */
   --sahay-axis: 100 116 139; /* #64748B */
-  --sahay-accent: 233 157 121; /* #E99D79 - data accent 1 */
-  --sahay-accent-strong: 214 97 68; /* #D66144 - critical alert */
-  --sahay-accent-soft: 255 245 197; /* #FFF5C5 - data accent 2 */
-  --sahay-gold: 246 189 226; /* #F6BDE2 - data accent 3 */
-  --sahay-gold-soft: 189 224 175; /* #BDE0AF - data accent 4 */
-  --sahay-gold-ink: 122 159 150; /* #7A9F96 - data accent 5 */
-  --sahay-ok: 120 141 196; /* #788DC4 - data accent 6 */
-  --sahay-ok-bright: 155 109 214; /* #9B6DD6 - data accent 7 */
-  --sahay-ok-soft: 232 246 238; /* #E8F6EE */
-  --sahay-ok-ink: 30 122 69; /* #1E7A45 */
-  --sahay-lime: 93 166 0; /* #5DA600 */
-  --sahay-warn: 230 126 34; /* #E67E22 */
-  --sahay-warn-soft: 255 241 224; /* #FFF1E0 */
-  --sahay-warn-ink: 168 91 18; /* #A85B12 */
-  --sahay-alert: 214 97 68; /* #D66144 - critical alert */
-  --sahay-alert-soft: 253 236 234; /* #FDECEA */
-  --sahay-alert-ink: 179 69 44; /* #B3452C */
-  --sahay-info: 62 110 147; /* #3E6E93 */
-  --sahay-info-soft: 234 241 247; /* #EAF1F7 */
+  --sahay-accent: 13 148 136; /* #0D9488 */
+  --sahay-accent-strong: 15 118 110; /* #0F766E */
+  --sahay-accent-soft: 204 251 241; /* #CCFBF1 */
+  --sahay-gold: 139 92 246; /* #8B5CF6 */
+  --sahay-gold-soft: 237 233 254; /* #EDE9FE */
+  --sahay-gold-ink: 109 40 217; /* #6D28D9 */
+  --sahay-ok: 16 185 129; /* #10B981 */
+  --sahay-ok-bright: 20 184 166; /* #14B8A6 */
+  --sahay-ok-soft: 209 250 229; /* #D1FAE5 */
+  --sahay-ok-ink: 4 120 87; /* #047857 */
+  --sahay-lime: 16 185 129; /* #10B981 */
+  --sahay-warn: 245 158 11; /* #F59E0B */
+  --sahay-warn-soft: 254 243 199; /* #FEF3C7 */
+  --sahay-warn-ink: 180 83 9; /* #B45309 */
+  --sahay-alert: 239 68 68; /* #EF4444 */
+  --sahay-alert-soft: 254 226 226; /* #FEE2E2 */
+  --sahay-alert-ink: 185 28 28; /* #B91C1C */
+  --sahay-info: 30 58 138; /* #1E3A8A */
+  --sahay-info-soft: 219 234 254; /* #DBEAFE */
   --sahay-teal: 13 148 136; /* #0D9488 */
   --sahay-teal-soft: 230 245 243; /* #E6F5F3 */
   --sahay-mood: 245 158 11; /* #F59E0B */
@@ -151,7 +151,7 @@ body {
   .sahay-surface {
     background-color: rgb(var(--sahay-surface));
     background-image: var(--sahay-gradient);
-    border: 2px solid rgb(var(--sahay-ink));
+    border: 1px solid rgb(var(--sahay-line));
     border-radius: 1rem;
     box-shadow: var(--sahay-shadow);
     transition:
@@ -521,4 +521,3 @@ body {
     animation: none;
   }
 }
-

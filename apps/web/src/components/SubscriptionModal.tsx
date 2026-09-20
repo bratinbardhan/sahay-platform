@@ -25,10 +25,10 @@ const STARTER_FEATURES = [
 
 /** Visual mockup of the Care Pro feature set (no billing backend touched). */
 const CARE_PRO_FEATURES = [
-  'Real-time spatial heatmaps',
-  'Predictive AI trajectory engine',
-  'Full 30-day behavioral analytics',
-  'Bhashini voice synthesis (Hindi & Bengali)',
+  '30-Day Cognitive Telemetry & Predictive Sundowning Analysis',
+  'Real-time GPS Geofence Breach Fallback (Twilio SMS)',
+  'Offline SQLite Delta Sync Engine',
+  'Unlimited Reminiscence Media Storage',
 ];
 
 const VISITED_AREAS = [

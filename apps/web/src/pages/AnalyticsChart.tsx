@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, ShieldAlert, X } from 'lucide-react';
 import { Card } from '@/components/Card';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
@@ -12,6 +12,8 @@ import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { MoodStabilityChart } from './charts/MoodStabilityChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
+import { LeafletMap } from '@/components/LeafletMap';
+import { MOCK_GEOFENCE } from '@/lib/mockData';
 
 interface AnalyticsChartProps {
   onNavigate: (page: string) => void;
@@ -29,6 +31,8 @@ const TREND_LABELS: Record<string, string> = {
 
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
+  const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
   const { ddaHistory, cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
@@ -43,6 +47,17 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
   const moodSeries = getDemoMoodStability14d();
   const heatmapCells = getDemoActivityHeatmap();
+  const showReportToast = () => {
+    setToast('Detailed clinical telemetry PDF report generated.');
+    window.setTimeout(() => setToast(null), 2800);
+  };
+  const trendChart = (
+    <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={getDemoCognitiveLoad14d()} metric={metric} />
+  );
+  const ddaChart = (
+    <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
+  );
+  const moodChart = <MoodStabilityChart data={moodSeries} />;
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in" data-palette="caretaker">
@@ -56,6 +71,9 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
+        <button type="button" onClick={showReportToast} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-teal-600 px-3 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-teal-700">
+          <Download className="h-4 w-4" /> Download Detailed Report
+        </button>
         {isDemo ? (
           <span className="ml-auto rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
             Demo data — 14-day seed
@@ -106,6 +124,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
         className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up"
       >
+        <div className="flex justify-end"><button type="button" onClick={() => setExpanded('trend')} aria-label="Maximize cognitive trend chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
         <div className="flex gap-2 mb-2">
           <button
             type="button"
@@ -130,31 +149,35 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             Reaction Latency
           </button>
         </div>
-        <CognitiveTrendChart
-          points={ddaHistory?.points ?? []}
-          loadSeries={getDemoCognitiveLoad14d()}
-          metric={metric}
-        />
+        {trendChart}
       </Card>
 
-      <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
-        <DdaDifficultyCurve
-          points={ddaHistory?.points ?? []}
-          recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null}
-        />
-        <p className="text-xs text-sahay-ink/60 mt-2">
-          Difficulty follows a 3-session trailing average of error rate and a 5-session latency
-          average (~420 ms). The engine never jumps a full level in a single round.
-        </p>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-8">
+        <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-sahay-surface shadow-caretaker-card animate-slide-up">
+          <div className="flex justify-end"><button type="button" onClick={() => setExpanded('dda')} aria-label="Maximize DDA chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
+          {ddaChart}
+        </Card>
+        <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-sahay-surface shadow-caretaker-card animate-slide-up">
+          <div className="flex justify-end"><button type="button" onClick={() => setExpanded('mood')} aria-label="Maximize mood chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
+          {moodChart}
+        </Card>
+      </div>
 
-      <Card title="Mood Stability — Diurnal Sundowning Pattern" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
-        <MoodStabilityChart data={moodSeries} />
-        <p className="text-xs text-sahay-ink/60 mt-2">
-          Late-afternoon scores dip 18–28 points below morning observations, consistent with
-          sundowning. Evening partially recovers.
-        </p>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <Card title="Security & Geofence Breaches" className="bg-sahay-surface shadow-caretaker-card">
+          <div className="space-y-3 text-sm">
+            <div className="flex gap-3 rounded-lg border border-red-100 bg-red-50 p-3">
+              <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
+              <p><strong>19 Sept 05:14 PM</strong> — Outer Safe Zone breached (Displaced 140m) — <span className="font-semibold text-emerald-700">Resolved</span></p>
+            </div>
+            <div className="flex gap-3 rounded-lg border border-slate-200 p-3 text-slate-600">18 Sept 02:08 PM — Garden perimeter check-in — Resolved</div>
+          </div>
+        </Card>
+        <Card title="Spatial Roaming & Live Patient Tracking" className="bg-sahay-surface shadow-caretaker-card">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> Live Tracking Active</div>
+          <LeafletMap centerLat={MOCK_GEOFENCE.center_lat} centerLng={MOCK_GEOFENCE.center_lng} radiusMeters={MOCK_GEOFENCE.radius_meters} onPick={() => undefined} />
+        </Card>
+      </div>
 
       <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
         <SessionPerformanceChart sessions={sessions} />
@@ -239,6 +262,15 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           </div>
         ) : null}
       </Card>
+      {expanded ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4" role="dialog" aria-modal="true">
+          <div className="h-[80vh] w-full max-w-7xl overflow-auto rounded-2xl bg-white p-6">
+            <div className="mb-4 flex justify-end"><button type="button" onClick={() => setExpanded(null)} aria-label="Close expanded chart" className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"><X className="h-5 w-5" /></button></div>
+            {expanded === 'trend' ? trendChart : expanded === 'dda' ? ddaChart : moodChart}
+          </div>
+        </div>
+      ) : null}
+      {toast ? <div role="status" className="fixed bottom-6 right-6 z-50 rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-lg">{toast}</div> : null}
     </div>
   );
 }

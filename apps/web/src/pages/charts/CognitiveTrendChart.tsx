@@ -53,11 +53,11 @@ export function CognitiveTrendChart({
   }));
 
   const data =
-    metric === 'load' && loadSeries.length > 0
-      ? loadSeries.map((row) => ({
+    loadSeries.length > 0
+      ? loadSeries.map((row, index) => ({
           day: row.day,
           load: row.load,
-          latency: undefined as number | undefined,
+          latency: fromPoints[index]?.latency,
           engagement: row.engagement,
           fatigue: row.fatigue,
         }))
@@ -76,9 +76,19 @@ export function CognitiveTrendChart({
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
         <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
         <YAxis
+          yAxisId="left"
           stroke={SAHAY_CARETAKER.axis}
           fontSize={11}
-          domain={metric === 'latency' ? [300, 520] : [0, 100]}
+          domain={[0, 100]}
+          label={{ value: 'Cognitive Index', angle: -90, position: 'insideLeft', fontSize: 10 }}
+        />
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          stroke={latencyColor}
+          fontSize={11}
+          domain={[200, 800]}
+          label={{ value: 'Latency (ms)', angle: 90, position: 'insideRight', fontSize: 10 }}
         />
         <Tooltip
           contentStyle={sahayTooltipStyle}
@@ -118,6 +128,7 @@ export function CognitiveTrendChart({
             />
             <Line
               type="monotone"
+              yAxisId="left"
               dataKey="load"
               name="Cognitive load"
               stroke={loadColor}
@@ -131,6 +142,7 @@ export function CognitiveTrendChart({
               <>
                 <Line
                   type="monotone"
+                  yAxisId="left"
                   dataKey="engagement"
                   name="Engagement"
                   stroke={engagementColor}
@@ -142,6 +154,7 @@ export function CognitiveTrendChart({
                 />
                 <Line
                   type="monotone"
+                  yAxisId="left"
                   dataKey="fatigue"
                   name="Mental fatigue"
                   stroke={fatigueColor}
@@ -158,6 +171,7 @@ export function CognitiveTrendChart({
         ) : (
           <Line
             type="monotone"
+            yAxisId="right"
             dataKey="latency"
             name="Touch latency"
             stroke={latencyColor}

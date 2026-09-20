@@ -70,7 +70,11 @@ export const MOCK_MEDIA: GalleryMediaItem[] = DEMO_MEMORIES.map((memory, index) 
     id: memory.id,
     patient_id: memory.patient_id,
     media_type: isAudio ? 'VOICE' : 'PHOTO',
-    file_url: isAudio ? (memory.audio_narration_url ?? memory.image_url) : memory.image_url,
+    file_url: isAudio
+      ? (memory.audio_narration_url ?? memory.image_url)
+      : (memory.image_url.startsWith('https://example.com')
+        ? `https://images.unsplash.com/photo-${['1500530855697-b586d89ba3ee', '1519681393784-d120267933ba', '1507525428034-b723cf961d3e', '1497366754035-f200968a6e72'][index % 4]}?auto=format&fit=crop&w=800&q=80`
+        : memory.image_url),
     label_text: memory.caption_text,
     relation_tag: tag,
     event_year: yearMatch ? Number(yearMatch[0]) : null,

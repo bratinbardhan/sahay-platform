@@ -111,7 +111,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
           {visible.map((item) => (
             <article
               key={item.id}
-              className="text-left bg-sahay-surface-raised border-2 border-sahay-ink rounded-xl overflow-hidden shadow-caretaker-card transition-all duration-care ease-care hover:shadow-caretaker-raised"
+              className="text-left bg-sahay-surface-raised border border-slate-200 rounded-xl overflow-hidden transition-all duration-200 ease-in-out hover:shadow-sm"
             >
               {item.media_type === 'PHOTO' ? (
                 <img src={item.file_url} alt={item.title} className="w-full h-40 object-cover" />

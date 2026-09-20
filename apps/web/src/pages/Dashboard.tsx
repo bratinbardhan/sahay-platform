@@ -7,37 +7,36 @@ import {
   Camera,
   Clock,
   Coins,
-  Flame,
   Images,
+  MessageSquare,
+  Flame,
   LogOut,
   MapPin,
   Phone,
   Shield,
-  Target,
 } from 'lucide-react';
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
 import { StatBox } from '@/components/StatBox';
 import { TierBadge } from '@/components/TierBadge';
 import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
+import { SubscriptionModal } from '@/components/SubscriptionModal';
 
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
-import { GDS_STAGE_COLOR_RAMP, GDS_STAGE_COLORS, GDS_STAGE_LABELS, getGdsStageColor } from '@/lib/gdsUtils';
+import { GDS_STAGE_LABELS, getGdsStageColor } from '@/lib/gdsUtils';
 import { sendHeartbeat } from '@/lib/adminApi';
 import {
   DEMO_CAREGIVER_CONTACT,
   getDemoActivityHeatmap,
   getDemoCognitiveLoad14d,
-  getDemoGdsDistribution,
   getDemoMoodStability14d,
   getDemoPatientTimestamps,
 } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
-import { StageBarChart } from './charts/StageBarChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { MoodStabilityChart } from './charts/MoodStabilityChart';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -73,6 +72,7 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
 
 export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -187,7 +187,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             connected={!isDemo}
           />
           <span className="hidden sm:inline text-sm text-sahay-ink/80">{user.full_name}</span>
-          <TierBadge tier={user.tier} />
+          <TierBadge tier={user.tier} onClick={() => setSubscriptionOpen(true)} />
           <button
             type="button"
             onClick={onLogout}
@@ -220,18 +220,6 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             <Shield className="w-5 h-5 md:w-6 md:h-6" />
             GDS {stage} · {stageLabel}
           </span>
-          <div className="flex items-center gap-1" aria-label="GDS 1 to 7 ramp">
-            {[1, 2, 3, 4, 5, 6, 7].map((gds) => (
-              <span
-                key={gds}
-                className={`h-3 w-3 rounded-full border border-sahay-ink transition-all duration-care ease-care ${
-                  gds === stage ? 'scale-125 shadow-caretaker-card' : 'opacity-40'
-                }`}
-                style={{ backgroundColor: GDS_STAGE_COLORS[gds] }}
-                title={`GDS ${gds}`}
-              />
-            ))}
-          </div>
           {isDemo ? (
             <span className="rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
               Demo seed — 14-day GDS 3 telemetry
@@ -294,32 +282,31 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             loadSeries={getDemoCognitiveLoad14d()}
           />
         </Card>
-        <Card title="Care Circle" className="bg-sahay-surface shadow-caretaker-card">
-          <ul className="space-y-3 text-sm text-sahay-ink">
-            <li className="flex items-start gap-2">
-              <Target className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
-              <span>
-                Therapy band: Stage 1 games (GDS 1–3). Errorless sorting remains the primary module.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Activity className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
-              <span>{getDemoCognitiveLoad14d().length} days of load vs fatigue telemetry seeded.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Flame className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
-              <span>Streak {patient.streak_days} days · last sync {new Date(timestamps.last_sync_at).toLocaleTimeString('en-IN')}</span>
-            </li>
-          </ul>
+        <Card title="Emergency Help" className="bg-sahay-surface shadow-caretaker-card">
+          <div className="space-y-3 text-sm text-sahay-ink">
+            {[
+              ['Ram Sharma', 'Primary Caregiver / Son', '+91 98620 44110'],
+              ['Dr. S. K. Sen', 'Consultant Neurologist', '+91 94340 12345'],
+              ['Emergency Helpline', 'Siliguri Emergency Services', '112'],
+            ].map(([name, relation, phone]) => (
+              <div key={phone} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 p-3">
+                <div>
+                  <p className="font-semibold">{name}</p>
+                  <p className="text-slate-600">{relation}</p>
+                  <a href={`tel:${phone.replace(/\s/g, '')}`} className="font-medium text-teal-700">{phone}</a>
+                </div>
+                <div className="flex gap-1">
+                  <a href={`tel:${phone.replace(/\s/g, '')}`} aria-label={`Call ${name}`} className="rounded-md p-2 text-teal-700 hover:bg-teal-50"><Phone className="h-4 w-4" /></a>
+                  <a href={`sms:${phone.replace(/\s/g, '')}`} aria-label={`SMS ${name}`} className="rounded-md p-2 text-teal-700 hover:bg-teal-50"><MessageSquare className="h-4 w-4" /></a>
+                </div>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
 
       <Card title="Session Performance — Attempts vs Completed" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '340ms' }}>
         <SessionPerformanceChart sessions={sessions} />
-      </Card>
-
-      <Card title="GDS Population Distribution" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '400ms' }}>
-        <StageBarChart distribution={getDemoGdsDistribution()} colors={GDS_STAGE_COLOR_RAMP} />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '430ms' }}>
@@ -371,6 +358,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
           </div>
         </Card>
       ) : null}
+      {subscriptionOpen ? <SubscriptionModal onClose={() => setSubscriptionOpen(false)} /> : null}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: '520ms' }}>
         <ActionButton

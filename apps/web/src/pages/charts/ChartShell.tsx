@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { ResponsiveContainer } from 'recharts';
 
-export const CHART_FRAME_CLASS = 'h-[260px] sm:h-[320px] md:h-[380px] lg:h-[420px] w-full';
+export const CHART_FRAME_CLASS = 'h-[320px] min-h-[300px] w-full';
 
 const CHART_ANIMATION_MS = 1200;
 
