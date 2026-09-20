@@ -21,6 +21,7 @@ import { ActivityHeatmap } from './charts/ActivityHeatmap';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
+import { sendHeartbeat } from '@/lib/adminApi';
 import {
   getDemoActivityHeatmap,
 } from '@/lib/demoSeed';
