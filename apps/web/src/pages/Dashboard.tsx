@@ -17,12 +17,18 @@ import {
   Pill,
   CheckCircle2,
   CalendarDays,
-  ShieldAlert,
   X,
   Zap,
   Droplets,
   HeartPulse,
   CupSoda,
+  Phone,
+  PhoneCall,
+  MessageSquare,
+  Coins,
+  Flame,
+  Clock,
+
 } from 'lucide-react';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -74,6 +80,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   const [isRecording, setIsRecording] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -172,27 +179,11 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             <div className="relative">
               <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
               {isAlertOpen && (
-                <div className="absolute right-0 top-10 w-[350px] bg-white border border-slate-200 shadow-xl rounded-xl p-4 z-50">
-                  <div className="flex py-3 border-b border-slate-100">
-                    <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                    <div className="ml-3">
-                      <p className="text-sm font-bold text-red-600">CRITICAL SECURITY BREACH</p>
-                      <p className="text-xs text-slate-500 mt-1">Unrecognized device login attempt blocked.</p>
-                    </div>
-                  </div>
-                  <div className="flex py-3 border-b border-slate-100">
-                    <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                    <div className="ml-3">
-                      <p className="text-sm font-bold text-orange-500">Medical Alert</p>
-                      <p className="text-xs text-slate-500 mt-1">Missed 12:00 PM medication dose.</p>
-                    </div>
-                  </div>
-                  <div className="flex py-3">
-                    <Activity className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div className="ml-3">
-                      <p className="text-sm font-bold text-blue-500">System</p>
-                      <p className="text-xs text-slate-500 mt-1">Nightly hydration report generated.</p>
-                    </div>
+                <div className="absolute right-0 top-10 w-[350px] bg-slate-900 text-slate-300 border border-slate-800 shadow-xl rounded-xl p-4 z-50">
+                  <div className="font-mono text-[11px] leading-relaxed">
+                    <div className="py-2 border-b border-slate-800"><span className="text-slate-500">[2026-09-21 02:15:00]</span> <span className="text-yellow-400">[SEC_WARN]</span> Unrecognized device login blocked.</div>
+                    <div className="py-2 border-b border-slate-800"><span className="text-slate-500">[2026-09-21 01:30:22]</span> <span className="text-blue-400">[SYS_INFO]</span> Nightly hydration report generated.</div>
+                    <div className="py-2"><span className="text-slate-500">[2026-09-20 12:05:00]</span> <span className="text-red-400">[MED_ERR]</span> Missed 12:00 PM medication dose.</div>
                   </div>
                 </div>
               )}
@@ -240,8 +231,8 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           {/* Dashboard Title Area */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold text-[#1F2937]">Dashboard</h1>
-            <button className="bg-[#1E293B] text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-transform active:scale-95 flex items-center space-x-2">
-              <span>Go Dashboard</span>
+            <button onClick={() => setIsEmergencyOpen(true)} className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-medium text-[13px] flex items-center transition-colors">
+              <Phone className="w-4 h-4 mr-2" /> Emergency Contact
             </button>
           </div>
 
@@ -280,6 +271,74 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                   </div>
                 </div>
                 <button onClick={() => setMedModalOpen(false)} className="w-full bg-[#1E293B] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#334155] transition-colors">Save Schedule</button>
+              </div>
+            </div>
+          ) : null}
+
+          {isEmergencyOpen ? (
+            <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
+              <div className="bg-white w-[600px] rounded-2xl p-6 shadow-xl relative">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-semibold text-[#1E293B]">Care Circle & Emergency Help</h3>
+                  <button onClick={() => setIsEmergencyOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                </div>
+                <div className="space-y-3">
+                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
+                    <div>
+                      <p className="text-sm font-medium text-[#1E293B]">Ram Sharma</p>
+                      <p className="text-xs text-slate-500">Primary Caregiver / Son</p>
+                      <p className="text-xs text-teal-700 mt-1">+91 98620 44110</p>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
+                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
+                    <div>
+                      <p className="text-sm font-medium text-[#1E293B]">Dr. S. K. Sen</p>
+                      <p className="text-xs text-slate-500">Consultant Neurologist</p>
+                      <p className="text-xs text-teal-700 mt-1">+91 94340 12345</p>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
+                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
+                    <div>
+                      <p className="text-sm font-medium text-[#1E293B]">NEIGRIHMS Hospital Emergency / Cardiology</p>
+                      <p className="text-xs text-slate-500">Shillong, Meghalaya</p>
+                      <p className="text-xs text-teal-700 mt-1">+91 364 253 8025</p>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
+                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
+                    <div>
+                      <p className="text-sm font-medium text-[#1E293B]">Shillong Civil Hospital Emergency Desk</p>
+                      <p className="text-xs text-slate-500">Shillong, Meghalaya</p>
+                      <p className="text-xs text-teal-700 mt-1">+91 364 222 2395</p>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
+                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
+                    <div>
+                      <p className="text-sm font-medium text-[#1E293B]">Police Control Room Shillong</p>
+                      <p className="text-xs text-slate-500">Shillong emergency response</p>
+                      <p className="text-xs text-teal-700 mt-1">112</p>
+                    </div>
+                    <div className="flex items-center">
+                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
+                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ) : null}
@@ -375,6 +434,55 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             </div>
           </div>
 
+          <div className="grid grid-cols-4 gap-4 mt-6">
+            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
+              <Brain className="w-6 h-6 text-[#1E293B] mb-2" />
+              <div className="text-3xl font-bold text-[#1E293B]">3</div>
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">GDS STAGE</div>
+              <div className="text-xs text-slate-400 mt-1">Mild</div>
+            </div>
+            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
+              <Coins className="w-6 h-6 text-[#1E293B] mb-2" />
+              <div className="text-3xl font-bold text-[#1E293B]">186</div>
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">DEMITOKEN BALANCE</div>
+              <div className="text-xs text-slate-400 mt-1">Local Wallet Balance</div>
+            </div>
+            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
+              <Flame className="w-6 h-6 text-[#1E293B] mb-2" />
+              <div className="text-3xl font-bold text-[#1E293B]">88%</div>
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">STABILITY SCORE</div>
+              <div className="text-xs text-slate-400 mt-1">14-day mood / load</div>
+            </div>
+            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
+              <Clock className="w-6 h-6 text-[#1E293B] mb-2" />
+              <div className="text-3xl font-bold text-[#1E293B]">427ms</div>
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">TOUCH LATENCY</div>
+              <div className="text-xs text-slate-400 mt-1">↑ vs 14-day target</div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-6 mt-4 mb-8">
+            <h3 className="text-sm font-semibold text-[#1E293B] mb-4">Cognitive Summary — 7 Day Trend</h3>
+            <div className="flex justify-between items-center text-center">
+              <div>
+                <div className="text-xl font-bold text-[#1E293B]">STABLE</div>
+                <div className="text-xs text-slate-500">-1.79% accuracy</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-[#1E293B]">88%</div>
+                <div className="text-xs text-slate-500">Stability Score</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-[#1E293B]">3</div>
+                <div className="text-xs text-slate-500">Recommended Difficulty</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-[#1E293B]">420ms</div>
+                <div className="text-xs text-slate-500">Avg Latency (7 Days)</div>
+              </div>
+            </div>
+          </div>
+
           {/* Preserve original charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
@@ -388,7 +496,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           </div>
 
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 }
