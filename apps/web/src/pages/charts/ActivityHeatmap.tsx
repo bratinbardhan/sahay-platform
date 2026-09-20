@@ -132,7 +132,7 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
         <Scatter
           data={data}
           shape={HeatShape}
-          isAnimationActive={true}
+          isAnimationActive={false}
           animationDuration={CHART_ANIMATION_MS}
               animationEasing="ease-in-out"
         />

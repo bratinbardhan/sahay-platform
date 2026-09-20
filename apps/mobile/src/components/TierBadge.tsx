@@ -26,16 +26,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 14,
     paddingVertical: 7,
-    borderRadius: 999,
-    borderWidth: 1.5,
+    borderRadius: theme.radius.pill,
+    borderWidth: 1,
   },
   premium: {
-    backgroundColor: '#FFF8E6',
-    borderColor: theme.colors.leaf,
+    backgroundColor: colors.actionSoft,
+    borderColor: colors.primary,
   },
   free: {
     backgroundColor: colors.card,
-    borderColor: '#C9CFD6',
+    borderColor: colors.border,
   },
   text: {
     fontSize: 14,
@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   premiumText: {
-    color: '#8A6C1D',
+    color: colors.actionStrong,
   },
   freeText: {
-    color: '#5B6673',
+    color: colors.muted,
   },
 });

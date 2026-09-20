@@ -3,7 +3,8 @@ import { ResponsiveContainer } from 'recharts';
 
 export const CHART_FRAME_CLASS = 'h-[320px] min-h-[300px] w-full';
 
-const CHART_ANIMATION_MS = 1200;
+/** Clinical telemetry should settle immediately; motion adds noise to trends. */
+const CHART_ANIMATION_MS = 0;
 
 interface ChartShellProps {
   children: ReactElement;

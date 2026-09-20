@@ -2,7 +2,7 @@ import * as Crypto from 'expo-crypto';
 import { Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { SyncQueueService } from '@/services/SyncQueueService';
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type BystanderSOSModalProps = {
   visible: boolean;
@@ -51,13 +51,13 @@ export function BystanderSOSModal({ visible, patient, onClose }: BystanderSOSMod
 const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.background, padding: 24, justifyContent: 'center' },
   heading: { color: colors.text, fontSize: 38, fontWeight: '900', textAlign: 'center', marginBottom: 24 },
-  patientCard: { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 2, padding: 24, marginBottom: 24 },
+  patientCard: { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1, borderRadius: theme.radius.card, padding: 24, marginBottom: 24, ...theme.flat },
   photo: { color: colors.text, fontSize: 18, marginBottom: 12 },
   name: { color: colors.text, fontSize: 32, fontWeight: '800', marginBottom: 12 },
   detail: { color: colors.text, fontSize: 22, marginBottom: 8 },
-  call: { minHeight: 88, backgroundColor: colors.primary, borderColor: colors.border, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  call: { minHeight: MIN_TOUCH_DP, backgroundColor: colors.primary, borderColor: colors.border, borderWidth: 1, borderRadius: theme.radius.button, alignItems: 'center', justifyContent: 'center', ...theme.flat },
   callText: { color: colors.card, fontSize: 28, fontWeight: '900' },
-  close: { minHeight: MIN_TOUCH_DP, alignItems: 'center', justifyContent: 'center', marginTop: 16 },
+  close: { minHeight: MIN_TOUCH_DP, alignItems: 'center', justifyContent: 'center', marginTop: 16, borderRadius: theme.radius.button },
   closeText: { color: colors.text, fontSize: 22, fontWeight: '700' },
   pressed: { opacity: 0.8 },
 });

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type HighContrastCardProps = {
   children: ReactNode;
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderColor: colors.border,
-    borderWidth: 2,
-    borderRadius: 16,
+    borderWidth: 1,
+    borderRadius: theme.radius.card,
     padding: 20,
     elevation: 0,
     shadowOpacity: 0,
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
   },
   highlighted: {
     borderColor: colors.primary,
-    backgroundColor: '#FFF6EA',
+    backgroundColor: colors.reinforcementPeach,
   },
 });

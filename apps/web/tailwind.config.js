@@ -98,8 +98,8 @@ export default {
           'action-soft': '#CCFBF1',
           accent: '#0D9488',
           calm: '#10B981',
-          alert: '#EF4444',
-          'alert-soft': '#FEE2E2',
+          alert: '#E67E22',
+          'alert-soft': '#FFF1E0',
         },
 
         /**
@@ -169,8 +169,8 @@ export default {
        */
       boxShadow: {
         patient: 'none',
-        'caretaker-card': '0 4px 12px rgba(44, 62, 80, 0.08)',
-        'caretaker-raised': '0 12px 28px rgba(44, 62, 80, 0.14)',
+        'caretaker-card': '0 1px 3px rgba(15, 23, 42, 0.06)',
+        'caretaker-raised': '0 1px 3px rgba(15, 23, 42, 0.08)',
         'caretaker-toast': '0 8px 24px rgba(15, 23, 42, 0.12)',
         'caretaker-alert': '0 0 0 4px rgba(231, 76, 60, 0.18)',
         'caretaker-focus': '0 0 0 4px rgba(230, 126, 34, 0.22)',

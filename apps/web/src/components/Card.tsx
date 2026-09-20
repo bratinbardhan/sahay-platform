@@ -15,7 +15,7 @@ interface CardProps {
 export function Card({ title, children, className = '', style }: CardProps) {
   return (
     <div
-      className={`sahay-surface p-6 shadow-caretaker-card hover:shadow-caretaker-raised hover:-translate-y-1 transition-all duration-care ease-care ${className}`}
+      className={`sahay-surface p-6 ${className}`}
       style={style}
     >
       {title && <h3 className="text-lg font-semibold text-sahay-ink mb-3">{title}</h3>}

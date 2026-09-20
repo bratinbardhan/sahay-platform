@@ -16,6 +16,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
   const [filter, setFilter] = useState<'All' | MemoryGalleryTag>('All');
   const [modalOpen, setModalOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [form, setForm] = useState({
     title: '',
@@ -37,9 +38,15 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!form.file) {
+    if (!form.title.trim()) {
+      setFormError('Add a short title for this memory.');
       return;
     }
+    if (!form.file) {
+      setFormError('Select an image before saving the memory.');
+      return;
+    }
+    setFormError(null);
     setIsUploading(true);
     await new Promise((resolve) => window.setTimeout(resolve, 700));
     const objectUrl = URL.createObjectURL(form.file);
@@ -64,7 +71,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
       <div className="flex items-center mb-6">
         <button
           type="button"
@@ -106,15 +113,24 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
         />
       </div>
 
-      <Card title={`Gallery (${visible.length})`} className="bg-sahay-surface shadow-caretaker-card">
+      <Card title={`Gallery (${visible.length})`} className="bg-white border border-slate-200 shadow-none">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {visible.map((item) => (
             <article
               key={item.id}
-              className="text-left bg-sahay-surface-raised border border-slate-200 rounded-xl overflow-hidden transition-all duration-200 ease-in-out hover:shadow-sm"
+              className="text-left bg-white border border-slate-200 rounded-lg overflow-hidden"
             >
               {item.media_type === 'PHOTO' ? (
-                <img src={item.file_url} alt={item.title} className="w-full h-40 object-cover" />
+                <div className="w-full h-40 bg-slate-50 flex items-center justify-center" aria-label={`${item.filter_tag} memory illustration`}>
+                  <svg viewBox="0 0 320 160" role="img" aria-hidden="true" className="h-full w-full">
+                    <rect width="320" height="160" fill="#F8FAFC" />
+                    <circle cx="255" cy="42" r="22" fill="#F4C95D" />
+                    <path d="M0 124c48-35 75-22 116-10 45 13 73-18 111-17 35 1 56 19 93 7v56H0Z" fill="#99F6E4" />
+                    <path d="M0 138c50-18 87-9 126 2 48 13 76-12 112-10 30 1 51 10 82 4v26H0Z" fill="#0D9488" opacity=".7" />
+                    <text x="18" y="34" fill="#334155" fontSize="14" fontFamily="system-ui" fontWeight="700">{item.filter_tag}</text>
+                    <text x="18" y="54" fill="#64748B" fontSize="11" fontFamily="system-ui">{item.title}</text>
+                  </svg>
+                </div>
               ) : (
                 <div className="w-full h-40 border-b-2 border-sahay-ink flex items-center justify-center bg-sahay-panel">
                   <Mic className="w-5 h-5 md:w-6 md:h-6 text-sahay-ink" />
@@ -140,7 +156,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
 
       {modalOpen ? (
         <div className="fixed inset-0 z-40 bg-sahay-ink/40 flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-6 shadow-caretaker-raised animate-slide-up">
+          <div className="w-full max-w-lg bg-white border border-slate-200 rounded-lg p-6 shadow-none">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-sahay-ink">Upload New Memory</h2>
               <button
@@ -153,6 +169,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
               </button>
             </div>
             <form onSubmit={(event) => void handleSubmit(event)} className="space-y-4">
+              {formError ? <p className="border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{formError}</p> : null}
               <label className="block text-sm font-semibold text-sahay-ink">
                 Title
                 <input
@@ -218,7 +235,7 @@ export function MediaManager({ onNavigate }: MediaManagerProps) {
       ) : null}
 
       {toast ? (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border-2 border-sahay-ink bg-sahay-surface px-4 py-3 shadow-caretaker-toast animate-slide-up">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
           <Check className="w-5 h-5 md:w-6 md:h-6 text-sahay-ok-ink" />
           <span className="text-sm font-semibold text-sahay-ink">{toast}</span>
         </div>

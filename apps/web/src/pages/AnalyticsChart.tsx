@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, Maximize2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Maximize2, Printer, X } from 'lucide-react';
 import { Card } from '@/components/Card';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
 import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
-import { getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
+import { getDemoActivityHeatmap, getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
+import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
@@ -29,7 +30,7 @@ const TREND_LABELS: Record<string, string> = {
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
-  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency'>('latency');
+  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency' | 'heatmap'>('latency');
   const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
@@ -43,7 +44,9 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     SESSION_PAGE_SIZE
   );
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
-  const moodSeries = getDemoMoodStability14d();
+  const moodSeries = isDemo ? getDemoMoodStability14d() : [];
+  const loadSeries = isDemo ? getDemoCognitiveLoad14d() : [];
+  const heatmapSeries = isDemo ? getDemoActivityHeatmap() : [];
   const showReportToast = () => {
     const report = {
       generatedAt: new Date().toISOString(),
@@ -63,8 +66,13 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     setToast('Detailed clinical telemetry report downloaded.');
     window.setTimeout(() => setToast(null), 2800);
   };
+  const printReport = () => {
+    setToast('Print dialog opened for the clinical report.');
+    window.setTimeout(() => window.print(), 100);
+    window.setTimeout(() => setToast(null), 2800);
+  };
   const trendChart = (
-    <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={getDemoCognitiveLoad14d()} metric={metric} />
+    <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={loadSeries} metric={metric} />
   );
   const ddaChart = (
     <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
@@ -72,7 +80,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const moodChart = <MoodStabilityChart data={moodSeries} />;
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
       <div className="flex items-center mb-6">
         <button
           type="button"
@@ -83,8 +91,11 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
-        <button type="button" onClick={showReportToast} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-teal-600 px-3 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-teal-700">
+        <button type="button" onClick={showReportToast} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong">
           <Download className="h-4 w-4" /> Download Detailed Report
+        </button>
+        <button type="button" onClick={printReport} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken">
+          <Printer className="h-4 w-4" /> Print
         </button>
         {isDemo ? (
           <span className="ml-auto rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
@@ -99,7 +110,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </p>
 
       {cognitiveSummary ? (
-        <Card title="7-Day Cognitive Summary" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <Card title="7-Day Cognitive Summary" className="mb-8 bg-white border border-slate-200 shadow-none">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-2xl font-bold text-sahay-ink">
@@ -134,7 +145,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
       <Card
         title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
-        className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up"
+        className="mb-8 bg-white border border-slate-200 shadow-none"
       >
         <div className="flex justify-end"><button type="button" onClick={() => setExpanded('trend')} aria-label="Maximize cognitive trend chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
         <div className="flex gap-2 mb-2">
@@ -165,11 +176,11 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-8">
-        <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-white border border-slate-200 shadow-none">
           <div className="flex justify-end"><button type="button" onClick={() => setExpanded('dda')} aria-label="Maximize DDA chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {ddaChart}
         </Card>
-        <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-sahay-surface shadow-caretaker-card animate-slide-up">
+        <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-white border border-slate-200 shadow-none">
           <div className="flex justify-end"><button type="button" onClick={() => setExpanded('mood')} aria-label="Maximize mood chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {moodChart}
         </Card>
@@ -181,6 +192,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             ['latency', 'Daily Reaction Latency'],
             ['rebound', 'Touch Errorless Rebound'],
             ['consistency', 'Session Consistency'],
+            ['heatmap', 'Activity heatmap'],
           ].map(([key, label]) => (
             <button key={key} type="button" role="tab" aria-selected={breakdown === key} onClick={() => setBreakdown(key as typeof breakdown)}
               className={`rounded-lg border px-3 py-2 text-sm font-semibold ${breakdown === key ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
@@ -193,13 +205,15 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             [['Morning', '360 ms'], ['Afternoon', '418 ms'], ['Evening', '486 ms'], ['Watch band', '520 ms+']].map(([label, value]) => <div key={label} className="rounded-xl bg-slate-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-slate-900">{value}</p></div>)
           ) : breakdown === 'rebound' ? (
             [['Errorless attempts', '82%'], ['Guided recovery', '14%'], ['Repeat errors', '4%'], ['Trend', 'Improving']].map(([label, value]) => <div key={label} className="rounded-xl bg-teal-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-teal-800">{value}</p></div>)
-          ) : (
+          ) : breakdown === 'consistency' ? (
             [['Active days', '12 / 14'], ['Avg sessions', '2.4 / day'], ['Completion', '91%'], ['Stability', `${Math.round(cognitiveSummary?.stability_score ?? 88)}%`]].map(([label, value]) => <div key={label} className="rounded-xl bg-indigo-50 p-4"><p className="text-sm text-slate-600">{label}</p><p className="mt-1 text-xl font-bold text-indigo-800">{value}</p></div>)
+          ) : (
+            <div className="col-span-2 md:col-span-4"><ActivityHeatmap cells={heatmapSeries} /></div>
           )}
         </div>
       </Card>
 
-      <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-sahay-surface shadow-caretaker-card animate-slide-up">
+      <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none">
         <SessionPerformanceChart sessions={sessions} />
       </Card>
 

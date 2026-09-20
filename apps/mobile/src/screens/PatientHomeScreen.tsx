@@ -5,7 +5,7 @@ import { BystanderSOSModal } from '@/components/BystanderSOSModal';
 import { gamesForGds, therapyStageFromGds } from '@/games/gdsRouting';
 import { usePatient } from '@/patient/PatientProvider';
 import { bhashiniVoiceService } from '@/services/voice/BhashiniVoiceService';
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 export default function PatientHomeScreen() {
   const { patient } = usePatient();
@@ -86,13 +86,13 @@ const styles = StyleSheet.create({
   statusRow: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
   stage: { color: colors.text, fontSize: 22, fontWeight: '800', backgroundColor: colors.reinforcementPeach, padding: 12 },
   tokens: { color: colors.text, fontSize: 22, fontWeight: '800', padding: 12 },
-  voice: { minWidth: 220, minHeight: 80, borderRadius: 40, borderWidth: 3, borderColor: colors.primary, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
+  voice: { minWidth: 220, minHeight: MIN_TOUCH_DP, borderRadius: theme.radius.button, borderWidth: 1, borderColor: colors.primary, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   voiceText: { color: colors.card, fontSize: 22, fontWeight: '900', textAlign: 'center' },
   sectionTitle: { color: colors.text, fontSize: 24, fontWeight: '800', marginVertical: 28 },
   gameGrid: { width: '100%', gap: 12 },
-  gameCard: { minHeight: MIN_TOUCH_DP, backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, padding: 18 },
+  gameCard: { minHeight: MIN_TOUCH_DP, backgroundColor: colors.card, borderWidth: 1, borderRadius: theme.radius.card, borderColor: colors.border, padding: 18, ...theme.flat },
   gameTitle: { color: colors.text, fontSize: 22, fontWeight: '800' },
   gameStage: { color: colors.text, fontSize: 18, marginTop: 6 },
-  help: { minHeight: MIN_TOUCH_DP, minWidth: 160, marginTop: 24, backgroundColor: colors.reinforcementPeach, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+  help: { minHeight: MIN_TOUCH_DP, minWidth: 160, marginTop: 24, backgroundColor: colors.reinforcementPeach, borderWidth: 1, borderRadius: theme.radius.button, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', ...theme.flat },
   helpText: { color: colors.text, fontSize: 22, fontWeight: '800' },
 });

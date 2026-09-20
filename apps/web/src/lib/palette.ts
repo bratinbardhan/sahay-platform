@@ -35,8 +35,8 @@ export const SAHAY_PATIENT = {
   accent: '#0D9488',
   calm: '#10B981',
   /** Deliberately amber, never red — patient UI must not alarm. */
-  alert: '#EF4444',
-  alertSoft: '#FEE2E2',
+  alert: '#E67E22',
+  alertSoft: '#FFF1E0',
   /** No elevation, no gradient, no motion on this surface. */
   shadow: 'none',
   motion: '0ms',
@@ -84,9 +84,9 @@ export const SAHAY_CARETAKER = {
   slate: '#5B6673',
   /** Categorical chart scale — index 8 (alert red) is breach/SOS series only. */
   viz: ['#0D9488', '#3B82F6', '#F59E0B', '#8B5CF6', '#64748B', '#0F766E', '#475569', '#EF4444'],
-  shadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
-  shadowHover: '0 12px 28px rgba(15, 23, 42, 0.12)',
-  motion: '220ms',
+  shadow: '0 1px 3px rgba(15, 23, 42, 0.06)',
+  shadowHover: '0 1px 3px rgba(15, 23, 42, 0.08)',
+  motion: '0ms',
 } as const;
 
 /** Categorical series for bar/radar/pie charts (alias of `caretaker.viz`). */

@@ -32,6 +32,7 @@ export function CognitiveTrendChart({
   loadSeries = [],
   metric = 'load',
 }: CognitiveTrendChartProps) {
+  void metric;
   const ordered = [...points].sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
@@ -52,12 +53,15 @@ export function CognitiveTrendChart({
     fatigue: undefined as number | undefined,
   }));
 
+  // Keep telemetry aligned by date. Index-based merging shifts latency when a
+  // session is missing and makes the chart clinically misleading.
+  const pointByDay = new Map(fromPoints.map((point) => [point.day, point]));
   const data =
     loadSeries.length > 0
-      ? loadSeries.slice(-14).map((row, index) => ({
+      ? loadSeries.slice(-14).map((row) => ({
           day: row.day,
           load: Number.isFinite(row.load) ? row.load : null,
-          latency: fromPoints[index]?.latency ?? null,
+          latency: pointByDay.get(row.day)?.latency ?? null,
           engagement: Number.isFinite(row.engagement) ? row.engagement : null,
           fatigue: Number.isFinite(row.fatigue) ? row.fatigue : null,
         }))
@@ -66,7 +70,7 @@ export function CognitiveTrendChart({
   const loadColor = SAHAY_CARETAKER.viz[0];
   const engagementColor = SAHAY_CARETAKER.viz[3];
   const fatigueColor = SAHAY_CARETAKER.viz[5];
-  const latencyColor = SAHAY_CARETAKER.viz[1];
+  const latencyColor = '#4F46E5';
   const watchColor = SAHAY_CARETAKER.viz[5];
   const fatigueLineColor = SAHAY_CARETAKER.viz[7];
 
@@ -112,8 +116,7 @@ export function CognitiveTrendChart({
           }}
         />
         <Legend />
-        {metric === 'load' ? (
-          <>
+        <>
             <ReferenceLine
               y={WATCH_THRESHOLD}
               stroke={watchColor}
@@ -134,9 +137,8 @@ export function CognitiveTrendChart({
               stroke={loadColor}
               strokeWidth={2.6}
               dot={{ r: 3, stroke: loadColor, fill: SAHAY_CARETAKER.surfaceRaised }}
-              isAnimationActive={true}
-              animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+              isAnimationActive={false}
+                  animationDuration={CHART_ANIMATION_MS}
             />
             {loadSeries.length > 0 ? (
               <>
@@ -148,9 +150,8 @@ export function CognitiveTrendChart({
                   stroke={engagementColor}
                   strokeWidth={2.2}
                   dot={{ r: 3 }}
-                  isAnimationActive={true}
+                  isAnimationActive={false}
                   animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
                 />
                 <Line
                   type="monotone"
@@ -161,14 +162,11 @@ export function CognitiveTrendChart({
                   strokeWidth={2.2}
                   strokeDasharray="5 4"
                   dot={{ r: 3 }}
-                  isAnimationActive={true}
+                  isAnimationActive={false}
                   animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
                 />
               </>
             ) : null}
-          </>
-        ) : (
           <Line
             type="monotone"
             yAxisId="right"
@@ -177,11 +175,11 @@ export function CognitiveTrendChart({
             stroke={latencyColor}
             strokeWidth={2.6}
             dot={{ r: 3, stroke: latencyColor, fill: SAHAY_CARETAKER.surfaceRaised }}
-            isAnimationActive={true}
+            isAnimationActive={false}
             animationDuration={CHART_ANIMATION_MS}
               animationEasing="ease-in-out"
           />
-        )}
+        </>
       </LineChart>
     </ChartShell>
   );

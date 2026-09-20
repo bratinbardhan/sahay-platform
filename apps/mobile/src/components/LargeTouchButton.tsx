@@ -7,7 +7,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type LargeTouchButtonProps = {
   label: string;
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
   base: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: theme.radius.button,
+    borderWidth: 1,
     borderColor: colors.border,
     elevation: 0,
     shadowOpacity: 0,

@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Vibration } from 'react-native';
 
 import { SyncQueueService } from '@/services/SyncQueueService';
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type RoutineReminderModalProps = {
   visible: boolean;
@@ -56,14 +56,15 @@ export function RoutineReminderModal({
 
 const styles = StyleSheet.create({
   backdrop: { flex: 1, backgroundColor: colors.background, justifyContent: 'center', padding: 24 },
-  card: { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 2, padding: 32 },
+  card: { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1, borderRadius: theme.radius.card, padding: 32, ...theme.flat },
   title: { color: colors.text, fontSize: 32, fontWeight: '800', textAlign: 'center' },
   message: { color: colors.text, fontSize: 22, textAlign: 'center', marginVertical: 24 },
   complete: {
     minHeight: MIN_TOUCH_DP,
     backgroundColor: colors.reinforcementGreen,
     borderColor: colors.border,
-    borderWidth: 2,
+    borderWidth: 1,
+    borderRadius: theme.radius.button,
     alignItems: 'center',
     justifyContent: 'center',
   },

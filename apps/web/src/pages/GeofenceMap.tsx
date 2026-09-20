@@ -201,11 +201,11 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
 
   return (
     <div
-      className={`min-h-screen bg-sahay-bg p-4 sm:p-8 animate-fade-in ${breachSimulated ? 'pt-20' : ''}`}
+      className={`min-h-screen bg-sahay-bg p-4 sm:p-8 ${breachSimulated ? 'pt-20' : ''}`}
       data-palette="caretaker"
     >
       {breachSimulated ? (
-        <div className="fixed top-0 inset-x-0 z-50 bg-sahay-alert text-white px-4 py-3 font-bold shadow-caretaker-card flex items-center justify-center gap-3 animate-slide-up">
+        <div className="fixed top-0 inset-x-0 z-50 bg-sahay-alert text-white px-4 py-3 font-bold shadow-caretaker-card flex items-center justify-center gap-3">
           <Siren className="w-5 h-5 md:w-6 md:h-6 animate-ping" />
           SOS — geofence breach simulated. Home pin is alert crimson. Offline SMS payload queued for Twilio.
         </div>

@@ -134,7 +134,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
   const totalUsers = safeOverview?.total_users ?? usersPage?.total ?? 0;
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-10 animate-fade-in">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-10">
       {/* Navigation bar */}
       <nav className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-sahay-ink bg-sahay-surface px-4 py-3 rounded-xl shadow-sm">
         <div className="flex items-center gap-2 text-sahay-ink">
@@ -420,5 +420,4 @@ function TierToggle({
     </div>
   );
 }
-
 

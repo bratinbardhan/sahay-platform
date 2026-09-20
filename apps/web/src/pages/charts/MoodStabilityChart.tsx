@@ -18,22 +18,14 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
     );
   }
 
-  const morningColor = SAHAY_CARETAKER.viz[0];
-  const afternoonColor = SAHAY_CARETAKER.viz[5];
-  const eveningColor = SAHAY_CARETAKER.viz[2];
+  const morningColor = '#0D9488';
+  const afternoonColor = '#E11D48';
+  const eveningColor = '#6366F1';
 
   return (
     <ChartShell>
       <AreaChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="morningFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={morningColor} stopOpacity={0.35} />
-            <stop offset="100%" stopColor={morningColor} stopOpacity={0.04} />
-          </linearGradient>
-          <linearGradient id="afternoonFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={afternoonColor} stopOpacity={0.32} />
-            <stop offset="100%" stopColor={afternoonColor} stopOpacity={0.04} />
-          </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
         <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
@@ -52,22 +44,23 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           dataKey="morning"
           name="Morning"
           stroke={morningColor}
-          fill="url(#morningFill)"
+          fill={morningColor}
+          fillOpacity={0.08}
           strokeWidth={2.4}
-          isAnimationActive={true}
+          isAnimationActive={false}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
         />
         <Area
           type="monotone"
           dataKey="afternoon"
           name="Late afternoon (sundowning)"
           stroke={afternoonColor}
-          fill="url(#afternoonFill)"
+          fill={afternoonColor}
+          fillOpacity={0.08}
           strokeWidth={2.4}
-          isAnimationActive={true}
+          strokeDasharray="3 3"
+          isAnimationActive={false}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
         />
         <Area
           type="monotone"
@@ -77,9 +70,8 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           fill="transparent"
           strokeWidth={1.8}
           strokeDasharray="5 4"
-          isAnimationActive={true}
+          isAnimationActive={false}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
         />
       </AreaChart>
     </ChartShell>

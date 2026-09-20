@@ -13,7 +13,7 @@ import type { UserRole } from '@sahay/types';
 
 import { useAuth } from '@/auth/AuthProvider';
 import { LargeTouchButton } from '@/components/LargeTouchButton';
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type Mode = 'login' | 'signup';
 
@@ -201,14 +201,14 @@ const styles = StyleSheet.create({
   },
   segment: {
     flexDirection: 'row',
-    backgroundColor: '#EDEAE3',
-    borderRadius: 999,
+    backgroundColor: colors.surfaceSunken,
+    borderRadius: theme.radius.pill,
     padding: 4,
     marginBottom: 28,
   },
   segmentButton: {
     flex: 1,
-    borderRadius: 999,
+    borderRadius: theme.radius.pill,
     paddingVertical: 12,
     alignItems: 'center',
   },
@@ -238,15 +238,15 @@ const styles = StyleSheet.create({
   },
   roleCard: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: '#C9CFD6',
-    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: theme.radius.card,
     padding: 16,
     backgroundColor: colors.card,
   },
   roleCardActive: {
     borderColor: colors.primary,
-    backgroundColor: '#FFF1E0',
+    backgroundColor: colors.reinforcementPeach,
   },
   minTouch: {
     minHeight: MIN_TOUCH_DP,
@@ -270,9 +270,9 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   input: {
-    borderWidth: 2,
-    borderColor: '#C9CFD6',
-    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: theme.radius.control,
     backgroundColor: colors.card,
     paddingHorizontal: 18,
     paddingVertical: 14,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   error: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#B3452C',
+    color: colors.primary,
     marginBottom: 12,
     textAlign: 'center',
   },

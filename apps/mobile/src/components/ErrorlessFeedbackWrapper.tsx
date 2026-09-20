@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
 
 type ErrorlessFeedbackWrapperProps = {
   children: ReactNode;
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     bottom: 24,
     alignSelf: 'center',
     backgroundColor: colors.guide,
-    borderRadius: 18,
-    borderWidth: 2,
+    borderRadius: theme.radius.button,
+    borderWidth: 1,
     borderColor: colors.border,
     paddingHorizontal: 28,
     paddingVertical: 14,

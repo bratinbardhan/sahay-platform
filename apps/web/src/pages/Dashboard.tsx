@@ -13,7 +13,6 @@ import {
   LogOut,
   MapPin,
   Phone,
-  Shield,
 } from 'lucide-react';
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
@@ -21,11 +20,12 @@ import { StatBox } from '@/components/StatBox';
 import { TierBadge } from '@/components/TierBadge';
 import { SyncStatusIndicator } from '@/components/SyncStatusIndicator';
 import { SubscriptionModal } from '@/components/SubscriptionModal';
+import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
-import { GDS_STAGE_LABELS, getGdsStageColor } from '@/lib/gdsUtils';
+import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
 import { sendHeartbeat } from '@/lib/adminApi';
 import {
   DEMO_CAREGIVER_CONTACT,
@@ -98,7 +98,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
   };
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
-  const { cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
+  const { cognitiveSummary, ddaHistory, isDemo: analyticsIsDemo } = usePatientAnalytics(
     token,
     patient?.id ?? null
   );
@@ -125,7 +125,6 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
 
   const stage = patient.assigned_gds_stage;
   const stageLabel = GDS_STAGE_LABELS[stage] || 'Unknown';
-  const stageColor = getGdsStageColor(stage);
   const stability = cognitiveSummary?.stability_score ?? 88;
   const avgLatency =
     sessions.length > 0
@@ -133,9 +132,13 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       : 420;
   const pendingQueue = isDemo ? 3 : 0;
   const latencyTrend = avgLatency <= 420 ? 'improving' : 'watch';
+  const greeting = (() => {
+    const hour = new Date().getHours();
+    return hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  })();
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-8 animate-fade-in" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-8" data-palette="caretaker">
       {activeAlert ? (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-sahay-alert text-white p-8 rounded-xl max-w-lg w-full shadow-caretaker-card">
@@ -191,43 +194,16 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         </div>
       </nav>
 
-      {cognitiveSummary ? (
-        <Card title="Cognitive Summary — 7 Day Trend" className="mt-6 mb-6 bg-white border border-slate-200 shadow-sm animate-slide-up">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.trend_direction.replace('_', ' ')}</div><div className="text-sm text-slate-600">{cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}{cognitiveSummary.accuracy_delta_pct}% accuracy</div></div>
-            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.stability_score.toFixed(0)}%</div><div className="text-sm text-slate-600">Stability Score</div></div>
-            <div><div className="text-2xl font-bold text-teal-700">{cognitiveSummary.recommended_difficulty}</div><div className="text-sm text-slate-600">Recommended Difficulty</div></div>
-            <div><div className="text-2xl font-bold text-slate-900">{Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms</div><div className="text-sm text-slate-600">Avg Latency (7 Days)</div></div>
-          </div>
-        </Card>
-      ) : null}
-
-      <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3 animate-slide-up">
+      <div className="mb-6 mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Medical Overview</h1>
-          <p className="text-slate-600 text-base sm:text-lg mt-1">
-            {patient.name}, {patient.age} · last session{' '}
-            {new Date(timestamps.last_session_at).toLocaleString('en-IN')}
-          </p>
-          <p className="text-sm text-sahay-muted mt-1 flex items-center gap-2">
-            <Phone className="w-5 h-5 md:w-6 md:h-6" />
-            {DEMO_CAREGIVER_CONTACT.relation}: {DEMO_CAREGIVER_CONTACT.name} ·{' '}
-            {DEMO_CAREGIVER_CONTACT.phone}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span
-            className="inline-flex items-center gap-2 rounded-full border-2 border-sahay-ink px-4 py-2 text-sm font-bold text-white shadow-caretaker-card"
-            style={{ backgroundColor: stageColor }}
-          >
-            <Shield className="w-5 h-5 md:w-6 md:h-6" />
-            GDS {stage} · {stageLabel}
-          </span>
-          {isDemo ? (
-            <span className="rounded-full border-2 border-sahay-accent bg-sahay-surface px-3 py-1 text-xs font-semibold text-sahay-accent">
-              Demo seed — 14-day GDS 3 telemetry
-            </span>
-          ) : null}
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Good {greeting}, Mr. Ram Sharma</h1>
+          <p className="text-xs sm:text-sm text-slate-500 italic mt-0.5">“They may not remember the conversation, but they will never forget how you made them feel.”</p>
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-800">
+            <span className="font-semibold">{patient.name}, {patient.age}</span>
+            <span className="text-slate-500">· Last session: {new Date(timestamps.last_session_at).toLocaleString('en-IN')}</span>
+            <span className="bg-slate-100 text-slate-900 border border-slate-300 font-mono px-3 py-1 rounded-md text-xs font-semibold">{DEMO_CAREGIVER_CONTACT.phone}</span>
+            <button type="button" onClick={() => onNavigate('geofence')} className="rounded-md border border-teal-700 bg-teal-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-teal-800">Live Tracking</button>
+          </div>
         </div>
       </div>
 
@@ -244,7 +220,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             label: 'Demitoken Balance',
             value: patient.demitoken_balance,
             icon: <Coins className="w-5 h-5 md:w-6 md:h-6" />,
-            subtitle: 'Wallet',
+            subtitle: 'Local Wallet Balance',
             delay: 80,
           },
           {
@@ -252,20 +228,17 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             value: `${Math.round(stability)}%`,
             icon: <Flame className="w-5 h-5 md:w-6 md:h-6" />,
             subtitle: '14-day mood / load',
-            delay: 160,
           },
           {
             label: 'Touch Latency',
             value: `${avgLatency}ms`,
             icon: <Clock className="w-5 h-5 md:w-6 md:h-6" />,
             subtitle: `${latencyTrend === 'improving' ? '↓' : '↑'} vs 14-day target`,
-            delay: 240,
           },
         ].map((card) => (
           <div
             key={card.label}
-            className="animate-slide-up"
-            style={{ animationDelay: `${card.delay}ms` }}
+            className=""
           >
             <StatBox
               label={card.label}
@@ -278,8 +251,19 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '280ms' }}>
-        <Card title="Emergency Help" className="bg-sahay-surface shadow-caretaker-card">
+      {cognitiveSummary ? (
+        <Card title="Cognitive Summary — 7 Day Trend" className="mb-6 bg-white border border-slate-200">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.trend_direction.replace('_', ' ')}</div><div className="text-sm text-slate-600">{cognitiveSummary.accuracy_delta_pct >= 0 ? '+' : ''}{cognitiveSummary.accuracy_delta_pct}% accuracy</div></div>
+            <div><div className="text-2xl font-bold text-slate-900">{cognitiveSummary.stability_score.toFixed(0)}%</div><div className="text-sm text-slate-600">Stability Score</div></div>
+            <div><div className="text-2xl font-bold text-teal-700">{cognitiveSummary.recommended_difficulty}</div><div className="text-sm text-slate-600">Recommended Difficulty</div></div>
+            <div><div className="text-2xl font-bold text-slate-900">{Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms</div><div className="text-sm text-slate-600">Avg Latency (7 Days)</div></div>
+          </div>
+        </Card>
+      ) : null}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <Card title="Care Circle & Emergency Help" className="bg-white border border-slate-200 shadow-none">
           <div className="space-y-3 text-sm text-sahay-ink">
             {[
               ['Ram Sharma', 'Primary Caregiver / Son', '+91 98620 44110'],
@@ -302,11 +286,14 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             ))}
           </div>
         </Card>
+        <Card title="DDA Difficulty & Reaction Curve" className="bg-white border border-slate-200 shadow-none">
+          <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
+        </Card>
       </div>
 
       {subscriptionOpen ? <SubscriptionModal onClose={() => setSubscriptionOpen(false)} /> : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: '520ms' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <ActionButton
           label="Analytics Dashboard"
           icon={<Activity className="w-5 h-5 md:w-6 md:h-6" />}
