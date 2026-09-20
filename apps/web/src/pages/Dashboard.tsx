@@ -282,61 +282,79 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                   <h3 className="text-xl font-semibold text-[#1E293B]">Care Circle & Emergency Help</h3>
                   <button onClick={() => setIsEmergencyOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
                 </div>
-                <div className="space-y-3">
-                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
-                    <div>
-                      <p className="text-sm font-medium text-[#1E293B]">Ram Sharma</p>
-                      <p className="text-xs text-slate-500">Primary Caregiver / Son</p>
-                      <p className="text-xs text-teal-700 mt-1">+91 98620 44110</p>
-                    </div>
-                    <div className="flex items-center">
-                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
-                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
-                    </div>
+                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1E293B]">Ram Sharma</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Primary Caregiver / Son</p>
+                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 98620 44110</p>
                   </div>
-                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
-                    <div>
-                      <p className="text-sm font-medium text-[#1E293B]">Dr. S. K. Sen</p>
-                      <p className="text-xs text-slate-500">Consultant Neurologist</p>
-                      <p className="text-xs text-teal-700 mt-1">+91 94340 12345</p>
-                    </div>
-                    <div className="flex items-center">
-                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
-                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <a href="tel:+919862044110" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                      <PhoneCall className="w-4 h-4" />
+                    </a>
+                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
-                    <div>
-                      <p className="text-sm font-medium text-[#1E293B]">NEIGRIHMS Hospital Emergency / Cardiology</p>
-                      <p className="text-xs text-slate-500">Shillong, Meghalaya</p>
-                      <p className="text-xs text-teal-700 mt-1">+91 364 253 8025</p>
-                    </div>
-                    <div className="flex items-center">
-                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
-                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
-                    </div>
+                </div>
+                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1E293B]">Dr. S. K. Sen</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Consultant Neurologist</p>
+                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 94340 12345</p>
                   </div>
-                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
-                    <div>
-                      <p className="text-sm font-medium text-[#1E293B]">Shillong Civil Hospital Emergency Desk</p>
-                      <p className="text-xs text-slate-500">Shillong, Meghalaya</p>
-                      <p className="text-xs text-teal-700 mt-1">+91 364 222 2395</p>
-                    </div>
-                    <div className="flex items-center">
-                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
-                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <a href="tel:+919434012345" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                      <PhoneCall className="w-4 h-4" />
+                    </a>
+                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div className="border border-slate-200 rounded-xl p-4 flex justify-between items-center bg-[#FDFBF7]">
-                    <div>
-                      <p className="text-sm font-medium text-[#1E293B]">Police Control Room Shillong</p>
-                      <p className="text-xs text-slate-500">Shillong emergency response</p>
-                      <p className="text-xs text-teal-700 mt-1">112</p>
-                    </div>
-                    <div className="flex items-center">
-                      <PhoneCall className="w-5 h-5 text-teal-700 mr-4 cursor-pointer" />
-                      <MessageSquare className="w-5 h-5 text-teal-700 cursor-pointer" />
-                    </div>
+                </div>
+                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1E293B]">NEIGRIHMS Hospital Emergency / Cardiology</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
+                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 253 8025</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <a href="tel:+913642538025" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                      <PhoneCall className="w-4 h-4" />
+                    </a>
+                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1E293B]">Shillong Civil Hospital Emergency Desk</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
+                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 222 2395</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <a href="tel:+913642222395" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                      <PhoneCall className="w-4 h-4" />
+                    </a>
+                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                  <div>
+                    <p className="text-[15px] font-bold text-[#1E293B]">Police Control Room Shillong</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong emergency response</p>
+                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">112</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <a href="tel:112" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                      <PhoneCall className="w-4 h-4" />
+                    </a>
+                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -435,49 +453,49 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           </div>
 
           <div className="grid grid-cols-4 gap-4 mt-6">
-            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
-              <Brain className="w-6 h-6 text-[#1E293B] mb-2" />
-              <div className="text-3xl font-bold text-[#1E293B]">3</div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">GDS STAGE</div>
-              <div className="text-xs text-slate-400 mt-1">Mild</div>
+            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <Brain className="w-6 h-6 text-[#0E7490] mb-2" />
+              <div className="text-3xl font-bold text-[#0E7490]">3</div>
+              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">GDS STAGE</div>
+              <div className="text-xs font-medium text-[#475569] mt-1">Mild</div>
             </div>
-            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
-              <Coins className="w-6 h-6 text-[#1E293B] mb-2" />
-              <div className="text-3xl font-bold text-[#1E293B]">186</div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">DEMITOKEN BALANCE</div>
-              <div className="text-xs text-slate-400 mt-1">Local Wallet Balance</div>
+            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <Coins className="w-6 h-6 text-[#0E7490] mb-2" />
+              <div className="text-3xl font-bold text-[#0E7490]">186</div>
+              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">DEMITOKEN BALANCE</div>
+              <div className="text-xs font-medium text-[#475569] mt-1">Local Wallet Balance</div>
             </div>
-            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
-              <Flame className="w-6 h-6 text-[#1E293B] mb-2" />
-              <div className="text-3xl font-bold text-[#1E293B]">88%</div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">STABILITY SCORE</div>
-              <div className="text-xs text-slate-400 mt-1">14-day mood / load</div>
+            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <Flame className="w-6 h-6 text-[#0E7490] mb-2" />
+              <div className="text-3xl font-bold text-[#0E7490]">88%</div>
+              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">STABILITY SCORE</div>
+              <div className="text-xs font-medium text-[#475569] mt-1">14-day mood / load</div>
             </div>
-            <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-5 flex flex-col items-center justify-center text-center">
-              <Clock className="w-6 h-6 text-[#1E293B] mb-2" />
-              <div className="text-3xl font-bold text-[#1E293B]">427ms</div>
-              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">TOUCH LATENCY</div>
-              <div className="text-xs text-slate-400 mt-1">↑ vs 14-day target</div>
+            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <Clock className="w-6 h-6 text-[#0E7490] mb-2" />
+              <div className="text-3xl font-bold text-[#0E7490]">427ms</div>
+              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">TOUCH LATENCY</div>
+              <div className="text-xs font-medium text-[#475569] mt-1">↑ vs 14-day target</div>
             </div>
           </div>
 
-          <div className="bg-white border border-slate-100 shadow-sm rounded-[16px] p-6 mt-4 mb-8">
-            <h3 className="text-sm font-semibold text-[#1E293B] mb-4">Cognitive Summary — 7 Day Trend</h3>
+          <div className="bg-[#FDFBF7] border border-[#F1E8DC] shadow-sm rounded-[18px] p-6 mt-4 mb-8">
+            <h3 className="text-base font-bold text-[#1E293B] mb-4">Cognitive Summary — 7 Day Trend</h3>
             <div className="flex justify-between items-center text-center">
               <div>
-                <div className="text-xl font-bold text-[#1E293B]">STABLE</div>
+                <div className="text-2xl font-extrabold text-[#1E293B]">STABLE</div>
                 <div className="text-xs text-slate-500">-1.79% accuracy</div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[#1E293B]">88%</div>
+                <div className="text-2xl font-extrabold text-[#0E7490]">88%</div>
                 <div className="text-xs text-slate-500">Stability Score</div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[#1E293B]">3</div>
+                <div className="text-2xl font-extrabold text-[#0E7490]">3</div>
                 <div className="text-xs text-slate-500">Recommended Difficulty</div>
               </div>
               <div>
-                <div className="text-xl font-bold text-[#1E293B]">420ms</div>
+                <div className="text-2xl font-extrabold text-[#1E293B]">420ms</div>
                 <div className="text-xs text-slate-500">Avg Latency (7 Days)</div>
               </div>
             </div>
