@@ -1,6 +1,8 @@
 // Mock expo-speech
+type SpeechOptions = { language: VoiceConfig['language'] };
+
 const Speech = {
-  speak: (text: string, options: any) => console.log('Speech:', text, options),
+  speak: (text: string, options: SpeechOptions): void => console.log('Speech:', text, options),
 };
 
 // Interfaces for Indic TTS/STT
@@ -12,7 +14,7 @@ export class BhashiniVoiceService {
   private apiKey = process.env.EXPO_PUBLIC_BHASHINI_API_KEY;
   private pipelineId = process.env.EXPO_PUBLIC_BHASHINI_PIPELINE_ID;
 
-  async speak(text: string, config: VoiceConfig) {
+  async speak(text: string, config: VoiceConfig): Promise<void> {
     if (!this.apiKey || !this.pipelineId) {
       this.fallbackSpeak(text, config);
       return;
@@ -45,16 +47,11 @@ export class BhashiniVoiceService {
     }
   }
 
-  private fallbackSpeak(text: string, config: VoiceConfig) {
-    const langMap = {
-      'hi-IN': 'hi-IN',
-      'bn-IN': 'bn-IN',
-      'en-IN': 'en-IN',
-    };
-    Speech.speak(text, { language: langMap[config.language] });
+  private fallbackSpeak(text: string, config: VoiceConfig): void {
+    Speech.speak(text, { language: config.language });
   }
 
-  async listen(config: VoiceConfig): Promise<string> {
+  async listen(_config: VoiceConfig): Promise<string> {
     return 'Voice command recognized'; 
   }
 }

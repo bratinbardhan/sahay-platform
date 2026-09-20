@@ -1,230 +1,98 @@
-import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
-import { bhashiniVoiceService } from '../services/voice/BhashiniVoiceService';
-import ReminiscenceScreen from './ReminiscenceScreen';
-import { usePatient } from '@/patient/PatientProvider';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
-/**
- * Patient home shell — WCAG-AAA elder-friendly UX.
- * Primary home screen: stark white text on deep charcoal (#121212).
- * Memory Album (alternate screen): soft cream (#F8FAFC) with pure black text,
- * rendered by ReminiscenceScreen which already uses the charcoal card palette.
- */
+import { BystanderSOSModal } from '@/components/BystanderSOSModal';
+import { gamesForGds, therapyStageFromGds } from '@/games/gdsRouting';
+import { usePatient } from '@/patient/PatientProvider';
+import { bhashiniVoiceService } from '@/services/voice/BhashiniVoiceService';
+import { colors, MIN_TOUCH_DP } from '@/theme/theme';
+
 export default function PatientHomeScreen() {
   const { patient } = usePatient();
-  const [isListening, setIsListening] = useState(false);
-  const [showAlbum, setShowAlbum] = useState(false);
+  const [now, setNow] = useState(() => new Date());
+  const [listening, setListening] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const pulse = useRef(new Animated.Value(1)).current;
 
-  const handleVoicePress = async () => {
-    setIsListening(!isListening);
-    if (!isListening) {
-      await bhashiniVoiceService.speak('नमस्कार, मैं आपकी सहायता के लिए यहाँ हूँ।', {
-        language: 'hi-IN',
-      });
-      setIsListening(false);
-    }
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1.12, duration: 900, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 900, useNativeDriver: true }),
+      ])
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [pulse]);
+
+  const timeOfDay = now.getHours() < 12 ? 'Morning' : now.getHours() < 17 ? 'Afternoon' : 'Evening';
+  const stage = patient ? therapyStageFromGds(patient.assigned_gds_stage) : 1;
+  const games = useMemo(() => (patient ? gamesForGds(patient.assigned_gds_stage) : []), [patient]);
+
+  const speak = async (): Promise<void> => {
+    setListening(true);
+    await bhashiniVoiceService.speak('नमस्कार, मैं आपकी सहायता के लिए यहाँ हूँ।', { language: 'hi-IN' });
+    setListening(false);
   };
 
-  const handleMemoryAlbum = () => setShowAlbum(true);
-  const handleBackHome = () => setShowAlbum(false);
-
-  const pressedStyle: ViewStyle = { opacity: 0.85, transform: [{ scale: 0.94 }] };
-
-  if (showAlbum) {
-    return (
-      <View style={styles.container}>
-        <ReminiscenceScreen patientId={patient?.id} />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Back to home"
-          hitSlop={8}
-          onPress={handleBackHome}
-          style={({ pressed }) => [styles.albumBackButton, pressed && pressedStyle]}
-        >
-          <Text style={styles.albumBackText}>‹ Home</Text>
-        </Pressable>
-      </View>
-    );
+  if (!patient) {
+    return <View style={styles.container}><Text style={styles.title}>Sahāy</Text></View>;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sahāy</Text>
-      <Text style={styles.subtitle}>Your caring companion</Text>
-
-      <View style={styles.gameGrid}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Open Memory Album"
-          hitSlop={8}
-          onPress={handleMemoryAlbum}
-          style={({ pressed }) => [styles.gameCard, pressed && pressedStyle]}
-        >
-          <Text style={styles.gameIcon}>🖼</Text>
-          <Text style={styles.gameLabel}>Memory Album</Text>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Open Games"
-          hitSlop={8}
-          onPress={() => {}}
-          style={({ pressed }) => [styles.gameCard, pressed && pressedStyle]}
-        >
-          <Text style={styles.gameIcon}>🎮</Text>
-          <Text style={styles.gameLabel}>Games</Text>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Open Music"
-          hitSlop={8}
-          onPress={() => {}}
-          style={({ pressed }) => [styles.gameCard, pressed && pressedStyle]}
-        >
-          <Text style={styles.gameIcon}>🎵</Text>
-          <Text style={styles.gameLabel}>Music</Text>
-        </Pressable>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Open Emergency Help"
-          hitSlop={8}
-          onPress={() => {}}
-          style={({ pressed }) => [styles.gameCard, styles.gameCardAlert, pressed && pressedStyle]}
-        >
-          <Text style={styles.gameIcon}>🆘</Text>
-          <Text style={styles.gameLabel}>Emergency Help</Text>
-        </Pressable>
+      <Text style={styles.clock}>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+      <Text style={styles.timeOfDay}>{timeOfDay}, {patient.name}</Text>
+      <View style={styles.statusRow}>
+        <Text style={styles.stage}>GDS Stage {stage}</Text>
+        <Text style={styles.tokens}>DEMITOKENS {patient.demitoken_balance}</Text>
       </View>
-
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={isListening ? 'Stop voice assistance' : 'Start voice assistance'}
-        hitSlop={8}
-        onPress={handleVoicePress}
-        style={({ pressed }) => [
-          styles.fab,
-          isListening && styles.listening,
-          pressed && pressedStyle,
-        ]}
-      >
-        <Text style={styles.fabText}>{isListening ? '...' : '🎤'}</Text>
+      <Animated.View style={{ transform: [{ scale: pulse }] }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Start Bhashini voice assistant" onPress={() => void speak()} style={styles.voice}>
+          <Text style={styles.voiceText}>{listening ? 'Listening…' : 'Speak with Sahāy'}</Text>
+        </Pressable>
+      </Animated.View>
+      <Text style={styles.sectionTitle}>Today’s gentle activities</Text>
+      <View style={styles.gameGrid}>
+        {games.map((game) => (
+          <Pressable key={game.id} accessibilityRole="button" accessibilityLabel={`Open ${game.title}`} style={styles.gameCard}>
+            <Text style={styles.gameTitle}>{game.title}</Text>
+            <Text style={styles.gameStage}>Stage {stage}</Text>
+          </Pressable>
+        ))}
+      </View>
+      <Pressable accessibilityRole="button" accessibilityLabel="Need help" onPress={() => setShowHelp(true)} style={styles.help}>
+        <Text style={styles.helpText}>Need Help</Text>
       </Pressable>
+      <BystanderSOSModal
+        visible={showHelp}
+        onClose={() => setShowHelp(false)}
+        patient={{ id: patient.id, name: patient.name, emergencyContact: '112' }}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  subtitle: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    marginBottom: 24,
-  },
-  gameGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 16,
-    marginBottom: 24,
-  },
-  gameCard: {
-    minWidth: 120,
-    minHeight: 120,
-    borderRadius: 24,
-    padding: 24,
-    backgroundColor: '#1E293B',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  gameCardAlert: {
-    backgroundColor: '#7F1D1D',
-  },
-  gameIcon: {
-    fontSize: 40,
-  },
-  gameLabel: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#0D9488',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  listening: {
-    backgroundColor: '#B91C1C',
-  },
-  fabText: {
-    color: '#FFFFFF',
-    fontSize: 28,
-  },
-  albumButton: {
-    minWidth: 64,
-    minHeight: 64,
-    borderRadius: 24,
-    padding: 24,
-    backgroundColor: '#1E293B',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  albumBackButton: {
-    position: 'absolute',
-    top: 48,
-    left: 20,
-    minWidth: 64,
-    minHeight: 64,
-    borderRadius: 24,
-    padding: 24,
-    backgroundColor: '#1E293B',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  albumBackText: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: colors.background, padding: 24, alignItems: 'center' },
+  title: { color: colors.text, fontSize: 36, fontWeight: '900' },
+  clock: { color: colors.text, fontSize: 56, fontWeight: '900', marginTop: 16 },
+  timeOfDay: { color: colors.text, fontSize: 26, marginBottom: 16 },
+  statusRow: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
+  stage: { color: colors.text, fontSize: 22, fontWeight: '800', backgroundColor: colors.reinforcementPeach, padding: 12 },
+  tokens: { color: colors.text, fontSize: 22, fontWeight: '800', padding: 12 },
+  voice: { minWidth: 220, minHeight: 80, borderRadius: 40, borderWidth: 3, borderColor: colors.primary, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
+  voiceText: { color: colors.card, fontSize: 22, fontWeight: '900', textAlign: 'center' },
+  sectionTitle: { color: colors.text, fontSize: 24, fontWeight: '800', marginVertical: 28 },
+  gameGrid: { width: '100%', gap: 12 },
+  gameCard: { minHeight: MIN_TOUCH_DP, backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, padding: 18 },
+  gameTitle: { color: colors.text, fontSize: 22, fontWeight: '800' },
+  gameStage: { color: colors.text, fontSize: 18, marginTop: 6 },
+  help: { minHeight: MIN_TOUCH_DP, minWidth: 160, marginTop: 24, backgroundColor: colors.reinforcementPeach, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
+  helpText: { color: colors.text, fontSize: 22, fontWeight: '800' },
 });
-

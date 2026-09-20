@@ -6,6 +6,7 @@ import { getActivePatient, seedLocalPatientIfNeeded } from '@/db/patientReposito
 import { seedDemoGeofenceZoneIfNeeded } from '@/db/geofenceRepository';
 import { GeofenceManager } from '@/geofence/GeofenceManager';
 import { SyncManager } from '@/sync/SyncManager';
+import { SyncQueueService } from '@/services/SyncQueueService';
 
 type PatientContextValue = {
   patient: PatientProfile | null;
@@ -36,11 +37,13 @@ export function PatientProvider({ children }: { children: ReactNode }) {
     // Wire the offline ledger sync hook — posts unsynced ledger entries
     // to POST /api/v1/ledger/transaction when network is reachable.
     SyncManager.startLedgerSync();
+    SyncQueueService.startNetworkListener();
     void GeofenceManager.start();
     GeofenceManager.startFlushWorker();
     return () => {
       SyncManager.stopBackgroundSync();
       SyncManager.stopLedgerSync();
+      SyncQueueService.stopNetworkListener();
       GeofenceManager.stopFlushWorker();
     };
   }, []);

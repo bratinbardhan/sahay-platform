@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const CREATE_TABLES_SQL = `
 PRAGMA foreign_keys = ON;
@@ -130,4 +130,16 @@ CREATE TABLE IF NOT EXISTS memory_items (
 
 CREATE INDEX IF NOT EXISTS idx_memory_items_patient_id
   ON memory_items (patient_id);
+
+CREATE TABLE IF NOT EXISTS telemetry_sync_queue (
+  id TEXT PRIMARY KEY NOT NULL,
+  event_type TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING',
+  retry_count INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_telemetry_sync_queue_status
+  ON telemetry_sync_queue (status, created_at);
 `;

@@ -21,9 +21,13 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderColor: colors.border,
-    borderWidth: 3,
-    borderRadius: 24,
+    borderWidth: 2,
+    borderRadius: 16,
     padding: 20,
+    elevation: 0,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 0 },
   },
   minTouch: {
     minHeight: MIN_TOUCH_DP,

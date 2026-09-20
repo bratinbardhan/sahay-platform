@@ -4,6 +4,7 @@ import type { MemoryItemResponse } from '@sahay/types';
 
 import { getMemoryItems } from '@/db/patientRepository';
 import { DEMO_MEMORIES } from '@/db/mockData';
+import { colors } from '@/theme/theme';
 
 interface ReminiscenceScreenProps {
   patientId?: string;
@@ -138,7 +139,7 @@ export default function ReminiscenceScreen({ patientId }: ReminiscenceScreenProp
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 24,
     justifyContent: 'center',
   },
@@ -147,22 +148,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   placeholder: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
   },
   card: {
-    backgroundColor: '#1E293B',
+    backgroundColor: colors.card,
     borderRadius: 24,
     padding: 24,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
-    elevation: 6, // Android shadow
-    shadowColor: '#000', // iOS shadow
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    borderColor: colors.border,
+    elevation: 0,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 0 },
   },
   subtitle: {
     color: '#94A3B8',

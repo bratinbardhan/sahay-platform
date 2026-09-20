@@ -10,7 +10,9 @@ const Battery = {
   getBatteryLevelAsync: async () => 0.5,
 };
 
-export default function SosScreen({ navigation }: any) {
+type SosNavigation = { goBack: () => void };
+
+export default function SosScreen({ navigation }: { navigation: SosNavigation }) {
   const backgroundColor = useRef(new Animated.Value(0)).current;
   const cancelProgress = useRef(new Animated.Value(0)).current;
   const soundRef = useRef<Audio.Sound | null>(null);
@@ -136,6 +138,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   text: { fontSize: 48, fontWeight: 'bold' },
   cancelButton: { padding: 20, backgroundColor: '#DDD', borderRadius: 10, width: 200, alignItems: 'center' },
-  progressBar: { height: 5, backgroundColor: 'red', marginBottom: 10 }
+  progressBar: { height: 5, backgroundColor: '#E67E22', marginBottom: 10 }
 });
-
