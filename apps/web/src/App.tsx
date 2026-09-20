@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, Brain, LayoutGrid, Map, Sparkles, Image as ImageIcon, Users } from 'lucide-react';
+import { Menu, Brain, Activity, ImagePlus, BookHeart, MapPinned, HeartHandshake, LogOut } from 'lucide-react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiFetchMe, AuthApiError } from '@/lib/auth';
@@ -98,45 +98,61 @@ function InnerApp() {
             <Brain className="w-5 h-5 text-white" />
           </div>
 
-          <div className="flex-1 flex flex-col space-y-4 w-full px-3 mt-4">
+          <div className="flex-1 flex flex-col space-y-4 w-full px-2 mt-4">
             <button
               title="Dashboard"
-              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
               onClick={() => navigate('/')}
             >
-              <LayoutGrid className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Dashboard</span>}
-            </button>
-            <button
-              title="Geofence Map"
-              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
-              onClick={() => navigate('/geofence')}
-            >
-              <Map className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Geofence Map</span>}
-            </button>
-            <button
-              title="Memory Album"
-              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
-              onClick={() => navigate('/reminiscence')}
-            >
-              <Sparkles className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Memory Album</span>}
+              <Activity className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Dashboard</span>}
             </button>
             <button
               title="Media Manager"
-              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
               onClick={() => navigate('/media')}
             >
-              <ImageIcon className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Media Manager</span>}
+              <ImagePlus className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Media Manager</span>}
+            </button>
+            <button
+              title="Memory Album"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
+              onClick={() => navigate('/reminiscence')}
+            >
+              <BookHeart className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Memory Album</span>}
+            </button>
+            <button
+              title="Geofence Map"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
+              onClick={() => navigate('/geofence')}
+            >
+              <MapPinned className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Geofence Map</span>}
             </button>
             <button
               title="Care Circle"
-              className="w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center justify-start shrink-0 px-2.5 overflow-hidden"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
             >
-              <Users className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 font-medium text-sm whitespace-nowrap">Care Circle</span>}
+              <HeartHandshake className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Care Circle</span>}
+            </button>
+          </div>
+
+          <div className="flex-1" />
+          <div className="w-full px-3 pb-4">
+            <button
+              onClick={() => {
+                localStorage.removeItem('token');
+                navigate('/login');
+              }}
+              className={`flex items-center gap-3 w-full p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors ${!isSidebarExpanded ? 'justify-center' : 'px-3'
+                }`}
+              title="Log Out"
+            >
+              <LogOut className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="text-sm font-semibold">Log Out</span>}
             </button>
           </div>
         </aside>

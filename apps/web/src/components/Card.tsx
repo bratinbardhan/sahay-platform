@@ -18,7 +18,7 @@ export function Card({ title, children, className = '', style }: CardProps) {
       className={`sahay-surface p-6 ${className}`}
       style={style}
     >
-      {title && <h3 className="text-lg font-semibold text-sahay-ink mb-3">{title}</h3>}
+      {title && <h3 className="text-lg font-extrabold text-[#1E293B] mb-3">{title}</h3>}
       {children}
     </div>
   );

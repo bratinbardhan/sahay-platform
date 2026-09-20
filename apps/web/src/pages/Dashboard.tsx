@@ -197,12 +197,12 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               {isProfileOpen && (
                 <div className="absolute right-0 top-12 w-80 bg-white border border-slate-200 shadow-xl rounded-xl p-5 z-50">
                   <div className="mb-4">
-                    <p className="font-bold text-sm text-[#1F2937]">Caretaker: Bratin Bardhan</p>
+                    <p className="font-bold text-sm text-[#1F2937]">Caretaker: Ram Sharma</p>
                     <p className="text-xs text-slate-500 mt-0.5">Phone: +91 98765 43210</p>
                   </div>
                   <div className="mb-4">
-                    <p className="font-bold text-sm text-[#1F2937]">Patient: Robert Jenkins</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Age: 78, Condition: Hypertension</p>
+                    <p className="font-bold text-sm text-[#1F2937]">Patient: Aditya Sharma</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Age: 74, Condition: Hypertension</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-700">Current Plan: <span className="font-bold text-[#1E293B]">Basic (Free)</span></p>
@@ -390,7 +390,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Card 1: Medication Scheduling */}
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-semibold text-lg text-[#1F2937] mb-8">Medication Scheduling</h3>
+              <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Medication Scheduling</h3>
               <div className="flex justify-between items-center mb-8 px-4 relative w-full">
                 <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
                 <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
@@ -418,7 +418,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
 
             {/* Card 2: Hydration Monitoring */}
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col">
-              <h3 className="font-semibold text-lg text-[#1F2937] mb-8">Hydration Monitoring</h3>
+              <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Hydration Monitoring</h3>
               <div className="flex justify-between items-center mb-8 px-4 relative">
                 <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
                 <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
@@ -458,7 +458,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
 
             {/* Card 3: Family Media Uploads */}
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-semibold text-lg text-[#1F2937] mb-6">Family Media Uploads</h3>
+              <h3 className="font-extrabold text-lg text-[#1E293B] mb-6">Family Media Uploads</h3>
               <div className="grid grid-cols-3 gap-3">
                 <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
                 <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Images className="w-6 h-6" /></div>
@@ -481,25 +481,25 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
               <Brain className="w-6 h-6 text-[#0E7490] mb-2" />
               <div className="text-3xl font-bold text-[#0E7490]">3</div>
-              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">GDS STAGE</div>
+              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">GDS STAGE</div>
               <div className="text-xs font-medium text-[#475569] mt-1">Mild</div>
             </div>
             <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
               <Coins className="w-6 h-6 text-[#0E7490] mb-2" />
               <div className="text-3xl font-bold text-[#0E7490]">186</div>
-              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">DEMITOKEN BALANCE</div>
+              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">DEMITOKEN BALANCE</div>
               <div className="text-xs font-medium text-[#475569] mt-1">Local Wallet Balance</div>
             </div>
             <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
               <Flame className="w-6 h-6 text-[#0E7490] mb-2" />
               <div className="text-3xl font-bold text-[#0E7490]">88%</div>
-              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">STABILITY SCORE</div>
+              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">STABILITY SCORE</div>
               <div className="text-xs font-medium text-[#475569] mt-1">14-day mood / load</div>
             </div>
             <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
               <Clock className="w-6 h-6 text-[#0E7490] mb-2" />
               <div className="text-3xl font-bold text-[#0E7490]">427ms</div>
-              <div className="text-[11px] font-bold tracking-wider text-[#155E75] uppercase">TOUCH LATENCY</div>
+              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">TOUCH LATENCY</div>
               <div className="text-xs font-medium text-[#475569] mt-1">↑ vs 14-day target</div>
             </div>
           </div>
@@ -529,11 +529,11 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
           {/* Preserve original charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-semibold text-lg text-[#1F2937] mb-4">Activity rhythm</h3>
+              <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">Activity rhythm</h3>
               <ActivityHeatmap cells={isDemo ? getDemoActivityHeatmap() : []} />
             </div>
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-semibold text-lg text-[#1F2937] mb-4">DDA Difficulty & Reaction Curve</h3>
+              <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">DDA Difficulty & Reaction Curve</h3>
               <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
             </div>
           </div>
