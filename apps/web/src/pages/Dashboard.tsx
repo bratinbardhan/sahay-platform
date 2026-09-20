@@ -258,11 +258,21 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
         {/* Scrollable Dashboard Area */}
         <div className="flex-1 overflow-y-auto px-8 pb-8">
           {/* Dashboard Title Area */}
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold text-[#1F2937]">Dashboard</h1>
+          <div className="flex items-start justify-between mb-10">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-3">Good morning, Ram</h1>
+              <p className="text-base md:text-lg italic text-slate-500">"They may not remember the conversation, but they will never forget how you made them feel."</p>
+
+              <div className="flex flex-wrap items-center gap-5 mt-6">
+                <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
+                <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
+                <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
+                <button className="text-sm font-bold text-white tracking-wide bg-[#0E7490] hover:bg-[#155E75] px-4 py-2 rounded-lg shadow-sm transition-colors">Live Tracking</button>
+              </div>
+            </div>
             <button
               onClick={() => setIsEmergencyOpen(true)}
-              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm"
+              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
             >
               <Phone className="w-4 h-4 stroke-[2.25]" />
               <span>Emergency Contact</span>
