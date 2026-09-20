@@ -5,7 +5,6 @@ import {
   AlertTriangle,
   Brain,
   Camera,
-  Clock,
   Images,
   LogOut,
   Bell,
@@ -14,6 +13,10 @@ import {
   Play,
   Plus,
   User as UserIcon,
+  Pill,
+  CheckCircle2,
+  CalendarDays,
+  X,
 } from 'lucide-react';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -58,6 +61,7 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
 
 export function Dashboard({ user: _user, token, onNavigate, onLogout }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
+  const [isMedModalOpen, setMedModalOpen] = useState(false);
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -181,6 +185,28 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             </div>
           ) : null}
 
+          {isMedModalOpen ? (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+              <div className="bg-white p-6 rounded-2xl max-w-sm w-full shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-bold text-lg text-[#1F2937]">Schedule Medication</h3>
+                  <button onClick={() => setMedModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                </div>
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Medication Name</label>
+                    <input type="text" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" placeholder="e.g. Donepezil" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Time</label>
+                    <input type="time" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" />
+                  </div>
+                </div>
+                <button onClick={() => setMedModalOpen(false)} className="w-full bg-[#1E293B] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#334155] transition-colors">Save Schedule</button>
+              </div>
+            </div>
+          ) : null}
+
           {/* Exactly Replicated Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Card 1: Medication Scheduling */}
@@ -188,9 +214,9 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
               <h3 className="font-semibold text-lg text-[#1F2937] mb-8">Medication Scheduling</h3>
               <div className="flex items-center space-x-4 mb-8 relative px-2">
                 <div className="absolute top-1/2 left-6 right-6 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10 mx-auto"><Clock className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><Clock className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><Clock className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10 mx-auto"><Pill className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><CheckCircle2 className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><CalendarDays className="w-5 h-5" /></div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -208,6 +234,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                   <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
                 </div>
               </div>
+              <button onClick={() => setMedModalOpen(true)} className="w-full mt-5 bg-[#1E293B] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#334155] transition-colors">Schedule Medication</button>
             </div>
 
             {/* Card 2: Hydration Monitoring */}
