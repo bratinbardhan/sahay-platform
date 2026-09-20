@@ -180,8 +180,8 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             <div className="relative inline-block">
               <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
               {isAlertOpen && (
-                <div className="absolute right-0 top-[calc(100%+8px)] w-[360px] bg-white rounded-2xl border border-slate-200/80 shadow-2xl z-50 overflow-hidden">
-                  <div className="px-4 py-3 bg-[#FAF8F5] border-b border-slate-100 flex items-center justify-between">
+                <div className="absolute right-0 top-[calc(100%+8px)] w-[360px] bg-slate-50 rounded-2xl border border-slate-300 shadow-2xl z-50 overflow-hidden">
+                  <div className="px-4 py-3 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-[#1E293B] tracking-tight">Notifications</span>
                       <span className="text-[10px] font-semibold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-md">3 unread</span>
@@ -189,21 +189,21 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                     <button onClick={() => { }} className="text-[11px] font-medium text-slate-400 hover:text-slate-700 transition-colors">Mark all as read</button>
                   </div>
                   <div className="divide-y divide-slate-100 max-h-[340px] overflow-y-auto">
-                    <div className="p-3.5 hover:bg-slate-50/70 transition-colors flex gap-3 items-start cursor-pointer">
+                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
                       <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-rose-100/60"><ShieldAlert className="w-3.5 h-3.5 stroke-[2]" /></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Security Breach Blocked</span><span className="text-[10px] text-slate-400 font-medium">02:15 AM</span></div>
                         <p className="text-[11px] text-slate-500 leading-snug">Unrecognized device login attempt blocked from external IP.</p>
                       </div>
                     </div>
-                    <div className="p-3.5 hover:bg-slate-50/70 transition-colors flex gap-3 items-start cursor-pointer">
+                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
                       <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-100/60"><Pill className="w-3.5 h-3.5 stroke-[2]" /></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Missed Medication Dose</span><span className="text-[10px] text-slate-400 font-medium">Yesterday</span></div>
                         <p className="text-[11px] text-slate-500 leading-snug">Scheduled 12:00 PM dose was not marked as taken by patient.</p>
                       </div>
                     </div>
-                    <div className="p-3.5 hover:bg-slate-50/70 transition-colors flex gap-3 items-start cursor-pointer">
+                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
                       <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-teal-100/60"><Activity className="w-3.5 h-3.5 stroke-[2]" /></div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Hydration Target Met</span><span className="text-[10px] text-slate-400 font-medium">01:30 AM</span></div>
@@ -211,7 +211,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                       </div>
                     </div>
                   </div>
-                  <div className="p-2.5 bg-[#FAF8F5] border-t border-slate-100 text-center">
+                  <div className="p-2.5 bg-slate-100 border-t border-slate-200 text-center">
                     <button className="text-[11px] font-semibold text-slate-600 hover:text-[#1E293B] transition-colors">View all audit logs &rarr;</button>
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
               <div className="bg-white w-[600px] rounded-2xl p-6 shadow-xl relative">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-semibold text-[#1E293B]">Care Circle & Emergency Help</h3>
+                  <h2 className="text-xl font-bold text-red-600 flex items-center gap-2">Care Circle & Emergency Help</h2>
                   <button onClick={() => setIsEmergencyOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
                 </div>
                 <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
