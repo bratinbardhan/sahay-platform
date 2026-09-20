@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   Brain,
   Camera,
+  Check,
   Images,
   LogOut,
   Bell,
@@ -16,7 +17,9 @@ import {
   Pill,
   CheckCircle2,
   CalendarDays,
+  ShieldAlert,
   X,
+  Zap,
   Droplets,
   HeartPulse,
   CupSoda,
@@ -69,6 +72,8 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -164,9 +169,68 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
         <header className="flex items-center justify-between px-8 py-6 shrink-0">
           <div className="text-[#1F2937] font-medium text-lg">Caretaker</div>
           <div className="flex items-center space-x-6">
-            <Bell className="w-6 h-6 text-[#1F2937]" />
-            <div className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm">
-              <UserIcon className="w-6 h-6 text-slate-500" />
+            <div className="relative">
+              <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
+              {isAlertOpen && (
+                <div className="absolute right-0 top-10 w-[350px] bg-white border border-slate-200 shadow-xl rounded-xl p-4 z-50">
+                  <div className="flex py-3 border-b border-slate-100">
+                    <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div className="ml-3">
+                      <p className="text-sm font-bold text-red-600">CRITICAL SECURITY BREACH</p>
+                      <p className="text-xs text-slate-500 mt-1">Unrecognized device login attempt blocked.</p>
+                    </div>
+                  </div>
+                  <div className="flex py-3 border-b border-slate-100">
+                    <AlertTriangle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <div className="ml-3">
+                      <p className="text-sm font-bold text-orange-500">Medical Alert</p>
+                      <p className="text-xs text-slate-500 mt-1">Missed 12:00 PM medication dose.</p>
+                    </div>
+                  </div>
+                  <div className="flex py-3">
+                    <Activity className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div className="ml-3">
+                      <p className="text-sm font-bold text-blue-500">System</p>
+                      <p className="text-xs text-slate-500 mt-1">Nightly hydration report generated.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative">
+              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer">
+                <UserIcon className="w-6 h-6 text-slate-500" />
+              </div>
+              {isProfileOpen && (
+                <div className="absolute right-0 top-12 w-80 bg-white border border-slate-200 shadow-xl rounded-xl p-5 z-50">
+                  <div className="mb-4">
+                    <p className="font-bold text-sm text-[#1F2937]">Caretaker: Bratin Bardhan</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Phone: +91 98765 43210</p>
+                  </div>
+                  <div className="mb-4">
+                    <p className="font-bold text-sm text-[#1F2937]">Patient: Robert Jenkins</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Age: 78, Condition: Hypertension</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-700">Current Plan: <span className="font-bold text-[#1E293B]">Basic (Free)</span></p>
+                  </div>
+                  <hr className="my-4 border-slate-100" />
+                  <div>
+                    <div className="flex items-center text-indigo-600 font-bold mb-2">
+                      <Zap className="w-4 h-4 mr-1 fill-indigo-600" /> UPGRADE TO PRO
+                    </div>
+                    <ul className="space-y-2 mb-3">
+                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Real-time vital anomaly streaming</li>
+                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> 24/7 Priority Emergency Dispatch</li>
+                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Advanced AI Health Trend Insights</li>
+                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Multi-caretaker account syncing</li>
+                    </ul>
+                    <p className="text-[10px] italic text-slate-400 mb-3">...and many more exclusive features.</p>
+                    <button className="w-full bg-[#1E293B] text-white py-2 rounded-lg mt-3 text-sm font-medium hover:bg-[#334155] transition-colors">Upgrade Now</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
