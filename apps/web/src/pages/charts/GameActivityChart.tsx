@@ -57,6 +57,7 @@ export function GameActivityChart({ data }: GameActivityChartProps) {
           radius={[0, 8, 8, 0]}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         >
           {chartData.map((entry, index) => (
             <Cell key={entry.game} fill={SAHAY_VIZ_SERIES[index % SAHAY_VIZ_SERIES.length]} />

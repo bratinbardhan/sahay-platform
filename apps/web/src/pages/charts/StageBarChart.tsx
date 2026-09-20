@@ -58,6 +58,7 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
           radius={[8, 8, 0, 0]}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         >
           {data.map((entry, index) => (
             <Cell key={entry.stage} fill={colors[index % colors.length]} />

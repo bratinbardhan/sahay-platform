@@ -56,6 +56,7 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           strokeWidth={2.4}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
         <Area
           type="monotone"
@@ -66,6 +67,7 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           strokeWidth={2.4}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
         <Area
           type="monotone"
@@ -77,6 +79,7 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           strokeDasharray="5 4"
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
       </AreaChart>
     </ChartShell>

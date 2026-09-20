@@ -51,6 +51,7 @@ export function CognitiveEngagementChart({ data }: CognitiveEngagementChartProps
           maxBarSize={40}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
       </BarChart>
     </ChartShell>

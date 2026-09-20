@@ -28,14 +28,19 @@ import { GDS_STAGE_COLOR_RAMP, GDS_STAGE_COLORS, GDS_STAGE_LABELS, getGdsStageCo
 import { sendHeartbeat } from '@/lib/adminApi';
 import {
   DEMO_CAREGIVER_CONTACT,
+  getDemoActivityHeatmap,
   getDemoCognitiveLoad14d,
   getDemoGdsDistribution,
+  getDemoMoodStability14d,
   getDemoPatientTimestamps,
 } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { SessionPerformanceChart } from './charts/SessionPerformanceChart';
 import { StageBarChart } from './charts/StageBarChart';
+import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
+import { MoodStabilityChart } from './charts/MoodStabilityChart';
+import { ActivityHeatmap } from './charts/ActivityHeatmap';
 
 interface DashboardProps {
   user: User;
@@ -91,7 +96,10 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
     }
     await fetch(`http://localhost:8000/api/v1/emergency/${activeAlert.alert_id}/resolve`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ pin: '0000', resolved_by: `caretaker:${status.toLowerCase()}` }),
     });
     setActiveAlert(null);
@@ -132,6 +140,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
       ? Math.round(sessions.reduce((sum, s) => sum + s.avg_latency_ms, 0) / sessions.length)
       : 420;
   const pendingQueue = isDemo ? 3 : 0;
+  const latencyTrend = avgLatency <= 420 ? 'improving' : 'watch';
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-6 md:p-8 animate-fade-in" data-palette="caretaker">
@@ -258,7 +267,7 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
             label: 'Touch Latency',
             value: `${avgLatency}ms`,
             icon: <Clock className="w-5 h-5 md:w-6 md:h-6" />,
-            subtitle: 'Rolling average',
+            subtitle: `${latencyTrend === 'improving' ? '↓' : '↑'} vs 14-day target`,
             delay: 240,
           },
         ].map((card) => (
@@ -311,6 +320,22 @@ export function Dashboard({ user, token, onNavigate, onLogout }: DashboardProps)
 
       <Card title="GDS Population Distribution" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '400ms' }}>
         <StageBarChart distribution={getDemoGdsDistribution()} colors={GDS_STAGE_COLOR_RAMP} />
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 animate-slide-up" style={{ animationDelay: '430ms' }}>
+        <Card title="DDA Difficulty & Reaction Curve" className="bg-sahay-surface shadow-caretaker-card">
+          <DdaDifficultyCurve
+            points={ddaHistory?.points ?? []}
+            recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null}
+          />
+        </Card>
+        <Card title="Diurnal Mood Stability" className="bg-sahay-surface shadow-caretaker-card">
+          <MoodStabilityChart data={getDemoMoodStability14d()} />
+        </Card>
+      </div>
+
+      <Card title="Activity Heatmap — 7 × 24" className="mb-6 bg-sahay-surface shadow-caretaker-card animate-slide-up" style={{ animationDelay: '445ms' }}>
+        <ActivityHeatmap cells={getDemoActivityHeatmap()} />
       </Card>
 
       {cognitiveSummary ? (

@@ -78,6 +78,8 @@ export const SAHAY_CARETAKER = {
   tealSoft: '#E6F5F3',
   /** 8 %-alpha teal wash — Recharts `<Tooltip cursor>` fill on the 7-day charts. */
   tealWash: 'rgba(13, 148, 136, 0.08)',
+  homePin: '#00B0B0',
+  zone: '#60747E',
   mood: '#F59E0B',
   slate: '#5B6673',
   /** Categorical chart scale — index 8 (alert red) is breach/SOS series only. */
@@ -109,6 +111,9 @@ export const SAHAY_GDS_STAGE_COLORS: Record<number, string> = {
   6: SAHAY_CARETAKER.accent,
   7: SAHAY_CARETAKER.muted,
 };
+
+/** Public 1–7 GDS colour ramp consumed by caretaker surfaces. */
+export const SAHAY_GDS_STAGES = SAHAY_GDS_STAGE_COLORS;
 
 /** Recharts `<Tooltip contentStyle>` — near-opaque card surface, ink rule. */
 export const sahayTooltipStyle = {

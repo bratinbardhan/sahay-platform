@@ -134,6 +134,7 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
           shape={HeatShape}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
       </ScatterChart>
     </ChartShell>

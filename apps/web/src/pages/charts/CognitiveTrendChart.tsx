@@ -125,6 +125,7 @@ export function CognitiveTrendChart({
               dot={{ r: 3, stroke: loadColor, fill: SAHAY_CARETAKER.surfaceRaised }}
               isAnimationActive={true}
               animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
             />
             {loadSeries.length > 0 ? (
               <>
@@ -137,6 +138,7 @@ export function CognitiveTrendChart({
                   dot={{ r: 3 }}
                   isAnimationActive={true}
                   animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
                 />
                 <Line
                   type="monotone"
@@ -148,6 +150,7 @@ export function CognitiveTrendChart({
                   dot={{ r: 3 }}
                   isAnimationActive={true}
                   animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
                 />
               </>
             ) : null}
@@ -162,6 +165,7 @@ export function CognitiveTrendChart({
             dot={{ r: 3, stroke: latencyColor, fill: SAHAY_CARETAKER.surfaceRaised }}
             isAnimationActive={true}
             animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
           />
         )}
       </LineChart>

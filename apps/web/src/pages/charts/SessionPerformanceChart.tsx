@@ -100,6 +100,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
           maxBarSize={22}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
         <Bar
           dataKey="completed"
@@ -109,6 +110,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
           maxBarSize={22}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
       </BarChart>
     </ChartShell>

@@ -21,16 +21,16 @@ interface LeafletMapProps {
 }
 
 /** Clinical teal home pin — caretaker geofence spec. */
-const HOME_PIN_COLOR = '#00B0B0';
+const HOME_PIN_COLOR = SAHAY_CARETAKER.homePin;
 /** Safe-radius outline — caretaker muted / border token. */
-const ZONE_COLOR = '#60747E';
+const ZONE_COLOR = SAHAY_CARETAKER.zone;
 const BREACH_PIN_COLOR = SAHAY_CARETAKER.alert;
 
 function pinHtml(color: string, pulse: boolean): string {
   const ping = pulse
     ? `<span style="position:absolute;inset:-8px;border-radius:9999px;background:${color};opacity:0.45;animation:sahay-pin-ping 1.2s cubic-bezier(0,0,0.2,1) infinite;"></span>`
     : '';
-  return `<div style="position:relative;width:22px;height:22px;">${ping}<span style="position:absolute;inset:0;border-radius:9999px;background:${color};border:2px solid #2C3E50;box-shadow:0 2px 8px rgba(44,62,80,0.28);"></span></div>`;
+  return `<div style="position:relative;width:22px;height:22px;">${ping}<span style="position:absolute;inset:0;border-radius:9999px;background:${color};border:2px solid ${SAHAY_CARETAKER.ink};box-shadow:0 2px 8px rgba(44,62,80,0.28);"></span></div>`;
 }
 
 function makePin(L: LeafletNamespace, breached: boolean): LeafletDivIcon {

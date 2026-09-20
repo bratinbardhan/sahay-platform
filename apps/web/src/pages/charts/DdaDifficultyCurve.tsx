@@ -96,6 +96,7 @@ export function DdaDifficultyCurve({
           dot={{ r: 3 }}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
         <Line
           yAxisId="latency"
@@ -107,6 +108,7 @@ export function DdaDifficultyCurve({
           dot={{ r: 3 }}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
         />
         {recommendedDifficulty !== null ? (
           <Line
@@ -120,6 +122,7 @@ export function DdaDifficultyCurve({
             dot={false}
             isAnimationActive={true}
             animationDuration={CHART_ANIMATION_MS}
+              animationEasing="ease-in-out"
           />
         ) : null}
       </LineChart>
