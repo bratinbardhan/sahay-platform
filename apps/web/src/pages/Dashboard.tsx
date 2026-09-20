@@ -241,7 +241,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
                 <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
                 <button
                   onClick={() => onNavigate('geofence')}
-                  className="flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg shadow-sm transition-all"
+                  className="flex items-center text-sm font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
                 >
                   <span className="relative flex h-2.5 w-2.5 mr-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

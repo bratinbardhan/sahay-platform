@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, Brain, Activity, ImagePlus, BookHeart, MapPinned, HeartHandshake, LogOut } from 'lucide-react';
+import { Menu, X, Brain, Activity, ImagePlus, BookHeart, MapPinned, HeartHandshake, LogOut } from 'lucide-react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiFetchMe, AuthApiError } from '@/lib/auth';
@@ -85,13 +85,17 @@ function InnerApp() {
   return (
     <div className="flex h-screen w-full bg-slate-50 overflow-hidden">
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
-        <aside className={`bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'}`}>
-          <button
-            type="button"
-            onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-            className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all"
-          >
-            <Menu className="w-5 h-5" />
+        <aside
+          className={`bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
+          onMouseEnter={() => setIsSidebarExpanded(true)}
+          onMouseLeave={() => setIsSidebarExpanded(false)}
+        >
+          <button onClick={() => setIsSidebarExpanded(!isSidebarExpanded)} className="p-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors z-50">
+            {isSidebarExpanded ? (
+              <X className="w-6 h-6 transition-transform duration-300 rotate-0 hover:rotate-90" />
+            ) : (
+              <Menu className="w-6 h-6 transition-transform duration-300" />
+            )}
           </button>
 
           <div className="w-10 h-10 bg-[#1E293B] rounded-xl flex flex-shrink-0 items-center justify-center">
@@ -100,12 +104,12 @@ function InnerApp() {
 
           <div className="flex-1 flex flex-col space-y-4 w-full px-2 mt-4">
             <button
-              title="Dashboard"
+              title="Analytics"
               className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/analytics')}
             >
               <Activity className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Dashboard</span>}
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Analytics</span>}
             </button>
             <button
               title="Media Manager"
@@ -133,6 +137,7 @@ function InnerApp() {
             </button>
             <button
               title="Care Circle"
+              onClick={() => window.alert("Opening Care Circle...")}
               className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
             >
               <HeartHandshake className="w-5 h-5 shrink-0" />
@@ -144,8 +149,10 @@ function InnerApp() {
           <div className="w-full px-3 pb-4">
             <button
               onClick={() => {
-                localStorage.removeItem('token');
-                navigate('/login');
+                if (window.confirm("Are you sure you want to log out?")) {
+                  localStorage.removeItem('token');
+                  navigate('/login');
+                }
               }}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors ${!isSidebarExpanded ? 'justify-center' : 'px-3'
                 }`}

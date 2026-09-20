@@ -12,7 +12,8 @@
     "web": "npm run dev --workspace=@sahay/web",
     "types:build": "npm run build --workspace=@sahay/types",
     "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "ls-git": "git ls-tree -r --name-only 7404a53 > tree_git.txt",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20.0.0"
