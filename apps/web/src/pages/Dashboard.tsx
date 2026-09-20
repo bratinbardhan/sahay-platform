@@ -260,8 +260,12 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
           {/* Dashboard Title Area */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold text-[#1F2937]">Dashboard</h1>
-            <button onClick={() => setIsEmergencyOpen(true)} className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-medium text-[13px] flex items-center transition-colors">
-              <Phone className="w-4 h-4 mr-2" /> Emergency Contact
+            <button
+              onClick={() => setIsEmergencyOpen(true)}
+              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm"
+            >
+              <Phone className="w-4 h-4 stroke-[2.25]" />
+              <span>Emergency Contact</span>
             </button>
           </div>
 
