@@ -17,6 +17,9 @@ import {
   CheckCircle2,
   CalendarDays,
   X,
+  Droplets,
+  HeartPulse,
+  CupSoda,
 } from 'lucide-react';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
 import { ActivityHeatmap } from './charts/ActivityHeatmap';
@@ -62,6 +65,7 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
 export function Dashboard({ user: _user, token, onNavigate, onLogout }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
   const [isMedModalOpen, setMedModalOpen] = useState(false);
+  const [hydrationStats, setHydrationStats] = useState({ medication: 100, hydration: 75, water: 90, participation: 60 });
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -212,11 +216,11 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             {/* Card 1: Medication Scheduling */}
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
               <h3 className="font-semibold text-lg text-[#1F2937] mb-8">Medication Scheduling</h3>
-              <div className="flex items-center space-x-4 mb-8 relative px-2">
-                <div className="absolute top-1/2 left-6 right-6 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10 mx-auto"><Pill className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><CheckCircle2 className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10 mx-auto"><CalendarDays className="w-5 h-5" /></div>
+              <div className="flex justify-between items-center mb-8 px-4 relative w-full">
+                <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
+                <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CheckCircle2 className="w-5 h-5" /></div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CalendarDays className="w-5 h-5" /></div>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -242,25 +246,33 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
               <h3 className="font-semibold text-lg text-[#1F2937] mb-8">Hydration Monitoring</h3>
               <div className="flex justify-between items-center mb-8 px-4 relative">
                 <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                    <Activity className="w-5 h-5" />
-                  </div>
-                ))}
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                  <Droplets className="w-5 h-5" />
+                </div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                  <HeartPulse className="w-5 h-5" />
+                </div>
+                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                  <CupSoda className="w-5 h-5" />
+                </div>
               </div>
               <div className="space-y-4 mt-auto">
                 {[
-                  { label: "Medication", p: "100%" },
-                  { label: "Hydration", p: "75%" },
-                  { label: "Water intake", p: "90%" },
-                  { label: "Participations", p: "60%" }
-                ].map((row, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-sm">
+                  { key: 'medication', label: "Medication" },
+                  { key: 'hydration', label: "Hydration" },
+                  { key: 'water', label: "Water intake" },
+                  { key: 'participation', label: "Participations" }
+                ].map((row) => (
+                  <div key={row.key} className="flex items-center justify-between text-sm">
                     <span className="w-28 text-[#1F2937] font-medium text-xs">{row.label}</span>
-                    <div className="flex-1 ml-4 h-2 bg-slate-100 rounded-full relative">
-                      <div className="absolute left-0 top-0 h-full bg-[#1E293B] rounded-full" style={{ width: row.p }}></div>
-                      <div className="absolute top-1/2 -translate-y-1/2 flex items-center justify-center w-3 h-3 bg-white border-2 border-[#1E293B] rounded-full shadow-sm text-[#1E293B] font-bold pb-[1px]" style={{ left: `calc(${row.p} - 6px)`, fontSize: '10px' }}></div>
-                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={hydrationStats[row.key as keyof typeof hydrationStats]}
+                      onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
+                      className="flex-1 ml-4 h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#1E293B]"
+                    />
                   </div>
                 ))}
               </div>
