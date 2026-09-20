@@ -6,12 +6,11 @@ import {
   Brain,
   Camera,
   Images,
-  Image,
   LogOut,
   Bell,
   LayoutDashboard,
   Mic,
-  Volume2,
+  Play,
   Plus,
   User as UserIcon,
   Pill,
@@ -63,6 +62,22 @@ function isEmergencySos(value: unknown): value is EmergencySosPayload {
   );
 }
 
+const Avatar1 = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full p-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="#E8D5C4" />
+    <circle cx="50" cy="40" r="20" fill="#D4A373" />
+    <path d="M20 90C20 70 35 60 50 60C65 60 80 70 80 90" fill="#D4A373" />
+    <path d="M30 45C30 35 45 25 50 25C55 25 70 35 70 45" fill="#1E293B" opacity="0.1" />
+  </svg>
+);
+
+const Avatar2 = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full p-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="#D4A373" />
+    <circle cx="50" cy="38" r="18" fill="#1E293B" />
+    <path d="M25 90C25 72 38 62 50 62C62 62 75 72 75 90" fill="#1E293B" />
+  </svg>
+);
 
 export function Dashboard({ user: _user, token, onNavigate, onLogout }: DashboardProps) {
   const [activeAlert, setActiveAlert] = useState<EmergencySosPayload | null>(null);
@@ -249,11 +264,7 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
                   <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
                 </div>
               </div>
-              <div className="flex justify-end mt-4">
-                <button onClick={() => setMedModalOpen(true)} className="bg-[#1E293B] text-white text-[11px] font-medium px-4 py-2 rounded-xl hover:bg-[#334155] transition-colors shadow-sm">
-                  Schedule or reschedule
-                </button>
-              </div>
+              <button onClick={() => setMedModalOpen(true)} className="w-full mt-5 bg-[#1E293B] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#334155] transition-colors">Schedule Medication</button>
             </div>
 
             {/* Card 2: Hydration Monitoring */}
@@ -298,24 +309,21 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
 
             {/* Card 3: Family Media Uploads */}
             <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <div>
-                <h3 className="text-base font-semibold text-[#1E293B]">Family Media Uploads</h3>
-                <p className="text-xs text-slate-500 font-normal mt-0.5">(Photos / Voice Notes)</p>
-              </div>
+              <h3 className="font-semibold text-lg text-[#1F2937] mb-6">Family Media Uploads</h3>
               <div className="grid grid-cols-3 gap-3">
                 <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <div onClick={() => fileInputRef.current?.click()} className="bg-gradient-to-b from-[#A08266] to-[#7D634C] text-white rounded-[16px] aspect-square flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-transform"><Image className="w-6 h-6 stroke-[1.75]" /></div>
-                <div onClick={() => setIsRecording(!isRecording)} className={`rounded-[16px] aspect-square flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-transform ${isRecording ? 'animate-pulse ring-2 ring-red-400 bg-red-600 text-white' : 'bg-gradient-to-b from-[#A08266] to-[#7D634C] text-white'}`}><Mic className="w-6 h-6 stroke-[1.75]" /></div>
-                <div onClick={() => onNavigate('reminiscence')} className="bg-gradient-to-b from-[#A08266] to-[#7D634C] text-white rounded-[16px] aspect-square flex items-center justify-center cursor-pointer shadow-sm active:scale-95 transition-transform"><Volume2 className="w-6 h-6 stroke-[1.75]" /></div>
+                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Images className="w-6 h-6" /></div>
+                <div onClick={() => setIsRecording(!isRecording)} className={`aspect-square rounded-[16px] flex items-center justify-center cursor-pointer transition-transform active:scale-95 hover:shadow-sm ${isRecording ? 'bg-red-50 text-red-600 animate-pulse ring-2 ring-red-400' : 'bg-[#F5E6D3] text-[#1E293B]'}`}><Mic className="w-6 h-6" /></div>
+                <div onClick={() => onNavigate('reminiscence')} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Play className="w-6 h-6" /></div>
 
-                <div className="aspect-square rounded-[16px] overflow-hidden shadow-sm">
-                  {uploadedImages[0] ? <img src={uploadedImages[0]} alt="thumb0" className="w-full h-full object-cover" /> : <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80" alt="fallback0" className="w-full h-full object-cover" />}
+                <div className="w-full aspect-square rounded-[18px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
+                  {uploadedImages[0] ? <img src={uploadedImages[0]} alt="thumb0" className="w-full h-full object-cover" /> : <Avatar1 />}
                 </div>
-                <div className="aspect-square rounded-[16px] overflow-hidden shadow-sm">
-                  {uploadedImages[1] ? <img src={uploadedImages[1]} alt="thumb1" className="w-full h-full object-cover" /> : <img src="https://images.unsplash.com/photo-1511210101664-0f56a5043818?auto=format&fit=crop&w=400&q=80" alt="fallback1" className="w-full h-full object-cover" />}
+                <div className="w-full aspect-square rounded-[18px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
+                  {uploadedImages[1] ? <img src={uploadedImages[1]} alt="thumb1" className="w-full h-full object-cover" /> : <Avatar2 />}
                 </div>
 
-                <div onClick={() => fileInputRef.current?.click()} className="bg-[#FDFBF7] border border-[#EADBCC] text-[#1E293B] rounded-[16px] aspect-square flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform"><Plus className="w-5 h-5 mb-0.5" /><span className="text-[11px] font-medium">Add</span></div>
+                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex flex-col items-center justify-center text-[#1E293B] font-medium text-xs cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Plus className="w-5 h-5 mb-1" /> Add</div>
               </div>
             </div>
           </div>
