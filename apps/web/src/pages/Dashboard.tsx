@@ -17,6 +17,7 @@ import {
   Pill,
   CheckCircle2,
   CalendarDays,
+  ShieldAlert,
   X,
   Zap,
   Droplets,
@@ -179,11 +180,38 @@ export function Dashboard({ user: _user, token, onNavigate, onLogout }: Dashboar
             <div className="relative">
               <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
               {isAlertOpen && (
-                <div className="absolute right-0 top-10 w-[350px] bg-slate-900 text-slate-300 border border-slate-800 shadow-xl rounded-xl p-4 z-50">
-                  <div className="font-mono text-[11px] leading-relaxed">
-                    <div className="py-2 border-b border-slate-800"><span className="text-slate-500">[2026-09-21 02:15:00]</span> <span className="text-yellow-400">[SEC_WARN]</span> Unrecognized device login blocked.</div>
-                    <div className="py-2 border-b border-slate-800"><span className="text-slate-500">[2026-09-21 01:30:22]</span> <span className="text-blue-400">[SYS_INFO]</span> Nightly hydration report generated.</div>
-                    <div className="py-2"><span className="text-slate-500">[2026-09-20 12:05:00]</span> <span className="text-red-400">[MED_ERR]</span> Missed 12:00 PM medication dose.</div>
+                <div className="absolute right-0 top-12 w-[390px] bg-white rounded-2xl border border-[#EADBCC] shadow-xl p-0 z-50 overflow-hidden">
+                  <div className="px-5 py-3.5 bg-[#FAF6F0] border-b border-[#EADBCC] flex items-center justify-between">
+                    <div className="flex items-center gap-2"><Bell className="w-4 h-4 text-[#1E293B]" /><span className="text-sm font-bold text-[#1E293B]">System Alerts</span><span className="text-[10px] font-semibold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">3 New</span></div>
+                    <button className="text-[11px] font-medium text-slate-500 hover:text-[#1E293B] transition-colors">Mark read</button>
+                  </div>
+                  <div className="p-3 space-y-2.5 max-h-[380px] overflow-y-auto">
+                    <div className="bg-red-50/70 border border-red-200/80 rounded-xl p-3 flex gap-3 items-start transition-all hover:bg-red-50">
+                      <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5"><ShieldAlert className="w-4 h-4" /></div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between"><span className="text-xs font-bold text-red-800">Security Breach Blocked</span><span className="text-[10px] text-red-600/80 font-medium">02:15 AM</span></div>
+                        <p className="text-[11px] text-red-700/90 mt-0.5 leading-snug">Unrecognized device login attempt blocked from external IP.</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 flex gap-3 items-start transition-all hover:bg-amber-50">
+                      <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5"><Pill className="w-4 h-4" /></div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between"><span className="text-xs font-bold text-amber-900">Missed Medication</span><span className="text-[10px] text-amber-700/80 font-medium">Yesterday</span></div>
+                        <p className="text-[11px] text-amber-800/90 mt-0.5 leading-snug">Scheduled 12:00 PM dose was not marked as taken by patient.</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl p-3 flex gap-3 items-start transition-all hover:bg-[#E8FAF0]">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5"><Activity className="w-4 h-4" /></div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between"><span className="text-xs font-bold text-emerald-950">Daily Hydration Log</span><span className="text-[10px] text-emerald-700/80 font-medium">01:30 AM</span></div>
+                        <p className="text-[11px] text-emerald-800/90 mt-0.5 leading-snug">Nightly intake generated: target reached at 100% capacity.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-4 py-2.5 bg-[#FAF6F0] border-t border-[#EADBCC] text-center">
+                    <button className="text-[11px] font-semibold text-[#1E293B] hover:underline">View full audit logs</button>
                   </div>
                 </div>
               )}
