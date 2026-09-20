@@ -1,98 +1,68 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Pressable, Dimensions } from 'react-native';
+import { Bell, Home, Pill, Plus } from 'lucide-react-native';
 
-import { BystanderSOSModal } from '@/components/BystanderSOSModal';
-import { gamesForGds, therapyStageFromGds } from '@/games/gdsRouting';
-import { usePatient } from '@/patient/PatientProvider';
-import { bhashiniVoiceService } from '@/services/voice/BhashiniVoiceService';
-import { colors, MIN_TOUCH_DP, theme } from '@/theme/theme';
+const { width } = Dimensions.get('window');
 
 export default function PatientHomeScreen() {
-  const { patient } = usePatient();
-  const [now, setNow] = useState(() => new Date());
-  const [listening, setListening] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
-  const pulse = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulse, { toValue: 1.12, duration: 900, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 1, duration: 900, useNativeDriver: true }),
-      ])
-    );
-    animation.start();
-    return () => animation.stop();
-  }, [pulse]);
-
-  const timeOfDay = now.getHours() < 12 ? 'Morning' : now.getHours() < 17 ? 'Afternoon' : 'Evening';
-  const stage = patient ? therapyStageFromGds(patient.assigned_gds_stage) : 1;
-  const games = useMemo(() => (patient ? gamesForGds(patient.assigned_gds_stage) : []), [patient]);
-
-  const speak = async (): Promise<void> => {
-    setListening(true);
-    await bhashiniVoiceService.speak('नमस्कार, मैं आपकी सहायता के लिए यहाँ हूँ।', { language: 'hi-IN' });
-    setListening(false);
-  };
-
-  if (!patient) {
-    return <View style={styles.container}><Text style={styles.title}>Sahāy</Text></View>;
-  }
-
   return (
     <View style={styles.container}>
-      <Text style={styles.clock}>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-      <Text style={styles.timeOfDay}>{timeOfDay}, {patient.name}</Text>
-      <View style={styles.statusRow}>
-        <Text style={styles.stage}>GDS Stage {stage}</Text>
-        <Text style={styles.tokens}>DEMITOKENS {patient.demitoken_balance}</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Minimal Zero-Friction</Text>
+        <View style={styles.headerIcons}>
+          <Pressable style={styles.iconBtn}><Plus color="#1F2937" size={28} /></Pressable>
+          <Pressable style={styles.iconBtn}><Bell color="#1F2937" size={28} /></Pressable>
+        </View>
       </View>
-      <Animated.View style={{ transform: [{ scale: pulse }] }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Start Bhashini voice assistant" onPress={() => void speak()} style={styles.voice}>
-          <Text style={styles.voiceText}>{listening ? 'Listening…' : 'Speak with Sahāy'}</Text>
+
+      <View style={styles.massiveTargetsRow}>
+        <Pressable style={styles.massiveTarget}>
+          <Home color="#1E293B" size={40} />
+          <Text style={styles.massiveTargetText}>Patient App</Text>
         </Pressable>
-      </Animated.View>
-      <Text style={styles.sectionTitle}>Today’s gentle activities</Text>
-      <View style={styles.gameGrid}>
-        {games.map((game) => (
-          <Pressable key={game.id} accessibilityRole="button" accessibilityLabel={`Open ${game.title}`} style={styles.gameCard}>
-            <Text style={styles.gameTitle}>{game.title}</Text>
-            <Text style={styles.gameStage}>Stage {stage}</Text>
-          </Pressable>
-        ))}
+        <Pressable style={styles.massiveTarget}>
+          <Pill color="#1E293B" size={40} />
+          <Text style={styles.massiveTargetText}>Massive Targets</Text>
+        </Pressable>
       </View>
-      <Pressable accessibilityRole="button" accessibilityLabel="Need help" onPress={() => setShowHelp(true)} style={styles.help}>
-        <Text style={styles.helpText}>Need Help</Text>
-      </Pressable>
-      <BystanderSOSModal
-        visible={showHelp}
-        onClose={() => setShowHelp(false)}
-        patient={{ id: patient.id, name: patient.name, emergencyContact: '112' }}
-      />
+
+      <View style={styles.adaptiveCard}>
+        <View style={styles.adaptiveCardContent}>
+          <Text style={styles.adaptiveCardTitle}>Take Morning Pill</Text>
+          <Text style={styles.adaptiveCardSub}>8:00 AM</Text>
+        </View>
+        <View style={styles.adaptiveCardImagePlaceholder}>
+          <Pill color="#1E293B" size={40} />
+        </View>
+      </View>
+
+      <View style={{ flex: 1 }} />
+
+      <View style={styles.bottomNavContainer}>
+        <View style={styles.bottomNavCenterBtn}>
+          <Plus color="#FFFFFF" size={40} />
+        </View>
+        <View style={styles.bottomNav} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background, padding: 24, alignItems: 'center' },
-  title: { color: colors.text, fontSize: 36, fontWeight: '900' },
-  clock: { color: colors.text, fontSize: 56, fontWeight: '900', marginTop: 16 },
-  timeOfDay: { color: colors.text, fontSize: 26, marginBottom: 16 },
-  statusRow: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
-  stage: { color: colors.text, fontSize: 22, fontWeight: '800', backgroundColor: colors.reinforcementPeach, padding: 12 },
-  tokens: { color: colors.text, fontSize: 22, fontWeight: '800', padding: 12 },
-  voice: { minWidth: 220, minHeight: MIN_TOUCH_DP, borderRadius: theme.radius.button, borderWidth: 1, borderColor: colors.primary, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
-  voiceText: { color: colors.card, fontSize: 22, fontWeight: '900', textAlign: 'center' },
-  sectionTitle: { color: colors.text, fontSize: 24, fontWeight: '800', marginVertical: 28 },
-  gameGrid: { width: '100%', gap: 12 },
-  gameCard: { minHeight: MIN_TOUCH_DP, backgroundColor: colors.card, borderWidth: 1, borderRadius: theme.radius.card, borderColor: colors.border, padding: 18, ...theme.flat },
-  gameTitle: { color: colors.text, fontSize: 22, fontWeight: '800' },
-  gameStage: { color: colors.text, fontSize: 18, marginTop: 6 },
-  help: { minHeight: MIN_TOUCH_DP, minWidth: 160, marginTop: 24, backgroundColor: colors.reinforcementPeach, borderWidth: 1, borderRadius: theme.radius.button, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', ...theme.flat },
-  helpText: { color: colors.text, fontSize: 22, fontWeight: '800' },
+  container: { flex: 1, backgroundColor: '#FDFBF7', paddingHorizontal: 24, paddingTop: 60, paddingBottom: 0 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 40 },
+  headerTitle: { color: '#1F2937', fontSize: 32, fontWeight: '900', maxWidth: '60%' },
+  headerIcons: { flexDirection: 'row', gap: 12 },
+  iconBtn: { padding: 12, backgroundColor: '#F5E6D3', borderRadius: 40 },
+  massiveTargetsRow: { flexDirection: 'row', gap: 20, marginBottom: 40 },
+  massiveTarget: { flex: 1, height: 160, backgroundColor: '#F5E6D3', borderRadius: 32, padding: 24, justifyContent: 'space-between' },
+  massiveTargetText: { color: '#1E293B', fontSize: 22, fontWeight: '800' },
+  adaptiveCard: { backgroundColor: '#FFFFFF', borderRadius: 24, padding: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 24, elevation: 1 },
+  adaptiveCardContent: { flex: 1 },
+  adaptiveCardTitle: { color: '#1F2937', fontSize: 24, fontWeight: '800', marginBottom: 8 },
+  adaptiveCardSub: { color: '#475569', fontSize: 18, fontWeight: '600' },
+  adaptiveCardImagePlaceholder: { width: 80, height: 80, backgroundColor: '#F5E6D3', borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  bottomNavContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, justifyContent: 'flex-end', zIndex: 50 },
+  bottomNav: { height: 90, backgroundColor: '#FFFFFF', borderTopLeftRadius: 40, borderTopRightRadius: 40, shadowColor: '#000', shadowOffset: { width: 0, height: -10 }, shadowOpacity: 0.1, shadowRadius: 20, elevation: 20 },
+  bottomNavCenterBtn: { position: 'absolute', top: 0, left: (width / 2) - 45, width: 90, height: 90, backgroundColor: '#1E293B', borderRadius: 45, justifyContent: 'center', alignItems: 'center', zIndex: 60, shadowColor: '#1E293B', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 16, elevation: 8 }
 });

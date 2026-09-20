@@ -136,7 +136,7 @@ img, svg {
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 body {
-  @apply bg-[#FBFBFB] text-slate-900 antialiased;
+  @apply bg-[#FDFBF7] text-[#1F2937] antialiased;
   font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: 'liga' 1, 'kern' 1;
   line-height: 1.5;
@@ -212,9 +212,9 @@ h1, h2, h3, h4, h5, h6 {
   .sahay-surface {
     background-color: rgb(var(--sahay-surface));
     background-image: var(--sahay-gradient);
-    border: 1px solid rgb(var(--sahay-line));
+    border: none;
     border-radius: 0.5rem;
-    box-shadow: var(--sahay-shadow);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
     transition: none;
   }
 
@@ -227,7 +227,7 @@ h1, h2, h3, h4, h5, h6 {
   /* Quiet inset panel for chart frames, list rows and table headers. */
   .sahay-panel {
     background-color: rgb(var(--sahay-panel));
-    border: 1px solid rgb(var(--sahay-line));
+    border: none;
     border-radius: 0.75rem;
   }
 
@@ -310,10 +310,10 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   max-width: 440px;
   background: rgb(var(--sahay-surface));
-  border: 2px solid rgb(var(--sahay-ink));
+  border: none;
   border-radius: 24px;
   padding: 32px 28px;
-  box-shadow: none;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   transition:
     border-color 300ms ease,
     box-shadow 300ms ease;
@@ -354,7 +354,8 @@ h1, h2, h3, h4, h5, h6 {
   align-items: flex-start;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 2px solid rgb(var(--sahay-border));
+  border: none;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
   background: rgb(var(--sahay-surface));
   color: rgb(var(--sahay-ink));
   text-align: left;
