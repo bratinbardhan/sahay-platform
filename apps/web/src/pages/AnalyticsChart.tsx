@@ -6,7 +6,7 @@ import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
 import { useGameplaySessions } from '@/lib/useGameplaySessions';
 import { GDS_STAGE_LABELS } from '@/lib/gdsUtils';
-import { getDemoCognitiveLoad14d, getDemoMoodStability14d } from '@/lib/demoSeed';
+import { getDemoMoodStability14d } from '@/lib/demoSeed';
 
 import { CognitiveTrendChart } from './charts/CognitiveTrendChart';
 import { DdaDifficultyCurve } from './charts/DdaDifficultyCurve';
