@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Maximize2, Printer, X } from 'lucide-react';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, ReferenceLine, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ReferenceLine, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { Card } from '@/components/Card';
 import { useCaretakerPatient } from '@/lib/useCaretakerPatient';
 import { usePatientAnalytics } from '@/lib/usePatientAnalytics';
@@ -31,7 +31,7 @@ const TREND_LABELS: Record<string, string> = {
 export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
-  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency'>('latency');
+  const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency' | 'heatmap'>('latency');
   const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
@@ -132,44 +132,104 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     day,
     sessions: Math.floor(1 + Math.random() * 4),
   }));
-  const breakdownChart = breakdown === 'latency' ? (
-    <AreaChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-      <defs>
-        <linearGradient id="latGradientSoft" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0D9488" stopOpacity={0.35} />
-          <stop offset="100%" stopColor="#0D9488" stopOpacity={0.02} />
-        </linearGradient>
-      </defs>
-      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-      <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-      <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', fill: SAHAY_CARETAKER.ok }} />
-      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-      <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0D9488" fill="url(#latGradientSoft)" strokeWidth={2.5} />
-    </AreaChart>
-  ) : breakdown === 'rebound' ? (
-    <AreaChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-      <defs>
-        <linearGradient id="reboundGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10B981" stopOpacity={0.35} />
-          <stop offset="100%" stopColor="#10B981" stopOpacity={0.02} />
-        </linearGradient>
-      </defs>
-      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-      <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-      <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10B981" fill="url(#reboundGradient)" strokeWidth={2.5} />
-    </AreaChart>
-  ) : (
-    <BarChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-      <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-      <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-      <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-      <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-      <Bar dataKey="sessions" name="Therapy Sessions" fill={SAHAY_CARETAKER.accent} radius={[4, 4, 0, 0]} />
-    </BarChart>
-  );
+  let breakdownContent = null;
+  if (breakdown === 'latency') {
+    breakdownContent = (
+      <div className="w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">360 ms</div><div className="text-xs font-semibold text-slate-500">Morning</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">418 ms</div><div className="text-xs font-semibold text-slate-500">Afternoon</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">486 ms</div><div className="text-xs font-semibold text-slate-500">Evening</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-red-600">520 ms+</div><div className="text-xs font-semibold text-slate-500">Watch band</div></div>
+        </div>
+        <div className="h-[260px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="latGradientSoft" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0D9488" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#0D9488" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+              <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+              <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', fill: SAHAY_CARETAKER.ok }} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+              <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0D9488" fill="url(#latGradientSoft)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    );
+  } else if (breakdown === 'rebound') {
+    breakdownContent = (
+      <div className="w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">82%</div><div className="text-xs font-semibold text-slate-500">Errorless attempts</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">14%</div><div className="text-xs font-semibold text-slate-500">Guided recovery</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">4%</div><div className="text-xs font-semibold text-slate-500">Repeat errors</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">Improving</div><div className="text-xs font-semibold text-slate-500">Trend</div></div>
+        </div>
+        <div className="h-[260px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="reboundGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10B981" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#10B981" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+              <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+              <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10B981" fill="url(#reboundGradient)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    );
+  } else if (breakdown === 'consistency') {
+    breakdownContent = (
+      <div className="w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">12/14</div><div className="text-xs font-semibold text-slate-500">Active days</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">2.4/day</div><div className="text-xs font-semibold text-slate-500">Avg sessions</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">91%</div><div className="text-xs font-semibold text-slate-500">Completion</div></div>
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">88%</div><div className="text-xs font-semibold text-slate-500">Stability</div></div>
+        </div>
+        <div className="h-[260px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
+              <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+              <Bar dataKey="sessions" name="Therapy Sessions" fill={SAHAY_CARETAKER.accent} radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    );
+  } else if (breakdown === 'heatmap') {
+    breakdownContent = (
+      <div className="w-full mt-6">
+        <div className="h-[260px] w-full flex flex-col items-center justify-center bg-slate-50 rounded-xl border border-slate-100">
+          <div className="flex flex-col gap-1 opacity-90">
+            {Array.from({ length: 7 }).map((_, r) => (
+              <div key={r} className="flex gap-1">
+                {Array.from({ length: 18 }).map((__, c) => (
+                  <div key={c} className={`w-3 h-3 rounded-sm ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
+                ))}
+              </div>
+            ))}
+          </div>
+          <span className="text-xs font-semibold text-slate-500 mt-4 block">Circadian 7-day x 18-hour activity matrix</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
@@ -202,9 +262,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </p>
 
       {cognitiveSummary ? (
-        <Card title="7-Day Cognitive Summary" className="mb-8 bg-white border border-slate-200 shadow-none">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
+        <div className="mb-8 bg-gradient-to-r from-teal-50/60 via-slate-50 to-blue-50/50 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-lg font-extrabold text-[#1E293B] mb-6">7-Day Cognitive Summary</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
               <div className="text-2xl font-bold text-sahay-ink">
                 {TREND_LABELS[cognitiveSummary.trend_direction] ?? cognitiveSummary.trend_direction}
               </div>
@@ -213,26 +274,26 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                 {cognitiveSummary.accuracy_delta_pct}% accuracy vs prior week
               </div>
             </div>
-            <div>
+            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
               <div className="text-2xl font-bold text-sahay-ink">
                 {cognitiveSummary.stability_score.toFixed(0)}%
               </div>
               <div className="text-sm text-sahay-ink/70">Stability Score</div>
             </div>
-            <div>
+            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
               <div className="text-2xl font-bold text-sahay-accent">
                 {cognitiveSummary.recommended_difficulty}
               </div>
               <div className="text-sm text-sahay-ink/70">Recommended Difficulty</div>
             </div>
-            <div>
+            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
               <div className="text-2xl font-bold text-sahay-ink">
                 {Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms
               </div>
               <div className="text-sm text-sahay-ink/70">Avg Latency (7 Days)</div>
             </div>
           </div>
-        </Card>
+        </div>
       ) : null}
 
       <Card
@@ -282,6 +343,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             ['latency', 'Daily Reaction Latency'],
             ['rebound', 'Touch Errorless Rebound'],
             ['consistency', 'Session Consistency'],
+            ['heatmap', 'Activity heatmap'],
           ].map(([key, label]) => (
             <button key={key} type="button" role="tab" aria-selected={breakdown === key} onClick={() => setBreakdown(key as typeof breakdown)}
               className={`rounded-lg border px-3 py-2 text-sm font-semibold ${breakdown === key ? 'border-teal-600 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
@@ -289,7 +351,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
             </button>
           ))}
         </div>
-        <div className="min-h-[250px]">{breakdownChart}</div>
+        <div className="w-full">{breakdownContent}</div>
       </Card>
 
       <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none">
