@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Brain, Activity, ImagePlus, BookHeart, MapPinned, HeartHandshake, LogOut } from 'lucide-react';
+import { Menu, X, Brain, Activity, ImagePlus, BookHeart, MapPinned, HeartHandshake, LogOut, LayoutGrid } from 'lucide-react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiFetchMe, AuthApiError } from '@/lib/auth';
@@ -103,6 +103,14 @@ function InnerApp() {
           </div>
 
           <div className="flex-1 flex flex-col space-y-4 w-full px-2 mt-4">
+            <button
+              title="Dashboard"
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
+              onClick={() => navigate('/')}
+            >
+              <LayoutGrid className="w-5 h-5 shrink-0" />
+              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Dashboard</span>}
+            </button>
             <button
               title="Analytics"
               className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}

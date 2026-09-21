@@ -1,8 +1,9 @@
 import {
   CartesianGrid,
   Legend,
+  Area,
+  AreaChart,
   Line,
-  LineChart,
   ReferenceLine,
   Tooltip,
   XAxis,
@@ -48,9 +49,9 @@ export function CognitiveTrendChart({
   const fromPoints = ordered.map((d) => {
     const record = d as unknown as Record<string, unknown>;
     return {
-      day: formatDay(d.timestamp),
+      date: formatDay(d.timestamp),
       cognitiveLoad: Number(record.cognitiveLoad ?? record.score ?? d.cognitive_load_index ?? 70),
-      latency: Number(record.latency ?? d.reaction_latency_ms ?? 420),
+      reactionLatency: Number(record.latency ?? d.reaction_latency_ms ?? 420),
       engagement: undefined as number | undefined,
       fatigue: undefined as number | undefined,
     };
@@ -58,22 +59,21 @@ export function CognitiveTrendChart({
 
   // Keep telemetry aligned by date. Index-based merging shifts latency when a
   // session is missing and makes the chart clinically misleading.
-  const pointByDay = new Map(fromPoints.map((point) => [point.day, point]));
+  const pointByDay = new Map(fromPoints.map((point) => [point.date, point]));
   const data =
     loadSeries.length > 0
       ? loadSeries.slice(-14).map((d) => {
-          const record = d as unknown as Record<string, unknown>;
-          return {
-            day: d.day,
-            cognitiveLoad: Number(record.cognitiveLoad ?? record.score ?? d.load ?? 70),
-            latency: Number(record.latency ?? pointByDay.get(d.day)?.latency ?? 420),
-            engagement: Number.isFinite(d.engagement) ? d.engagement : null,
-            fatigue: Number.isFinite(d.fatigue) ? d.fatigue : null,
-          };
-        })
+        const record = d as unknown as Record<string, unknown>;
+        return {
+          date: d.day,
+          cognitiveLoad: Number(record.cognitiveLoad ?? record.score ?? d.load ?? 70),
+          reactionLatency: Number(record.reactionLatency ?? pointByDay.get(d.date)?.reactionLatency ?? 420),
+          engagement: Number.isFinite(d.engagement) ? d.engagement : null,
+          fatigue: Number.isFinite(d.fatigue) ? d.fatigue : null,
+        };
+      })
       : fromPoints;
 
-  const loadColor = SAHAY_CARETAKER.viz[0];
   const engagementColor = SAHAY_CARETAKER.viz[3];
   const fatigueColor = SAHAY_CARETAKER.viz[5];
   const latencyColor = SAHAY_CARETAKER.viz[1];
@@ -82,9 +82,19 @@ export function CognitiveTrendChart({
 
   return (
     <ChartShell>
-      <LineChart data={data} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="cogGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0E7490" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#0E7490" stopOpacity={0.02} />
+          </linearGradient>
+          <linearGradient id="latGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2563EB" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity={0.02} />
+          </linearGradient>
+        </defs>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <XAxis dataKey="date" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
         <YAxis
           yAxisId="left"
           stroke={SAHAY_CARETAKER.axis}
@@ -106,7 +116,7 @@ export function CognitiveTrendChart({
           formatter={(value: unknown, name: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             const key = String(name);
-            if (key === 'latency') {
+            if (key === 'reactionLatency' || key === 'latency') {
               return [`${Math.round(numeric)} ms`, 'Touch latency'];
             }
             if (key === 'cognitiveLoad') {
@@ -123,70 +133,65 @@ export function CognitiveTrendChart({
         />
         <Legend />
         <>
-            <ReferenceLine
-              y={WATCH_THRESHOLD}
-              stroke={watchColor}
-              strokeDasharray="6 4"
-              label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
-            />
-            <ReferenceLine
-              y={FATIGUE_THRESHOLD}
-              stroke={fatigueLineColor}
-              strokeDasharray="4 4"
-              label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
-            />
-            <Line
-              type="monotone"
-              yAxisId="left"
-              dataKey="cognitiveLoad"
-              name="Cognitive load"
-              stroke={loadColor}
-              strokeWidth={2.6}
-              dot={{ r: 3, stroke: loadColor, fill: SAHAY_CARETAKER.surfaceRaised }}
-              isAnimationActive={false}
-                  animationDuration={CHART_ANIMATION_MS}
-            />
-            {loadSeries.length > 0 ? (
-              <>
-                <Line
-                  type="monotone"
-                  yAxisId="left"
-                  dataKey="engagement"
-                  name="Engagement"
-                  stroke={engagementColor}
-                  strokeWidth={2.2}
-                  dot={{ r: 3 }}
-                  isAnimationActive={false}
-                  animationDuration={CHART_ANIMATION_MS}
-                />
-                <Line
-                  type="monotone"
-                  yAxisId="left"
-                  dataKey="fatigue"
-                  name="Mental fatigue"
-                  stroke={fatigueColor}
-                  strokeWidth={2.2}
-                  strokeDasharray="5 4"
-                  dot={{ r: 3 }}
-                  isAnimationActive={false}
-                  animationDuration={CHART_ANIMATION_MS}
-                />
-              </>
-            ) : null}
-          <Line
+          <ReferenceLine
+            y={WATCH_THRESHOLD}
+            stroke={watchColor}
+            strokeDasharray="6 4"
+            label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
+          />
+          <ReferenceLine
+            y={FATIGUE_THRESHOLD}
+            stroke={fatigueLineColor}
+            strokeDasharray="4 4"
+            label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
+          />
+          <Area
+            type="monotone"
+            yAxisId="left"
+            dataKey="cognitiveLoad"
+            name="Cognitive load"
+            stroke="#0E7490"
+            fill="url(#cogGradient)"
+            strokeWidth={2.5}
+          />
+          {loadSeries.length > 0 ? (
+            <>
+              <Line
+                type="monotone"
+                yAxisId="left"
+                dataKey="engagement"
+                name="Engagement"
+                stroke={engagementColor}
+                strokeWidth={2.2}
+                dot={{ r: 3 }}
+                isAnimationActive={false}
+                animationDuration={CHART_ANIMATION_MS}
+              />
+              <Line
+                type="monotone"
+                yAxisId="left"
+                dataKey="fatigue"
+                name="Mental fatigue"
+                stroke={fatigueColor}
+                strokeWidth={2.2}
+                strokeDasharray="5 4"
+                dot={{ r: 3 }}
+                isAnimationActive={false}
+                animationDuration={CHART_ANIMATION_MS}
+              />
+            </>
+          ) : null}
+          <Area
             type="monotone"
             yAxisId="right"
-            dataKey="latency"
+            dataKey="reactionLatency"
             name="Touch latency"
-            stroke={latencyColor}
-            strokeWidth={2.6}
-            dot={{ r: 3, stroke: latencyColor, fill: SAHAY_CARETAKER.surfaceRaised }}
-            isAnimationActive={false}
-            animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+            stroke="#2563EB"
+            fill="url(#latGradient)"
+            strokeWidth={2.5}
           />
         </>
-      </LineChart>
+      </AreaChart>
     </ChartShell>
   );
 }
