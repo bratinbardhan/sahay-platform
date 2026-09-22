@@ -121,7 +121,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const latencyData = days.map((day, index) => {
     const session = sessions[index % Math.max(1, sessions.length)];
     const mockLatency = 380 + Math.random() * 80;
-    return { day, latency: Math.round(session?.avg_latency_ms ?? ddaHistory?.points[index]?.reaction_latency_ms ?? mockLatency) };
+    return { day, latency: Math.round(session?.avg_latency_ms ?? ddaHistory?.points?.[index]?.reaction_latency_ms ?? mockLatency) };
   });
   const reboundData = days.map((day, index) => {
     const session = sessions[index % Math.max(1, sessions.length)];

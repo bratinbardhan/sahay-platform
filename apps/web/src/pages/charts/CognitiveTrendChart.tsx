@@ -60,7 +60,7 @@ export function CognitiveTrendChart({
     <ChartShell>
       <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={guaranteedChartData} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
+          <AreaChart data={guaranteedChartData || []} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
             <XAxis dataKey="date" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
             <YAxis
@@ -101,73 +101,67 @@ export function CognitiveTrendChart({
               }}
             />
             <Legend />
-            <>
-              <ReferenceLine
-                y={WATCH_THRESHOLD}
-                stroke={watchColor}
-                strokeDasharray="6 4"
-                label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
-              />
-              <ReferenceLine
-                y={FATIGUE_THRESHOLD}
-                stroke={fatigueLineColor}
-                strokeDasharray="4 4"
-                label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
-              />
-              {metric === 'load' ? (
-                <Area
+            <ReferenceLine
+              y={WATCH_THRESHOLD}
+              stroke={watchColor}
+              strokeDasharray="6 4"
+              label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
+            />
+            <ReferenceLine
+              y={FATIGUE_THRESHOLD}
+              stroke={fatigueLineColor}
+              strokeDasharray="4 4"
+              label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
+            />
+            <Area
+              yAxisId="left"
+              type="monotone"
+              dataKey="cognitiveLoad"
+              stroke="#0D9488"
+              fill="#0D9488"
+              fillOpacity={0.2}
+              strokeWidth={3}
+              isAnimationActive={false}
+              hide={metric !== 'load'}
+            />
+            {loadSeries.length > 0 ? (
+              <>
+                <Line
+                  type="monotone"
                   yAxisId="left"
-                  type="monotone"
-                  dataKey="cognitiveLoad"
-                  name="Cognitive load"
-                  stroke="#0D9488"
-                  fill="#0D9488"
-                  fillOpacity={0.2}
-                  strokeWidth={3}
+                  dataKey="engagement"
+                  name="Engagement"
+                  stroke={engagementColor}
+                  strokeWidth={2.2}
+                  dot={{ r: 3 }}
                   isAnimationActive={false}
+                  animationDuration={CHART_ANIMATION_MS}
                 />
-              ) : null}
-              {loadSeries.length > 0 ? (
-                <>
-                  <Line
-                    type="monotone"
-                    yAxisId="left"
-                    dataKey="engagement"
-                    name="Engagement"
-                    stroke={engagementColor}
-                    strokeWidth={2.2}
-                    dot={{ r: 3 }}
-                    isAnimationActive={false}
-                    animationDuration={CHART_ANIMATION_MS}
-                  />
-                  <Line
-                    type="monotone"
-                    yAxisId="left"
-                    dataKey="fatigue"
-                    name="Mental fatigue"
-                    stroke={fatigueColor}
-                    strokeWidth={2.2}
-                    strokeDasharray="5 4"
-                    dot={{ r: 3 }}
-                    isAnimationActive={false}
-                    animationDuration={CHART_ANIMATION_MS}
-                  />
-                </>
-              ) : null}
-              {metric === 'latency' ? (
-                <Area
-                  yAxisId="right"
+                <Line
                   type="monotone"
-                  dataKey="reactionLatency"
-                  name="Touch latency"
-                  stroke="#2563EB"
-                  fill="#2563EB"
-                  fillOpacity={0.2}
-                  strokeWidth={3}
+                  yAxisId="left"
+                  dataKey="fatigue"
+                  name="Mental fatigue"
+                  stroke={fatigueColor}
+                  strokeWidth={2.2}
+                  strokeDasharray="5 4"
+                  dot={{ r: 3 }}
                   isAnimationActive={false}
+                  animationDuration={CHART_ANIMATION_MS}
                 />
-              ) : null}
-            </>
+              </>
+            ) : null}
+            <Area
+              yAxisId="right"
+              type="monotone"
+              dataKey="reactionLatency"
+              stroke="#2563EB"
+              fill="#2563EB"
+              fillOpacity={0.2}
+              strokeWidth={3}
+              isAnimationActive={false}
+              hide={metric !== 'latency'}
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
