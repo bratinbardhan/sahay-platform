@@ -113,10 +113,11 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
           contentStyle={sahayTooltipStyle}
           labelStyle={sahayTooltipLabelStyle}
           content={({ active, payload }) => {
-            if (!active || !payload || payload.length === 0) {
+            const firstItem = (Array.isArray(payload) && payload.length > 0) ? payload[0] : null;
+            if (!active || !firstItem) {
               return null;
             }
-            const cell = payload[0].payload as HeatmapCell;
+            const cell = firstItem.payload as HeatmapCell;
             return (
               <div className="sahay-viz-tooltip text-sahay-ink">
                 <p className="font-bold">
@@ -134,7 +135,7 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
           shape={HeatShape}
           isAnimationActive={false}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
       </ScatterChart>
     </ChartShell>
