@@ -103,12 +103,14 @@ export function CognitiveTrendChart({
             <Legend />
             <ReferenceLine
               y={WATCH_THRESHOLD}
+              yAxisId="left"
               stroke={watchColor}
               strokeDasharray="6 4"
               label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
             />
             <ReferenceLine
               y={FATIGUE_THRESHOLD}
+              yAxisId="left"
               stroke={fatigueLineColor}
               strokeDasharray="4 4"
               label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
