@@ -126,9 +126,9 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const isDemo = patientIsDemo || analyticsIsDemo || sessionsIsDemo;
 
   useEffect(() => {
-    void sendHeartbeat(token);
+    sendHeartbeat(token).catch(() => null);
     const interval = window.setInterval(() => {
-      void sendHeartbeat(token);
+      sendHeartbeat(token).catch(() => null);
     }, 60_000);
     return () => window.clearInterval(interval);
   }, [token]);
