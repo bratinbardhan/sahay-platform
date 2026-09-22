@@ -70,14 +70,12 @@ export async function apiLogin(payload: LoginRequest): Promise<AuthResponse> {
         access_token: 'demo_token_ram',
         token_type: 'Bearer',
         user: {
-          id: 'demo-caretaker-ram',
-          email: 'ram',
+          ...authUser,
           full_name: 'Ram',
-          role: 'CARETAKER',
           tier: 'FREE',
           is_active: true,
           created_at: new Date().toISOString(),
-        },
+        } as unknown as User,
       };
       localStorage.setItem('auth_token', auth.access_token);
       localStorage.setItem('auth_user', JSON.stringify(authUser));
@@ -109,14 +107,12 @@ export async function apiSignup(payload: SignupRequest): Promise<AuthResponse> {
       access_token: 'demo_token_ram',
       token_type: 'Bearer',
       user: {
-        id: 'demo-caretaker-ram',
-        email: 'ram',
+        ...demoUser,
         full_name: 'Ram',
-        role: 'CARETAKER',
         tier: 'FREE',
         is_active: true,
         created_at: new Date().toISOString(),
-      },
+      } as unknown as User,
     };
     localStorage.setItem('auth_token', auth.access_token);
     localStorage.setItem('auth_user', JSON.stringify(demoUser));

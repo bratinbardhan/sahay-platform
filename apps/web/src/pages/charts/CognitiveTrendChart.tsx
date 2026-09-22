@@ -60,7 +60,7 @@ export function CognitiveTrendChart({
     <ChartShell>
       <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={guaranteedChartData || []} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
+          <AreaChart data={loadSeries.length > 0 ? loadSeries : (guaranteedChartData || [])} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
             <XAxis dataKey="date" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
             <YAxis

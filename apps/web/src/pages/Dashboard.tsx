@@ -86,8 +86,10 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   };
 
   useEffect(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const ws = new WebSocket(`${protocol}://localhost:8000/api/v1/emergency/ws?token=${token}`);
+    const wsUrl = import.meta.env.VITE_WS_URL;
+    if (!wsUrl || (wsUrl.includes('localhost') && import.meta.env.PROD)) return;
+
+    const ws = new WebSocket(`${wsUrl}?token=${token}`);
     ws.onmessage = (event) => {
       try {
         const data: unknown = JSON.parse(event.data);
