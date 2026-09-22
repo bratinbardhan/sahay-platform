@@ -43,8 +43,8 @@ export function GameActivityChart({ data }: GameActivityChartProps) {
     <ChartShell>
       <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
         <CartesianGrid {...sahayGridProps} opacity={0.6} />
-        <XAxis type="number" allowDecimals={false} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-        <YAxis type="category" dataKey="game" stroke={SAHAY_CARETAKER.axis} fontSize={11} width={120} />
+        <XAxis type="number" allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <YAxis type="category" dataKey="game" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} width={120} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           formatter={(value: unknown) => {
@@ -57,7 +57,7 @@ export function GameActivityChart({ data }: GameActivityChartProps) {
           radius={[0, 8, 8, 0]}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         >
           {chartData.map((entry, index) => (
             <Cell key={entry.game} fill={SAHAY_VIZ_SERIES[index % SAHAY_VIZ_SERIES.length]} />

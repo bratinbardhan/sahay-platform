@@ -93,7 +93,7 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
           domain={[-0.5, 23.5]}
           ticks={HOURS}
           stroke={SAHAY_CARETAKER.axis}
-          fontSize={10}
+          tick={{ fontWeight: 'bold', fontSize: 11 }}
         />
         <YAxis
           type="number"
@@ -104,8 +104,8 @@ export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
           tickFormatter={(value: number) => DAYS[value] ?? String(value)}
           reversed
           stroke={SAHAY_CARETAKER.axis}
-          fontSize={11}
-          width={42}
+          tick={{ fontWeight: 'bold', fontSize: 11 }}
+          width={45}
         />
         <ZAxis type="number" dataKey="density" range={[40, 160]} />
         <Tooltip

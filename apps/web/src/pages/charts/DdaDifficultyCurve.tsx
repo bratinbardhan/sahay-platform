@@ -54,21 +54,21 @@ export function DdaDifficultyCurve({
     <ChartShell>
       <LineChart data={data} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis dataKey="round" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <XAxis dataKey="round" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
         <YAxis
           yAxisId="difficulty"
           stroke={SAHAY_CARETAKER.axis}
-          fontSize={11}
+          tick={{ fontWeight: 'bold', fontSize: 11 }}
           domain={[0, 8]}
-          label={{ value: 'Difficulty', angle: -90, position: 'insideLeft', fontSize: 10 }}
+          label={{ value: 'Difficulty', angle: -90, position: 'insideLeft', fontSize: 10, fontWeight: 'bold' }}
         />
         <YAxis
           yAxisId="latency"
           orientation="right"
           stroke={SAHAY_CARETAKER.axis}
-          fontSize={11}
+          tick={{ fontWeight: 'bold', fontSize: 11 }}
           domain={[300, 520]}
-          label={{ value: 'ms', angle: 90, position: 'insideRight', fontSize: 10 }}
+          label={{ value: 'ms', angle: 90, position: 'insideRight', fontSize: 10, fontWeight: 'bold' }}
         />
         <Tooltip
           contentStyle={sahayTooltipStyle}
@@ -96,7 +96,7 @@ export function DdaDifficultyCurve({
           dot={{ r: 3 }}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
         <Line
           yAxisId="latency"
@@ -108,7 +108,7 @@ export function DdaDifficultyCurve({
           dot={{ r: 3 }}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
         {recommendedDifficulty !== null ? (
           <Line
@@ -122,7 +122,7 @@ export function DdaDifficultyCurve({
             dot={false}
             isAnimationActive={true}
             animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+            animationEasing="ease-in-out"
           />
         ) : null}
       </LineChart>

@@ -48,10 +48,10 @@ function aggregateDaily(sessions: SessionRecord[]): DailyBars[] {
     current.avgLatencyMs =
       priorAttempts + session.tasks_presented > 0
         ? Math.round(
-            (current.avgLatencyMs * priorAttempts +
-              session.avg_latency_ms * session.tasks_presented) /
-              (priorAttempts + session.tasks_presented)
-          )
+          (current.avgLatencyMs * priorAttempts +
+            session.avg_latency_ms * session.tasks_presented) /
+          (priorAttempts + session.tasks_presented)
+        )
         : session.avg_latency_ms;
     buckets.set(day, current);
   }
@@ -74,8 +74,8 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
     <ChartShell>
       <BarChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           labelStyle={sahayTooltipLabelStyle}
@@ -100,7 +100,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
           maxBarSize={22}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
         <Bar
           dataKey="completed"
@@ -110,7 +110,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
           maxBarSize={22}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
       </BarChart>
     </ChartShell>

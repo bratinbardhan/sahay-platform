@@ -44,8 +44,8 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
     <ChartShell>
       <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis dataKey="stage" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+        <XAxis dataKey="stage" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           formatter={(value: unknown) => {
@@ -58,7 +58,7 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
           radius={[8, 8, 0, 0]}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         >
           {data.map((entry, index) => (
             <Cell key={entry.stage} fill={colors[index % colors.length]} />

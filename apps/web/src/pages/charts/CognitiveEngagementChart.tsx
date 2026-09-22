@@ -23,12 +23,12 @@ export function CognitiveEngagementChart({ data }: CognitiveEngagementChartProps
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.line} vertical={false} />
         <XAxis
           dataKey="day"
-          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          tick={{ fontWeight: 'bold', fontSize: 11, fill: SAHAY_CARETAKER.axis }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: SAHAY_CARETAKER.axis }}
+          tick={{ fontWeight: 'bold', fontSize: 11, fill: SAHAY_CARETAKER.axis }}
           axisLine={false}
           tickLine={false}
         />
@@ -51,7 +51,7 @@ export function CognitiveEngagementChart({ data }: CognitiveEngagementChartProps
           maxBarSize={40}
           isAnimationActive={true}
           animationDuration={CHART_ANIMATION_MS}
-              animationEasing="ease-in-out"
+          animationEasing="ease-in-out"
         />
       </BarChart>
     </ChartShell>
