@@ -62,7 +62,15 @@ export function CognitiveTrendChart({
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={loadSeries.length > 0 ? loadSeries : (guaranteedChartData || [])} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-            <XAxis dataKey="date" stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+            <XAxis
+              dataKey="date"
+              stroke={SAHAY_CARETAKER.axis}
+              fontSize={11}
+              tickFormatter={(str) => {
+                const d = new Date(str);
+                return isNaN(d.getTime()) ? str : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+              }}
+            />
             <YAxis
               yAxisId="left"
               orientation="left"
@@ -106,14 +114,14 @@ export function CognitiveTrendChart({
               yAxisId="left"
               stroke={watchColor}
               strokeDasharray="6 4"
-              label={{ value: 'Watch', fill: watchColor, fontSize: 10 }}
+              label={{ value: 'Watch', position: 'insideRight', fill: watchColor, fontSize: 12 }}
             />
             <ReferenceLine
               y={FATIGUE_THRESHOLD}
               yAxisId="left"
               stroke={fatigueLineColor}
               strokeDasharray="4 4"
-              label={{ value: 'Fatigue', fill: fatigueLineColor, fontSize: 10 }}
+              label={{ value: 'Fatigue', position: 'insideRight', fill: fatigueLineColor, fontSize: 12 }}
             />
             <Area
               yAxisId="left"
