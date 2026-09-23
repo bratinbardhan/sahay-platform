@@ -1,144 +1,133 @@
-import { useMemo } from 'react';
-import { scaleLinear } from 'd3';
-import {
-  CartesianGrid,
-  Scatter,
-  ScatterChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-  ZAxis,
-} from 'recharts';
-import type { ReactElement } from 'react';
-
+import { useMemo, useState } from 'react';
 import type { HeatmapCell } from '@/lib/demoSeed';
-import { SAHAY_CARETAKER, sahayTooltipLabelStyle, sahayTooltipStyle } from '@/lib/palette';
-import { CHART_ANIMATION_MS, ChartShell } from './ChartShell';
 
 interface ActivityHeatmapProps {
   cells: HeatmapCell[];
 }
 
-const HOURS = Array.from({ length: 24 }, (_, hour) => hour);
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const X_LABELS = ['12 AM', '3 AM', '6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'];
 
-const latencyScale = scaleLinear<string>()
-  .domain([360, 420, 490])
-  .range([SAHAY_CARETAKER.viz[0], SAHAY_CARETAKER.viz[2], SAHAY_CARETAKER.viz[5]])
-  .clamp(true);
-
-function cellFill(cell: HeatmapCell): string {
-  if (cell.density < 0.08) {
-    return SAHAY_CARETAKER.surfaceSunken;
-  }
-  return latencyScale(cell.latencyMs);
-}
-
-// Typing props as unknown matches Recharts' ScatterCustomizedShape '(props: unknown) => Element'
-function HeatShape(props: unknown): ReactElement {
-  if (typeof props !== 'object' || props === null) {
-    return <g />;
-  }
-
-  const record = props as Record<string, unknown>;
-  const cx = typeof record.cx === 'number' ? record.cx : undefined;
-  const cy = typeof record.cy === 'number' ? record.cy : undefined;
-  const payload = record.payload as HeatmapCell | undefined;
-
-  if (cx === undefined || cy === undefined || !payload) {
-    return <g />;
-  }
-
-  const size = 16;
-  return (
-    <rect
-      x={cx - size / 2}
-      y={cy - size / 2}
-      width={size}
-      height={size}
-      rx={3}
-      fill={cellFill(payload)}
-      opacity={0.32 + payload.density * 0.68}
-    />
-  );
+function getCellColor(density: number) {
+  if (density < 0.08) return 'bg-slate-100'; // Inactive
+  if (density < 0.4) return 'bg-teal-200';  // Baseline
+  if (density < 0.7) return 'bg-teal-500';  // Moderate
+  return 'bg-amber-400';                    // High Focus
 }
 
 export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
-  const data = useMemo(
-    () =>
-      cells.map((cell) => ({
-        ...cell,
-        hour: cell.hour,
-        dayIndex: cell.dayIndex,
-      })),
-    [cells]
-  );
+  const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null);
 
-  if (data.length === 0) {
+  const grid = useMemo(() => {
+    const matrix: (HeatmapCell | null)[][] = Array.from({ length: 7 }, () =>
+      Array.from({ length: 24 }, () => null)
+    );
+    for (const cell of cells) {
+      if (cell.dayIndex >= 0 && cell.dayIndex < 7 && cell.hour >= 0 && cell.hour < 24) {
+        matrix[cell.dayIndex][cell.hour] = cell;
+      }
+    }
+    return matrix;
+  }, [cells]);
+
+  if (cells.length === 0) {
     return (
-      <p className="text-sm text-sahay-ink/60 text-center py-8">
+      <p className="text-sm text-slate-500 text-center py-8">
         No interaction density recorded yet.
       </p>
     );
   }
 
   return (
-    <ChartShell>
-      <ScatterChart margin={{ top: 12, right: 12, left: 8, bottom: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis
-          type="number"
-          dataKey="hour"
-          name="Hour"
-          domain={[-0.5, 23.5]}
-          ticks={HOURS}
-          stroke={SAHAY_CARETAKER.axis}
-          tick={{ fontWeight: 'bold', fontSize: 11 }}
-        />
-        <YAxis
-          type="number"
-          dataKey="dayIndex"
-          name="Day"
-          domain={[-0.5, 6.5]}
-          ticks={[0, 1, 2, 3, 4, 5, 6]}
-          tickFormatter={(value: number) => DAYS[value] ?? String(value)}
-          reversed
-          stroke={SAHAY_CARETAKER.axis}
-          tick={{ fontWeight: 'bold', fontSize: 11 }}
-          width={45}
-        />
-        <ZAxis type="number" dataKey="density" range={[40, 160]} />
-        <Tooltip
-          cursor={{ stroke: SAHAY_CARETAKER.ink }}
-          contentStyle={sahayTooltipStyle}
-          labelStyle={sahayTooltipLabelStyle}
-          content={({ active, payload }) => {
-            const firstItem = (Array.isArray(payload) && payload.length > 0) ? payload[0] : null;
-            if (!active || !firstItem) {
-              return null;
-            }
-            const cell = firstItem.payload as HeatmapCell;
-            return (
-              <div className="sahay-viz-tooltip text-sahay-ink">
-                <p className="font-bold">
-                  {cell.dayLabel} {String(cell.hour).padStart(2, '0')}:00
-                </p>
-                <p>
-                  Density {Math.round(cell.density * 100)}% · latency {cell.latencyMs} ms
-                </p>
+    <div className="w-full max-w-4xl mx-auto py-6 px-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-8">
+        <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-100 shadow-sm">
+          <div className="text-xl font-extrabold text-amber-950">10:00 AM</div>
+          <div className="text-xs font-semibold text-amber-800/80">Peak Focus</div>
+        </div>
+        <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm">
+          <div className="text-xl font-extrabold text-teal-950">6.4 hrs</div>
+          <div className="text-xs font-semibold text-teal-800/80">Active Hours</div>
+        </div>
+        <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm">
+          <div className="text-xl font-extrabold text-indigo-950">4 intervals</div>
+          <div className="text-xs font-semibold text-indigo-900/80">Rest Gaps</div>
+        </div>
+        <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm">
+          <div className="text-xl font-extrabold text-emerald-950">94%</div>
+          <div className="text-xs font-semibold text-emerald-800/80">Consistency</div>
+        </div>
+      </div>
+
+      <div className="relative flex flex-col items-center bg-white p-6 rounded-2xl border border-slate-200">
+        <div className="flex w-full">
+          <div className="flex flex-col gap-1.5 mr-4 mt-8 pb-6">
+            {DAYS.map((day) => (
+              <div key={day} className="h-6 flex items-center justify-end">
+                <span className="text-xs font-semibold text-slate-500">{day}</span>
               </div>
-            );
-          }}
-        />
-        <Scatter
-          data={data}
-          shape={HeatShape}
-          isAnimationActive={false}
-          animationDuration={CHART_ANIMATION_MS}
-          animationEasing="ease-in-out"
-        />
-      </ScatterChart>
-    </ChartShell>
+            ))}
+          </div>
+
+          <div className="flex flex-col flex-1 overflow-x-auto pb-2">
+            <div className="flex justify-between w-[588px] px-3 mb-2 text-xs font-semibold text-slate-500">
+              {X_LABELS.map((label, i) => (
+                <span key={i} className="text-center">{label}</span>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-1.5 w-[588px]">
+              {grid.map((row, r) => (
+                <div key={r} className="flex gap-1.5">
+                  {row.map((cell, c) => (
+                    <div
+                      key={c}
+                      className={`w-6 h-6 rounded-md transition-colors cursor-crosshair ${cell ? getCellColor(cell.density) : 'bg-slate-50'
+                        }`}
+                      onMouseEnter={() => setHoveredCell(cell)}
+                      onMouseLeave={() => setHoveredCell(null)}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6 mt-6 justify-center w-full">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-sm bg-slate-100"></div>
+            <span className="text-xs font-bold text-slate-500">Inactive</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-sm bg-teal-200"></div>
+            <span className="text-xs font-bold text-slate-500">Baseline</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-sm bg-teal-500"></div>
+            <span className="text-xs font-bold text-slate-500">Moderate</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-sm bg-amber-400"></div>
+            <span className="text-xs font-bold text-slate-500">High Focus</span>
+          </div>
+        </div>
+
+        {hoveredCell ? (
+          <div className="absolute top-2 right-4 bg-slate-800 text-white text-xs p-3 rounded-lg shadow-xl shadow-slate-200/50 pointer-events-none z-10 text-center animate-in fade-in duration-200">
+            <p className="font-bold mb-1">
+              {hoveredCell.dayLabel} {String(hoveredCell.hour).padStart(2, '0')}:00
+            </p>
+            <p className="text-slate-300">
+              Density: {Math.round(hoveredCell.density * 100)}%
+            </p>
+            <p className="text-slate-300">
+              Latency: <span className="text-amber-300 font-semibold">{hoveredCell.latencyMs}ms</span>
+            </p>
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

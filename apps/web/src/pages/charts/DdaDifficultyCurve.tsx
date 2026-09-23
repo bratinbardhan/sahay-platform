@@ -76,11 +76,11 @@ export function DdaDifficultyCurve({
           formatter={(value: unknown, name: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             const key = String(name);
-            if (key === 'latency') {
-              return [`${Math.round(numeric)} ms`, 'Rolling latency'];
+            if (key === 'Reaction time' || key === 'latency') {
+              return [`${Math.round(numeric)} ms`, 'Reaction time'];
             }
-            if (key === 'difficulty') {
-              return [numeric.toFixed(2), 'Rolling difficulty'];
+            if (key === 'Difficulty' || key === 'difficulty') {
+              return [numeric.toFixed(2), 'Difficulty'];
             }
             return [`${numeric}`, 'Recommended'];
           }}

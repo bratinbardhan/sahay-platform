@@ -194,7 +194,9 @@ export function getDemoSessionRecords(): SessionRecord[] {
   for (let i = 0; i < SESSION_COUNT; i += 1) {
     const roundsAgo = SESSION_COUNT - 1 - i;
     const presented = 12 + Math.floor(rand() * 6);
-    const guided = Math.max(0, Math.round(rand() * 2) - Math.floor(roundsAgo / 5));
+    // Introduce clinical variance (e.g. 91-97% start, mid-period dips, ~83% near day 13, recovering to ~95% later)
+    const errorPattern = [1, 0, 1, 0, 2, 1, 2, 2, 1, 1, 0, 1, 3, 1];
+    const guided = errorPattern[13 - roundsAgo] ?? 0;
     const clean = presented - guided;
     const duration = 420 + Math.round(rand() * 180);
     records.push({

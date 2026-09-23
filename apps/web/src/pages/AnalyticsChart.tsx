@@ -137,10 +137,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">360 ms</div><div className="text-xs font-semibold text-slate-500">Morning</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">418 ms</div><div className="text-xs font-semibold text-slate-500">Afternoon</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">486 ms</div><div className="text-xs font-semibold text-slate-500">Evening</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-red-600">520 ms+</div><div className="text-xs font-semibold text-slate-500">Watch band</div></div>
+          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">360 ms</div><div className="text-xs font-semibold text-teal-800/80">Morning</div></div>
+          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">418 ms</div><div className="text-xs font-semibold text-teal-800/80">Afternoon</div></div>
+          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">486 ms</div><div className="text-xs font-semibold text-teal-800/80">Evening</div></div>
+          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-red-600">520 ms+</div><div className="text-xs font-semibold text-teal-800/80">Watch band</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -154,7 +154,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
               <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
               <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
               <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-              <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', fill: SAHAY_CARETAKER.ok }} />
+              <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', position: 'insideTopRight', fill: '#059669', fontSize: 12, fontWeight: 'bold' }} />
               <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
               <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0D9488" fill="url(#latGradientSoft)" strokeWidth={2.5} />
             </AreaChart>
@@ -166,10 +166,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">82%</div><div className="text-xs font-semibold text-slate-500">Errorless attempts</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">14%</div><div className="text-xs font-semibold text-slate-500">Guided recovery</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">4%</div><div className="text-xs font-semibold text-slate-500">Repeat errors</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">Improving</div><div className="text-xs font-semibold text-slate-500">Trend</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">82%</div><div className="text-xs font-semibold text-emerald-800/80">Errorless attempts</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">14%</div><div className="text-xs font-semibold text-emerald-800/80">Guided recovery</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">4%</div><div className="text-xs font-semibold text-emerald-800/80">Repeat errors</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">Improving</div><div className="text-xs font-semibold text-emerald-800/80">Trend</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -194,19 +194,25 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">12/14</div><div className="text-xs font-semibold text-slate-500">Active days</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">2.4/day</div><div className="text-xs font-semibold text-slate-500">Avg sessions</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-slate-800">91%</div><div className="text-xs font-semibold text-slate-500">Completion</div></div>
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">88%</div><div className="text-xs font-semibold text-slate-500">Stability</div></div>
+          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">12/14</div><div className="text-xs font-semibold text-indigo-900/80">Active days</div></div>
+          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">2.4/day</div><div className="text-xs font-semibold text-indigo-900/80">Avg sessions</div></div>
+          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">91%</div><div className="text-xs font-semibold text-indigo-900/80">Completion</div></div>
+          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-600">88%</div><div className="text-xs font-semibold text-indigo-900/80">Stability</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="indigoGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#818cf8" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.7} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
               <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
               <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
               <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-              <Bar dataKey="sessions" name="Therapy Sessions" fill={SAHAY_CARETAKER.accent} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="sessions" name="Therapy Sessions" fill="url(#indigoGradient)" stroke="#6366f1" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
