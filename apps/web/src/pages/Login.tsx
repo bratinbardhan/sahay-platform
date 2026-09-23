@@ -39,7 +39,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-teal-100 p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative z-10 w-full">
       <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10 animate-fade-in-up">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-600 mb-2 tracking-tight">
@@ -106,18 +106,24 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </button>
         </form>
 
-        {/* Prominent Demo Info Banner */}
-        <div className="mt-6 flex items-start gap-3 rounded-xl bg-blue-50/80 p-4 border border-blue-100 shadow-sm transition-colors hover:bg-blue-50">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <div className="text-sm text-blue-900">
-            <p className="font-semibold mb-1">Demo Access Available</p>
-            <p className="opacity-90">
-              To explore the platform, use username <span className="font-mono bg-white px-1.5 py-0.5 rounded-md text-blue-700 font-bold border border-blue-200 ml-1">ram</span> and password <span className="font-mono bg-white px-1.5 py-0.5 rounded-md text-blue-700 font-bold border border-blue-200 ml-1">12345678</span>
+        {/* Clinical High-Contrast Demo Access Card */}
+        <div className="mt-6 rounded-2xl bg-slate-900/90 text-white p-4 shadow-lg shadow-slate-900/10 border border-slate-800">
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <p className="text-xs font-semibold tracking-wider uppercase text-slate-300">
+              Quick Demo Access
             </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="bg-slate-800/80 rounded-xl p-2 border border-slate-700/60">
+              <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-sans font-medium mb-0.5">Username</span>
+              <span className="text-emerald-400 font-bold text-sm tracking-wide">ram</span>
+            </div>
+            <div className="bg-slate-800/80 rounded-xl p-2 border border-slate-700/60">
+              <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-sans font-medium mb-0.5">Password</span>
+              <span className="text-emerald-400 font-bold text-sm tracking-wide">12345678</span>
+            </div>
           </div>
         </div>
 
