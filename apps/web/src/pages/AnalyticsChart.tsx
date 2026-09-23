@@ -32,7 +32,6 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
   const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency' | 'heatmap'>('latency');
-  const [toast, setToast] = useState<string | null>(null);
 
   const { patient, isDemo: patientIsDemo } = useCaretakerPatient(token);
   const { ddaHistory, cognitiveSummary, isDemo: analyticsIsDemo } = usePatientAnalytics(
@@ -86,30 +85,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         evening: day.evening / Math.max(1, count),
         stability: day.stability / Math.max(1, count),
       }));
-  const showReportToast = () => {
-    const report = {
-      generatedAt: new Date().toISOString(),
-      patient: patient?.name ?? 'Demo patient',
-      trend: cognitiveSummary?.trend_direction ?? 'INSUFFICIENT_DATA',
-      averageLatencyMs: Math.round(cognitiveSummary?.last_7_days.avg_latency_ms ?? 420),
-      sessionCount: total,
-      dataWindow: '14 days',
-    };
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `sahay-clinical-report-${new Date().toISOString().slice(0, 10)}.json`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-    setToast('Detailed clinical telemetry report downloaded.');
-    window.setTimeout(() => setToast(null), 2800);
-  };
-  const printReport = () => {
-    setToast('Print dialog opened for the clinical report.');
-    window.setTimeout(() => window.print(), 100);
-    window.setTimeout(() => setToast(null), 2800);
-  };
+
   const trendChart = (
     <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric={metric} />
   );
@@ -272,7 +248,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-6 print:hidden">
         <button
           type="button"
           className="mr-4 p-2 rounded-lg bg-sahay-surface border-2 border-sahay-ink text-sahay-ink hover:bg-sahay-surface-sunken transition-all duration-care ease-care"
@@ -282,10 +258,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
-        <button type="button" onClick={showReportToast} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong">
+        <button type="button" onClick={() => window.print()} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong">
           <Download className="h-4 w-4" /> Download Detailed Report
         </button>
-        <button type="button" onClick={printReport} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken">
+        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken">
           <Printer className="h-4 w-4" /> Print
         </button>
         {isDemo ? (
@@ -476,7 +452,6 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           </div>
         </div>
       ) : null}
-      {toast ? <div role="status" className="fixed bottom-6 right-6 z-50 rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-lg">{toast}</div> : null}
     </div>
   );
 }

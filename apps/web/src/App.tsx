@@ -27,6 +27,8 @@ function InnerApp() {
   const [session, setSession] = useState<StoredSession | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [showCareCircleModal, setShowCareCircleModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,7 +88,7 @@ function InnerApp() {
     <div className="flex h-screen w-full bg-slate-50 overflow-hidden">
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
-          className={`bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
+          className={`print:hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
@@ -145,7 +147,7 @@ function InnerApp() {
             </button>
             <button
               title="Care Circle"
-              onClick={() => window.alert("Opening Care Circle...")}
+              onClick={() => setShowCareCircleModal(true)}
               className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
             >
               <HeartHandshake className="w-5 h-5 shrink-0" />
@@ -156,12 +158,7 @@ function InnerApp() {
           <div className="flex-1" />
           <div className="w-full px-3 pb-4">
             <button
-              onClick={() => {
-                if (window.confirm("Are you sure you want to log out?")) {
-                  localStorage.removeItem('token');
-                  navigate('/login');
-                }
-              }}
+              onClick={() => setIsLogoutModalOpen(true)}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors ${!isSidebarExpanded ? 'justify-center' : 'px-3'
                 }`}
               title="Log Out"
@@ -193,6 +190,43 @@ function InnerApp() {
           )}
         </Routes>
       </div>
+
+      {isLogoutModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-slate-800 font-semibold text-lg text-center mb-6">Are you sure you want to logout?</h3>
+            <div className="flex justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setIsLogoutModalOpen(false)}
+                className="flex-1 py-2 rounded-lg border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition-colors">
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => { setIsLogoutModalOpen(false); logout(); }}
+                className="flex-1 py-2 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-700 transition-colors">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCareCircleModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl flex flex-col items-center">
+            <h3 className="font-bold text-slate-800 text-center text-lg mb-2">Feature coming soon</h3>
+            <p className="text-slate-500 text-sm text-center mb-6">The Care Circle module is currently under development.</p>
+            <button
+              type="button"
+              onClick={() => setShowCareCircleModal(false)}
+              className="w-full py-2 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-700 transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
