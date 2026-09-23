@@ -392,39 +392,54 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         {/* 1. Standard Analytics */}
         <div className="print:break-inside-avoid w-full">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Cognitive Load Index</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[550px] w-full">
             {cognitiveLoadChart}
           </div>
         </div>
 
+        {/* --- HARD SPACER --- */}
+        <div className="h-40 w-full shrink-0 block"></div>
+
         <div className="print:break-inside-avoid w-full">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Reaction Latency Trend</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[550px] w-full">
             {reactionLatencyChart}
           </div>
         </div>
 
+        {/* --- HARD SPACER --- */}
+        <div className="h-40 w-full shrink-0 block"></div>
+
         {/* 2. Clinical Breakdown Views */}
         <div className="print:break-inside-avoid w-full">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Daily Reaction Latency</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[550px] w-full">
             {latencyBreakdown}
           </div>
         </div>
 
+        {/* --- HARD SPACER --- */}
+        <div className="h-40 w-full shrink-0 block"></div>
+
         <div className="print:break-inside-avoid w-full">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Touch Errorless Rebound</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[550px] w-full">
             {reboundBreakdown}
           </div>
         </div>
 
+        {/* --- HARD SPACER --- */}
+        <div className="h-40 w-full shrink-0 block"></div>
+
         <div className="print:break-inside-avoid w-full">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Session Consistency</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[550px] w-full">
             {consistencyBreakdown}
           </div>
         </div>
+
+        {/* --- HARD SPACER --- */}
+        <div className="h-40 w-full shrink-0 block"></div>
 
         <div className="print:break-inside-avoid w-full mt-12">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Activity Heatmap</h3>
