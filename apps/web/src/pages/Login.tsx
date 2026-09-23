@@ -106,10 +106,19 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </button>
         </form>
 
-        <div className="mt-5 text-center">
-          <p className="text-xs text-slate-400">
-            Testing? Use user: <span className="font-mono font-medium text-slate-600">ram</span> / pass: <span className="font-mono font-medium text-slate-600 tracking-wide">12345678</span>
-          </p>
+        {/* Prominent Demo Info Banner */}
+        <div className="mt-6 flex items-start gap-3 rounded-xl bg-blue-50/80 p-4 border border-blue-100 shadow-sm transition-colors hover:bg-blue-50">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div className="text-sm text-blue-900">
+            <p className="font-semibold mb-1">Demo Access Available</p>
+            <p className="opacity-90">
+              To explore the platform, use username <span className="font-mono bg-white px-1.5 py-0.5 rounded-md text-blue-700 font-bold border border-blue-200 ml-1">ram</span> and password <span className="font-mono bg-white px-1.5 py-0.5 rounded-md text-blue-700 font-bold border border-blue-200 ml-1">12345678</span>
+            </p>
+          </div>
         </div>
 
         <p className="auth-switch">
