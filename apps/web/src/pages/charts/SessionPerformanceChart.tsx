@@ -74,11 +74,12 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
     <ChartShell>
       <BarChart data={data} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
-        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           labelStyle={sahayTooltipLabelStyle}
+          itemStyle={{ fontWeight: 700 }}
           formatter={(value: unknown, name: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             return [`${numeric}`, String(name)];
@@ -91,7 +92,7 @@ export function SessionPerformanceChart({ sessions }: SessionPerformanceChartPro
             return `${row.day} · ${row.durationMin.toFixed(1)} min · ${row.sortAccuracy}% sort · ${row.avgLatencyMs}ms`;
           }}
         />
-        <Legend />
+        <Legend formatter={(value) => <span className="font-bold text-xs">{value}</span>} />
         <Bar
           dataKey="attempts"
           name="Attempts"

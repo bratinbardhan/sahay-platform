@@ -54,38 +54,35 @@ export function DdaDifficultyCurve({
     <ChartShell>
       <LineChart data={data} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis dataKey="round" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <XAxis dataKey="round" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
         <YAxis
           yAxisId="difficulty"
           stroke={SAHAY_CARETAKER.axis}
-          tick={{ fontWeight: 'bold', fontSize: 11 }}
+          tick={{ fontWeight: 700, fontSize: 11 }}
           domain={[0, 8]}
-          label={{ value: 'Difficulty', angle: -90, position: 'insideLeft', fontSize: 10, fontWeight: 'bold' }}
+          label={{ value: 'Difficulty', angle: -90, position: 'insideLeft', fontSize: 10, fontWeight: 700 }}
         />
         <YAxis
           yAxisId="latency"
           orientation="right"
           stroke={SAHAY_CARETAKER.axis}
-          tick={{ fontWeight: 'bold', fontSize: 11 }}
+          tick={{ fontWeight: 700, fontSize: 11 }}
           domain={[300, 520]}
-          label={{ value: 'ms', angle: 90, position: 'insideRight', fontSize: 10, fontWeight: 'bold' }}
+          label={{ value: 'ms', angle: 90, position: 'insideRight', fontSize: 10, fontWeight: 700 }}
         />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           labelStyle={sahayTooltipLabelStyle}
+          itemStyle={{ fontWeight: 700 }}
           formatter={(value: unknown, name: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             const key = String(name);
-            if (key === 'Reaction time' || key === 'latency') {
-              return [`${Math.round(numeric)} ms`, 'Reaction time'];
-            }
-            if (key === 'Difficulty' || key === 'difficulty') {
-              return [numeric.toFixed(2), 'Difficulty'];
-            }
+            if (key === 'Reaction time' || key === 'latency') return [`${Math.round(numeric)} ms`, 'Reaction time'];
+            if (key === 'Difficulty' || key === 'difficulty') return [numeric.toFixed(2), 'Difficulty'];
             return [`${numeric}`, 'Recommended'];
           }}
         />
-        <Legend />
+        <Legend formatter={(value) => <span className="font-bold text-xs">{value}</span>} />
         <Line
           yAxisId="difficulty"
           type="monotone"

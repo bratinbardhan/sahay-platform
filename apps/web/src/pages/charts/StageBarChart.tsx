@@ -44,10 +44,12 @@ export function StageBarChart({ distribution, colors }: StageBarChartProps) {
     <ChartShell>
       <BarChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-        <XAxis dataKey="stage" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
-        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <XAxis dataKey="stage" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+        <YAxis allowDecimals={false} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
+          labelStyle={{ fontWeight: 700, color: SAHAY_CARETAKER.ink, marginBottom: 4 }}
+          itemStyle={{ fontWeight: 700 }}
           formatter={(value: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             return [`${numeric} patients`, 'Count'];

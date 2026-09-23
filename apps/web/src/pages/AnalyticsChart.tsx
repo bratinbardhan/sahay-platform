@@ -137,26 +137,26 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">360 ms</div><div className="text-xs font-semibold text-teal-800/80">Morning</div></div>
-          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">418 ms</div><div className="text-xs font-semibold text-teal-800/80">Afternoon</div></div>
-          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-teal-950">486 ms</div><div className="text-xs font-semibold text-teal-800/80">Evening</div></div>
-          <div className="bg-teal-50/80 rounded-xl p-4 border border-teal-100 shadow-sm"><div className="text-xl font-extrabold text-red-600">520 ms+</div><div className="text-xs font-semibold text-teal-800/80">Watch band</div></div>
+          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">360 ms</div><div className="text-xs font-semibold text-sky-800">Morning</div></div>
+          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">418 ms</div><div className="text-xs font-semibold text-sky-800">Afternoon</div></div>
+          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">486 ms</div><div className="text-xs font-semibold text-sky-800">Evening</div></div>
+          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-rose-600">520 ms+</div><div className="text-xs font-semibold text-sky-800">Watch band</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="latGradientSoft" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0D9488" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#0D9488" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="#bae6fd" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#f0f9ff" stopOpacity={0.2} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-              <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+              <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
               <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', position: 'insideTopRight', fill: '#059669', fontSize: 12, fontWeight: 'bold' }} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-              <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0D9488" fill="url(#latGradientSoft)" strokeWidth={2.5} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
+              <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0284c7" fill="url(#latGradientSoft)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -166,25 +166,25 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">82%</div><div className="text-xs font-semibold text-emerald-800/80">Errorless attempts</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">14%</div><div className="text-xs font-semibold text-emerald-800/80">Guided recovery</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-950">4%</div><div className="text-xs font-semibold text-emerald-800/80">Repeat errors</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100 shadow-sm"><div className="text-xl font-extrabold text-emerald-600">Improving</div><div className="text-xs font-semibold text-emerald-800/80">Trend</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">82%</div><div className="text-xs font-semibold text-emerald-800">Errorless attempts</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">14%</div><div className="text-xs font-semibold text-emerald-800">Guided recovery</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">4%</div><div className="text-xs font-semibold text-emerald-800">Repeat errors</div></div>
+          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-700">Improving</div><div className="text-xs font-semibold text-emerald-800">Trend</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="reboundGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10B981" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#10B981" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="#a7f3d0" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#ecfdf5" stopOpacity={0.2} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-              <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
-              <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10B981" fill="url(#reboundGradient)" strokeWidth={2.5} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+              <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
+              <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10b981" fill="url(#reboundGradient)" strokeWidth={2.5} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -194,10 +194,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     breakdownContent = (
       <div className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">12/14</div><div className="text-xs font-semibold text-indigo-900/80">Active days</div></div>
-          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">2.4/day</div><div className="text-xs font-semibold text-indigo-900/80">Avg sessions</div></div>
-          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-950">91%</div><div className="text-xs font-semibold text-indigo-900/80">Completion</div></div>
-          <div className="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 shadow-sm"><div className="text-xl font-extrabold text-indigo-600">88%</div><div className="text-xs font-semibold text-indigo-900/80">Stability</div></div>
+          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">12/14</div><div className="text-xs font-semibold text-indigo-800">Active days</div></div>
+          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">2.4/day</div><div className="text-xs font-semibold text-indigo-800">Avg sessions</div></div>
+          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">91%</div><div className="text-xs font-semibold text-indigo-800">Completion</div></div>
+          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">88%</div><div className="text-xs font-semibold text-indigo-800">Stability</div></div>
         </div>
         <div className="h-[260px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -209,9 +209,9 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} fontSize={10} />
-              <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} fontSize={11} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} />
+              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+              <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
               <Bar dataKey="sessions" name="Therapy Sessions" fill="url(#indigoGradient)" stroke="#6366f1" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -220,18 +220,24 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     );
   } else if (breakdown === 'heatmap') {
     breakdownContent = (
-      <div className="w-full mt-6">
-        <div className="h-[260px] w-full flex flex-col items-center justify-center bg-slate-50 rounded-xl border border-slate-100">
-          <div className="flex flex-col gap-1 opacity-90">
+      <div className="w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">10:00 AM</div><div className="text-xs font-semibold text-amber-950">Peak Focus</div></div>
+          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">6.4 hrs</div><div className="text-xs font-semibold text-amber-950">Active Hours</div></div>
+          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">4 intervals</div><div className="text-xs font-semibold text-amber-950">Rest Gaps</div></div>
+          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">94%</div><div className="text-xs font-semibold text-amber-950">Consistency</div></div>
+        </div>
+        <div className="w-full flex flex-col items-center justify-center bg-slate-50/80 rounded-xl border border-slate-200 py-6">
+          <div className="flex flex-col gap-1.5 opacity-90 max-w-full">
             {Array.from({ length: 7 }).map((_, r) => (
-              <div key={r} className="flex gap-1">
+              <div key={r} className="flex gap-1.5 justify-center">
                 {Array.from({ length: 18 }).map((__, c) => (
-                  <div key={c} className={`w-3 h-3 rounded-sm ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
+                  <div key={c} className={`w-6 h-6 rounded-sm ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
                 ))}
               </div>
             ))}
           </div>
-          <span className="text-xs font-semibold text-slate-500 mt-4 block">Circadian 7-day x 18-hour activity matrix</span>
+          <span className="text-xs font-bold text-slate-500 mt-4 block">Circadian 7-day x 18-hour activity matrix</span>
         </div>
       </div>
     );
@@ -268,10 +274,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </p>
 
       {cognitiveSummary ? (
-        <div className="mb-8 bg-gradient-to-r from-teal-50/60 via-slate-50 to-blue-50/50 border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+        <div className="mb-8 bg-gradient-to-r from-teal-100/60 via-slate-100/90 to-teal-100/50 border border-teal-200/60 rounded-2xl p-6 shadow-sm">
           <h3 className="text-lg font-extrabold text-[#1E293B] mb-6">7-Day Cognitive Summary</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
+            <div className="bg-white border border-teal-100/80 rounded-xl p-4 shadow-xs">
               <div className="text-2xl font-bold text-sahay-ink">
                 {TREND_LABELS[cognitiveSummary.trend_direction] ?? cognitiveSummary.trend_direction}
               </div>
@@ -280,19 +286,19 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                 {cognitiveSummary.accuracy_delta_pct}% accuracy vs prior week
               </div>
             </div>
-            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
+            <div className="bg-white border border-teal-100/80 rounded-xl p-4 shadow-xs">
               <div className="text-2xl font-bold text-sahay-ink">
                 {cognitiveSummary.stability_score.toFixed(0)}%
               </div>
               <div className="text-sm text-sahay-ink/70">Stability Score</div>
             </div>
-            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
+            <div className="bg-white border border-teal-100/80 rounded-xl p-4 shadow-xs">
               <div className="text-2xl font-bold text-sahay-accent">
                 {cognitiveSummary.recommended_difficulty}
               </div>
               <div className="text-sm text-sahay-ink/70">Recommended Difficulty</div>
             </div>
-            <div className="bg-white/80 rounded-xl p-4 border border-slate-100 shadow-sm">
+            <div className="bg-white border border-teal-100/80 rounded-xl p-4 shadow-xs">
               <div className="text-2xl font-bold text-sahay-ink">
                 {Math.round(cognitiveSummary.last_7_days.avg_latency_ms)}ms
               </div>

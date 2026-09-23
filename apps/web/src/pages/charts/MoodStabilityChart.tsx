@@ -34,17 +34,18 @@ export function MoodStabilityChart({ data }: MoodStabilityChartProps) {
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
-        <YAxis domain={[30, 100]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 'bold', fontSize: 11 }} />
+        <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+        <YAxis domain={[30, 100]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
         <Tooltip
           contentStyle={sahayTooltipStyle}
           labelStyle={sahayTooltipLabelStyle}
+          itemStyle={{ fontWeight: 700 }}
           formatter={(value: unknown, name: unknown) => {
             const numeric = typeof value === 'number' ? value : Number(value ?? 0);
             return [`${Math.round(numeric)}`, String(name)];
           }}
         />
-        <Legend />
+        <Legend formatter={(value) => <span className="font-bold text-xs">{value}</span>} />
         <Area
           type="monotone"
           dataKey="morning"

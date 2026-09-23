@@ -65,7 +65,7 @@ export function CognitiveTrendChart({
             <XAxis
               dataKey="date"
               stroke={SAHAY_CARETAKER.axis}
-              tick={{ fontWeight: 'bold', fontSize: 11 }}
+              tick={{ fontWeight: 700, fontSize: 11 }}
               tickFormatter={(str) => {
                 const d = new Date(str);
                 return isNaN(d.getTime()) ? str : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -75,21 +75,22 @@ export function CognitiveTrendChart({
               yAxisId="left"
               orientation="left"
               stroke={SAHAY_CARETAKER.axis}
-              tick={{ fontWeight: 'bold', fontSize: 11 }}
+              tick={{ fontWeight: 700, fontSize: 11 }}
               domain={[0, 100]}
-              label={{ value: 'Cognitive Index', angle: -90, position: 'insideLeft', fontSize: 10, fontWeight: 'bold' }}
+              label={{ value: 'Cognitive Index', angle: -90, position: 'insideLeft', fontSize: 10, fontWeight: 700 }}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
               stroke={latencyColor}
-              tick={{ fontWeight: 'bold', fontSize: 11 }}
+              tick={{ fontWeight: 700, fontSize: 11 }}
               domain={[200, 800]}
-              label={{ value: 'Latency (ms)', angle: 90, position: 'insideRight', fontSize: 10, fontWeight: 'bold' }}
+              label={{ value: 'Latency (ms)', angle: 90, position: 'insideRight', fontSize: 10, fontWeight: 700 }}
             />
             <Tooltip
               contentStyle={sahayTooltipStyle}
               labelStyle={sahayTooltipLabelStyle}
+              itemStyle={{ fontWeight: 700 }}
               labelFormatter={(label) => { const d = new Date(label as string); return isNaN(d.getTime()) ? label : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }}
               formatter={(value: unknown, name: unknown) => {
                 const numeric = typeof value === 'number' ? value : Number(value ?? 0);
@@ -109,20 +110,20 @@ export function CognitiveTrendChart({
                 return [`${numeric}`, key];
               }}
             />
-            <Legend />
+            <Legend formatter={(value) => <span className="font-bold text-xs">{value}</span>} />
             <ReferenceLine
               y={WATCH_THRESHOLD}
               yAxisId="left"
               stroke={watchColor}
               strokeDasharray="6 4"
-              label={{ value: 'Watch', position: 'insideTopRight', fill: watchColor, fontSize: 12, fontWeight: 'bold' }}
+              label={{ value: 'Watch', position: 'insideTopRight', fill: watchColor, fontSize: 12, fontWeight: 700 }}
             />
             <ReferenceLine
               y={FATIGUE_THRESHOLD}
               yAxisId="left"
               stroke={fatigueLineColor}
               strokeDasharray="4 4"
-              label={{ value: 'Fatigue', position: 'insideTopRight', fill: fatigueLineColor, fontSize: 12, fontWeight: 'bold' }}
+              label={{ value: 'Fatigue', position: 'insideTopRight', fill: fatigueLineColor, fontSize: 12, fontWeight: 700 }}
             />
             <Area
               yAxisId="left"
