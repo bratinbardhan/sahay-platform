@@ -227,17 +227,31 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">4 intervals</div><div className="text-xs font-semibold text-amber-950">Rest Gaps</div></div>
           <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">94%</div><div className="text-xs font-semibold text-amber-950">Consistency</div></div>
         </div>
-        <div className="w-full flex flex-col items-center justify-center bg-slate-50/80 rounded-xl border border-slate-200 py-6">
-          <div className="flex flex-col gap-1.5 opacity-90 max-w-full">
-            {Array.from({ length: 7 }).map((_, r) => (
-              <div key={r} className="flex gap-1.5 justify-center">
-                {Array.from({ length: 18 }).map((__, c) => (
-                  <div key={c} className={`w-6 h-6 rounded-sm ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
-                ))}
+        <div className="w-full flex flex-col items-center justify-center bg-slate-50/80 rounded-xl border border-slate-200 py-6 overflow-x-auto">
+          <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 opacity-90 min-w-max items-center">
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+              <div key={day} className="contents">
+                <div className="text-right text-xs font-semibold text-slate-500">{day}</div>
+                <div className="flex gap-1.5">
+                  {Array.from({ length: 18 }).map((__, c) => (
+                    <div key={c} className={`w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
+                  ))}
+                </div>
               </div>
             ))}
+            <div className="contents">
+              <div></div>
+              <div className="flex justify-between text-xs font-semibold text-slate-500 pt-1">
+                <span>6 AM</span>
+                <span>9 AM</span>
+                <span>12 PM</span>
+                <span>3 PM</span>
+                <span>6 PM</span>
+                <span>9 PM</span>
+              </div>
+            </div>
           </div>
-          <span className="text-xs font-bold text-slate-500 mt-4 block">Circadian 7-day x 18-hour activity matrix</span>
+          <span className="text-xs font-bold text-slate-500 mt-6 block">Circadian 7-day x 18-hour activity matrix</span>
         </div>
       </div>
     );
@@ -392,7 +406,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                     <td className="p-2 font-medium text-sahay-ink">
                       {(page - 1) * SESSION_PAGE_SIZE + index + 1}
                     </td>
-                    <td className="p-2 text-sahay-ink">{log.game_module_id.replace(/_/g, ' ')}</td>
+                    <td className="p-2 text-sahay-ink capitalize">{log.game_module_id.replace(/_/g, ' ')}</td>
                     <td className="p-2 text-sahay-ink">{stageLabel}</td>
                     <td className="text-right p-2 text-sahay-accent font-medium">
                       {Math.round(log.avg_latency_ms)}ms
