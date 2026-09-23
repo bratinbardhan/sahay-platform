@@ -108,143 +108,149 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
     day,
     sessions: Math.floor(1 + Math.random() * 4),
   }));
-  let breakdownContent = null;
-  if (breakdown === 'latency') {
-    breakdownContent = (
-      <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">360 ms</div><div className="text-xs font-semibold text-sky-800">Morning</div></div>
-          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">418 ms</div><div className="text-xs font-semibold text-sky-800">Afternoon</div></div>
-          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">486 ms</div><div className="text-xs font-semibold text-sky-800">Evening</div></div>
-          <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-rose-600">520 ms+</div><div className="text-xs font-semibold text-sky-800">Watch band</div></div>
-        </div>
-        <div className="h-[260px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="latGradientSoft" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#bae6fd" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#f0f9ff" stopOpacity={0.2} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', position: 'insideTopRight', fill: '#059669', fontSize: 12, fontWeight: 'bold' }} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
-              <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0284c7" fill="url(#latGradientSoft)" strokeWidth={2.5} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+  const latencyBreakdown = (
+    <div className="w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">360 ms</div><div className="text-xs font-semibold text-sky-800">Morning</div></div>
+        <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">418 ms</div><div className="text-xs font-semibold text-sky-800">Afternoon</div></div>
+        <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-sky-950">486 ms</div><div className="text-xs font-semibold text-sky-800">Evening</div></div>
+        <div className="bg-sky-50/80 rounded-xl p-4 border border-sky-200/70 shadow-sm"><div className="text-xl font-bold text-rose-600">520 ms+</div><div className="text-xs font-semibold text-sky-800">Watch band</div></div>
       </div>
-    );
-  } else if (breakdown === 'rebound') {
-    breakdownContent = (
-      <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">82%</div><div className="text-xs font-semibold text-emerald-800">Errorless attempts</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">14%</div><div className="text-xs font-semibold text-emerald-800">Guided recovery</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">4%</div><div className="text-xs font-semibold text-emerald-800">Repeat errors</div></div>
-          <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-700">Improving</div><div className="text-xs font-semibold text-emerald-800">Trend</div></div>
-        </div>
-        <div className="h-[260px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="reboundGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#a7f3d0" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#ecfdf5" stopOpacity={0.2} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
-              <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10b981" fill="url(#reboundGradient)" strokeWidth={2.5} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="h-[260px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={latencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="latGradientSoft" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#bae6fd" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#f0f9ff" stopOpacity={0.2} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+            <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <YAxis domain={[380, 460]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <ReferenceLine y={400} stroke={SAHAY_CARETAKER.ok} strokeWidth={2} label={{ value: 'Target 400ms', position: 'insideTopRight', fill: '#059669', fontSize: 12, fontWeight: 'bold' }} />
+            <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
+            <Area type="monotone" dataKey="latency" name="Reaction latency (ms)" stroke="#0284c7" fill="url(#latGradientSoft)" strokeWidth={2.5} />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
-    );
-  } else if (breakdown === 'consistency') {
-    breakdownContent = (
-      <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">12/14</div><div className="text-xs font-semibold text-indigo-800">Active days</div></div>
-          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">2.4/day</div><div className="text-xs font-semibold text-indigo-800">Avg sessions</div></div>
-          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">91%</div><div className="text-xs font-semibold text-indigo-800">Completion</div></div>
-          <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">88%</div><div className="text-xs font-semibold text-indigo-800">Stability</div></div>
-        </div>
-        <div className="h-[260px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="indigoGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#818cf8" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.7} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
-              <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
-              <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
-              <Bar dataKey="sessions" name="Therapy Sessions" fill="url(#indigoGradient)" stroke="#6366f1" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+    </div>
+  );
+
+  const reboundBreakdown = (
+    <div className="w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">82%</div><div className="text-xs font-semibold text-emerald-800">Errorless attempts</div></div>
+        <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">14%</div><div className="text-xs font-semibold text-emerald-800">Guided recovery</div></div>
+        <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-950">4%</div><div className="text-xs font-semibold text-emerald-800">Repeat errors</div></div>
+        <div className="bg-emerald-50/80 rounded-xl p-4 border border-emerald-200/70 shadow-sm"><div className="text-xl font-bold text-emerald-700">Improving</div><div className="text-xs font-semibold text-emerald-800">Trend</div></div>
       </div>
-    );
-  } else if (breakdown === 'heatmap') {
-    breakdownContent = (
-      <div className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">10:00 AM</div><div className="text-xs font-semibold text-amber-950">Peak Focus</div></div>
-          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">6.4 hrs</div><div className="text-xs font-semibold text-amber-950">Active Hours</div></div>
-          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">4 intervals</div><div className="text-xs font-semibold text-amber-950">Rest Gaps</div></div>
-          <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">94%</div><div className="text-xs font-semibold text-amber-950">Consistency</div></div>
-        </div>
-        <div className="w-full flex flex-col items-center justify-center bg-slate-50/80 rounded-xl border border-slate-200 py-6 overflow-x-auto">
-          <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 opacity-90 min-w-max items-center">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-              <div key={day} className="contents">
-                <div className="text-right text-xs font-bold text-slate-500 tracking-wide uppercase">{day}</div>
-                <div className="flex gap-1.5">
-                  {Array.from({ length: 18 }).map((__, c) => {
-                    const hour = 6 + c;
-                    const time = hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`;
-                    const rand = Math.random();
-                    const activityLevel = rand > 0.85 ? 'Peak Focus' : rand > 0.6 ? 'Moderate' : rand > 0.3 ? 'Baseline' : 'Inactive';
-                    const bg = rand > 0.85 ? 'bg-amber-400' : rand > 0.6 ? 'bg-teal-600' : rand > 0.3 ? 'bg-teal-400' : 'bg-slate-200';
-                    return (
-                      <div key={c} title={`${day} ${time} - ${activityLevel}`} className={`transition-all duration-200 ease-in-out hover:scale-125 hover:shadow-md hover:z-10 relative cursor-pointer w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${bg}`} />
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-            <div className="contents">
-              <div></div>
-              <div className="flex justify-between text-xs font-bold text-slate-500 tracking-wide uppercase pt-1">
-                <span>6 AM</span>
-                <span>9 AM</span>
-                <span>12 PM</span>
-                <span>3 PM</span>
-                <span>6 PM</span>
-                <span>9 PM</span>
+      <div className="h-[260px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={reboundData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="reboundGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#a7f3d0" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#ecfdf5" stopOpacity={0.2} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+            <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <YAxis domain={[75, 100]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
+            <Area type="monotone" dataKey="success" name="Clean Touch (%)" stroke="#10b981" fill="url(#reboundGradient)" strokeWidth={2.5} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+
+  const consistencyBreakdown = (
+    <div className="w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">12/14</div><div className="text-xs font-semibold text-indigo-800">Active days</div></div>
+        <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">2.4/day</div><div className="text-xs font-semibold text-indigo-800">Avg sessions</div></div>
+        <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">91%</div><div className="text-xs font-semibold text-indigo-800">Completion</div></div>
+        <div className="bg-indigo-50/80 rounded-xl p-4 border border-indigo-200/70 shadow-sm"><div className="text-xl font-bold text-indigo-950">88%</div><div className="text-xs font-semibold text-indigo-800">Stability</div></div>
+      </div>
+      <div className="h-[260px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={consistencyData} margin={{ top: 12, right: 18, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="indigoGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#818cf8" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.7} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} vertical={false} />
+            <XAxis dataKey="day" stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <YAxis domain={[0, 5]} stroke={SAHAY_CARETAKER.axis} tick={{ fontWeight: 700, fontSize: 11 }} />
+            <Tooltip contentStyle={sahayTooltipStyle} labelStyle={sahayTooltipLabelStyle} itemStyle={{ fontWeight: 700 }} />
+            <Bar dataKey="sessions" name="Therapy Sessions" fill="url(#indigoGradient)" stroke="#6366f1" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+
+  const heatmapBreakdown = (
+    <div className="w-full">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">10:00 AM</div><div className="text-xs font-semibold text-amber-950">Peak Focus</div></div>
+        <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">6.4 hrs</div><div className="text-xs font-semibold text-amber-950">Active Hours</div></div>
+        <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">4 intervals</div><div className="text-xs font-semibold text-amber-950">Rest Gaps</div></div>
+        <div className="bg-amber-50/70 rounded-xl p-4 border border-amber-200/70 shadow-sm"><div className="text-xl font-bold text-amber-950">94%</div><div className="text-xs font-semibold text-amber-950">Consistency</div></div>
+      </div>
+      <div className="w-full flex flex-col items-center justify-center bg-slate-50/80 rounded-xl border border-slate-200 py-6 overflow-x-auto">
+        <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 opacity-90 min-w-max items-center">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+            <div key={day} className="contents">
+              <div className="text-right text-xs font-bold text-slate-500 tracking-wide uppercase">{day}</div>
+              <div className="flex gap-1.5">
+                {Array.from({ length: 18 }).map((__, c) => {
+                  const hour = 6 + c;
+                  const time = hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`;
+                  const rand = Math.random();
+                  const activityLevel = rand > 0.85 ? 'Peak Focus' : rand > 0.6 ? 'Moderate' : rand > 0.3 ? 'Baseline' : 'Inactive';
+                  const bg = rand > 0.85 ? 'bg-amber-400' : rand > 0.6 ? 'bg-teal-600' : rand > 0.3 ? 'bg-teal-400' : 'bg-slate-200';
+                  return (
+                    <div key={c} title={`${day} ${time} - ${activityLevel}`} className={`transition-all duration-200 ease-in-out hover:scale-125 hover:shadow-md hover:z-10 relative cursor-pointer w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${bg}`} />
+                  );
+                })}
               </div>
             </div>
+          ))}
+          <div className="contents">
+            <div></div>
+            <div className="flex justify-between text-xs font-bold text-slate-500 tracking-wide uppercase pt-1">
+              <span>6 AM</span>
+              <span>9 AM</span>
+              <span>12 PM</span>
+              <span>3 PM</span>
+              <span>6 PM</span>
+              <span>9 PM</span>
+            </div>
           </div>
-          <div className="flex items-center justify-center gap-6 mt-4 mb-2">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-slate-200"></div><span className="text-xs font-bold text-slate-600">Inactive</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-400"></div><span className="text-xs font-bold text-slate-600">Baseline</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-600"></div><span className="text-xs font-bold text-slate-600">Moderate</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-amber-400"></div><span className="text-xs font-bold text-slate-600">Peak Focus</span></div>
-          </div>
-          <span className="text-xs font-bold text-slate-500 mt-6 block">Circadian 7-day x 18-hour activity matrix</span>
         </div>
+        <div className="flex items-center justify-center gap-6 mt-4 mb-2">
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-slate-200"></div><span className="text-xs font-bold text-slate-600">Inactive</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-400"></div><span className="text-xs font-bold text-slate-600">Baseline</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-600"></div><span className="text-xs font-bold text-slate-600">Moderate</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-amber-400"></div><span className="text-xs font-bold text-slate-600">Peak Focus</span></div>
+        </div>
+        <span className="text-xs font-bold text-slate-500 mt-6 block">Circadian 7-day x 18-hour activity matrix</span>
       </div>
-    );
-  }
+    </div>
+  );
+
+  let breakdownContent = null;
+  if (breakdown === 'latency') breakdownContent = latencyBreakdown;
+  else if (breakdown === 'rebound') breakdownContent = reboundBreakdown;
+  else if (breakdown === 'consistency') breakdownContent = consistencyBreakdown;
+  else if (breakdown === 'heatmap') breakdownContent = heatmapBreakdown;
+
+  const cognitiveLoadChart = <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric="load" />;
+  const reactionLatencyChart = <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric="latency" />;
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
@@ -325,7 +331,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
       <Card
         title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
-        className="mb-8 bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full"
+        className="mb-8 bg-white border border-slate-200 shadow-none print:hidden"
       >
         <div className="flex justify-end"><button type="button" onClick={() => setExpanded('trend')} aria-label="Maximize cognitive trend chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
         <div className="flex gap-2 mb-2">
@@ -355,16 +361,16 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-8">
         <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full">
-          <div className="flex justify-end"><button type="button" onClick={() => setExpanded('dda')} aria-label="Maximize DDA chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
+          <div className="flex justify-end print:hidden"><button type="button" onClick={() => setExpanded('dda')} aria-label="Maximize DDA chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {ddaChart}
         </Card>
         <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full">
-          <div className="flex justify-end"><button type="button" onClick={() => setExpanded('mood')} aria-label="Maximize mood chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
+          <div className="flex justify-end print:hidden"><button type="button" onClick={() => setExpanded('mood')} aria-label="Maximize mood chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {moodChart}
         </Card>
       </div>
 
-      <Card title="Clinical Breakdown Views" className="mb-8 bg-sahay-surface shadow-caretaker-card print:break-inside-avoid print:w-full">
+      <Card title="Clinical Breakdown Views" className="mb-8 bg-sahay-surface shadow-caretaker-card print:hidden">
         <div className="flex flex-wrap gap-2 mb-5" role="tablist" aria-label="Analytics breakdowns">
           {[
             ['latency', 'Daily Reaction Latency'],
@@ -380,6 +386,37 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         </div>
         <div className="w-full">{breakdownContent}</div>
       </Card>
+
+      {/* PRINT-ONLY SEQUENTIAL CHARTS VIEW */}
+      <div className="hidden print:flex print:flex-col print:gap-10 print:w-full mb-8">
+        {/* 1. Cognitive & Latency Group */}
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Cognitive Load Index</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{cognitiveLoadChart}</div>
+        </div>
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Reaction Latency Trend</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{reactionLatencyChart}</div>
+        </div>
+
+        {/* 2. Clinical Breakdown Views */}
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Daily Reaction Latency</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{latencyBreakdown}</div>
+        </div>
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Touch Errorless Rebound</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{reboundBreakdown}</div>
+        </div>
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Session Consistency</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{consistencyBreakdown}</div>
+        </div>
+        <div className="print:break-inside-avoid">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Activity Heatmap</h3>
+          <div className="bg-white border border-slate-200 rounded-xl p-4">{heatmapBreakdown}</div>
+        </div>
+      </div>
 
       <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none">
         <SessionPerformanceChart sessions={sessions} />
