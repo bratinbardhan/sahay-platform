@@ -1,91 +1,145 @@
 import { useMemo } from 'react';
-import { CartesianGrid, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis, Cell, ResponsiveContainer } from 'recharts';
-import type { HeatmapCell } from '@/lib/demoSeed';
+import { scaleLinear } from 'd3';
+import {
+  CartesianGrid,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+  ZAxis,
+} from 'recharts';
+import type { ReactElement } from 'react';
 
+import type { HeatmapCell } from '@/lib/demoSeed';
 import { SAHAY_CARETAKER, sahayTooltipLabelStyle, sahayTooltipStyle } from '@/lib/palette';
 import { CHART_ANIMATION_MS, ChartShell } from './ChartShell';
 
 interface ActivityHeatmapProps {
-    cells: HeatmapCell[];
+  cells: HeatmapCell[];
 }
 
-const X_TICKS = [0, 3, 6, 9, 12, 15, 18, 21];
-const X_LABELS = ['12 AM', '3 AM', '6 AM', '9 AM', '12 PM', '3 PM', '6 PM', '9 PM'];
+const HOURS = Array.from({ length: 24 }, (_, hour) => hour);
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const latencyScale = scaleLinear<string>()
+  .domain([360, 420, 490])
+  .range([SAHAY_CARETAKER.viz[0], SAHAY_CARETAKER.viz[2], SAHAY_CARETAKER.viz[5]])
+  .clamp(true);
+
+function cellFill(cell: HeatmapCell): string {
+  if (cell.density < 0.08) {
+    return SAHAY_CARETAKER.surfaceSunken;
+  }
+  return latencyScale(cell.latencyMs);
+}
+
+// Typing props as unknown matches Recharts' ScatterCustomizedShape '(props: unknown) => Element'
+function HeatShape(props: unknown): ReactElement {
+  if (typeof props !== 'object' || props === null) {
+    return <g />;
+  }
+
+  const record = props as Record<string, unknown>;
+  const cx = typeof record.cx === 'number' ? record.cx : undefined;
+  const cy = typeof record.cy === 'number' ? record.cy : undefined;
+  const payload = record.payload as HeatmapCell | undefined;
+
+  if (cx === undefined || cy === undefined || !payload) {
+    return <g />;
+  }
+
+  const size = 16;
+  return (
+    <rect
+      x={cx - size / 2}
+      y={cy - size / 2}
+      width={size}
+      height={size}
+      rx={3}
+      fill={cellFill(payload)}
+      opacity={0.32 + payload.density * 0.68}
+    />
+  );
+}
 
 export function ActivityHeatmap({ cells }: ActivityHeatmapProps) {
-    const data = useMemo(() => {
-        return cells.map((c) => ({
-            ...c,
-            y: 6 - c.dayIndex,
-        }));
-    }, [cells]);
+  const data = useMemo(
+    () =>
+      cells.map((cell) => ({
+        ...cell,
+        hour: cell.hour,
+        dayIndex: cell.dayIndex,
+      })),
+    [cells]
+  );
 
-    if (data.length === 0) {
-        return (
-            <p className="text-sm text-sahay-ink/60 text-center py-8">
-                No interaction density recorded yet.
-            </p>
-        );
-    }
-
+  if (data.length === 0) {
     return (
-        <ChartShell>
-            <div className="h-80 w-full pl-2">
-                <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
-                        <XAxis
-                            type="number"
-                            dataKey="hour"
-                            name="Hour"
-                            domain={[0, 23]}
-                            ticks={X_TICKS}
-                            tickFormatter={(value) => X_LABELS[X_TICKS.indexOf(value)] ?? `${value}:00`}
-                            stroke={SAHAY_CARETAKER.axis}
-                            tick={{ fontWeight: 700, fontSize: 11 }}
-                        />
-                        <YAxis
-                            type="number"
-                            dataKey="y"
-                            name="Day"
-                            domain={[0, 6]}
-                            ticks={[6, 5, 4, 3, 2, 1, 0]}
-                            tickFormatter={(value) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][6 - value]}
-                            stroke={SAHAY_CARETAKER.axis}
-                            tick={{ fontWeight: 700, fontSize: 11 }}
-                            width={40}
-                        />
-                        <ZAxis type="number" dataKey="density" range={[40, 400]} />
-                        <Tooltip
-                            cursor={{ strokeDasharray: '3 3' }}
-                            contentStyle={sahayTooltipStyle}
-                            labelStyle={{ ...sahayTooltipLabelStyle, fontWeight: 700 }}
-                            itemStyle={{ fontWeight: 700, fontSize: '0.8125rem' }}
-                            formatter={(value: any, name: string, props: any) => {
-                                if (name === 'Hour' || name === 'Day' || name === 'density' || name === 'y') {
-                                    const cell = props.payload;
-                                    if (cell) {
-                                        return [`Density: ${Math.round(cell.density * 100)}% | Latency: ${cell.latencyMs}ms`, 'Activity'];
-                                    }
-                                    return [value, name];
-                                }
-                                return [value, name];
-                            }}
-                        />
-                        <Scatter name="Activity" data={data} animationDuration={CHART_ANIMATION_MS}>
-                            {data.map((entry, index) => {
-                                let fill = '#f8fafc';
-                                if (entry.density >= 0.7) fill = '#fbbf24';
-                                else if (entry.density >= 0.4) fill = '#14b8a6';
-                                else if (entry.density >= 0.08) fill = '#99f6e4';
-                                return <Cell key={`cell-${index}`} fill={fill} />;
-                            })}
-                        </Scatter>
-                    </ScatterChart>
-                </ResponsiveContainer>
-            </div>
-        </ChartShell>
+      <p className="text-sm text-sahay-ink/60 text-center py-8">
+        No interaction density recorded yet.
+      </p>
     );
+  }
+
+  return (
+    <ChartShell>
+      <ScatterChart margin={{ top: 12, right: 12, left: 8, bottom: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke={SAHAY_CARETAKER.grid} />
+        <XAxis
+          type="number"
+          dataKey="hour"
+          name="Hour"
+          domain={[-0.5, 23.5]}
+          ticks={HOURS}
+          stroke={SAHAY_CARETAKER.axis}
+          fontSize={10}
+        />
+        <YAxis
+          type="number"
+          dataKey="dayIndex"
+          name="Day"
+          domain={[-0.5, 6.5]}
+          ticks={[0, 1, 2, 3, 4, 5, 6]}
+          tickFormatter={(value: number) => DAYS[value] ?? String(value)}
+          reversed
+          stroke={SAHAY_CARETAKER.axis}
+          fontSize={11}
+          width={42}
+        />
+        <ZAxis type="number" dataKey="density" range={[40, 160]} />
+        <Tooltip
+          cursor={{ stroke: SAHAY_CARETAKER.ink }}
+          contentStyle={sahayTooltipStyle}
+          labelStyle={sahayTooltipLabelStyle}
+          content={({ active, payload }) => {
+            const firstItem = (Array.isArray(payload) && payload.length > 0) ? payload[0] : null;
+            if (!active || !firstItem) {
+              return null;
+            }
+            const cell = firstItem.payload as HeatmapCell;
+            return (
+              <div className="sahay-viz-tooltip text-sahay-ink">
+                <p className="font-bold">
+                  {cell.dayLabel} {String(cell.hour).padStart(2, '0')}:00
+                </p>
+                <p>
+                  Density {Math.round(cell.density * 100)}% · latency {cell.latencyMs} ms
+                </p>
+              </div>
+            );
+          }}
+        />
+        <Scatter
+          data={data}
+          shape={HeatShape}
+          isAnimationActive={false}
+          animationDuration={CHART_ANIMATION_MS}
+          animationEasing="ease-in-out"
+        />
+      </ScatterChart>
+    </ChartShell>
+  );
 }
 
 export default ActivityHeatmap;
