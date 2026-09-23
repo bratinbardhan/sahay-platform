@@ -426,15 +426,15 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           </div>
         </div>
 
-        <div className="print:break-inside-avoid w-full">
+        <div className="print:break-inside-avoid w-full mt-12">
           <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Activity Heatmap</h3>
-          <div className="h-[400px] w-full">
+          <div className="h-[700px] w-full">
             {heatmapBreakdown}
           </div>
         </div>
       </div>
 
-      <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none">
+      <Card title="Session Performance — Daily Attempts vs Completed" className="mb-8 bg-white border border-slate-200 shadow-none print:mt-16">
         <SessionPerformanceChart sessions={sessions} />
       </Card>
 
