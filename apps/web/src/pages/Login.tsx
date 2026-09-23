@@ -126,21 +126,10 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </div>
         </div>
 
-        {/* Demo Access Note */}
-        <div className="mt-6 bg-teal-50/50 backdrop-blur-sm border border-teal-100/50 rounded-xl p-4 flex items-start gap-3 transition-colors hover:bg-teal-50/80">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 16v-4"></path>
-            <path d="M12 8h.01"></path>
-          </svg>
-          <div className="text-sm text-teal-900/80 font-medium">
-            <p className="mb-1 text-teal-900 font-semibold">Demo Access</p>
-            <p>For testing purposes, please use the provided demo credentials to log in.</p>
-            <div className="mt-2 flex items-center gap-2 font-mono text-xs bg-white/60 py-1.5 px-2 rounded-md border border-teal-100">
-              <span className="text-slate-500 font-sans">Pass:</span>
-              <span className="text-teal-700 font-bold tracking-wider">12345678</span>
-            </div>
-          </div>
+        <div className="mt-4 text-center">
+          <p className="text-xs text-slate-400">
+            Testing? Use user: <span className="font-mono font-medium text-slate-600">ram</span> / pass: <span className="font-mono font-medium text-slate-600 tracking-wide">12345678</span>
+          </p>
         </div>
 
         <p className="auth-switch">
