@@ -503,3 +503,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ─── Phase 2 admin + caretaker dashboards ─────────────────────────── */
+ 
+@media print { 
+  * { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+  } 
+  body { background-color: white !important; } 
+} 

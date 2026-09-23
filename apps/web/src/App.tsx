@@ -170,7 +170,7 @@ function InnerApp() {
         </aside>
       ) : null}
 
-      <div className="flex-1 overflow-y-auto relative">
+      <main className="flex-1 overflow-y-auto print:overflow-visible relative print:w-full print:ml-0 print:p-0">
         <Routes>
           <Route path="/login" element={session ? <Navigate to="/" /> : <Login onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
           <Route path="/signup" element={session ? <Navigate to="/" /> : <Signup onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
@@ -189,12 +189,13 @@ function InnerApp() {
             <Route path="*" element={<Navigate to="/login" />} />
           )}
         </Routes>
-      </div>
+      </main>
 
       {isLogoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
-            <h3 className="text-slate-800 font-semibold text-lg text-center mb-6">Are you sure you want to logout?</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl border border-slate-100 text-center">
+            <h3 className="text-slate-800 font-bold text-lg mb-2">Confirm Logout</h3>
+            <p className="text-slate-500 text-sm mb-6">Are you sure you want to logout?</p>
             <div className="flex justify-between gap-4">
               <button
                 type="button"
@@ -214,10 +215,10 @@ function InnerApp() {
       )}
 
       {showCareCircleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl flex flex-col items-center">
-            <h3 className="font-bold text-slate-800 text-center text-lg mb-2">Feature coming soon</h3>
-            <p className="text-slate-500 text-sm text-center mb-6">The Care Circle module is currently under development.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl border border-slate-100 text-center flex flex-col items-center">
+            <h3 className="font-bold text-slate-800 text-lg mb-2">Feature Coming Soon</h3>
+            <p className="text-slate-500 text-sm mb-6">The Care Circle module is currently under active development.</p>
             <button
               type="button"
               onClick={() => setShowCareCircleModal(false)}

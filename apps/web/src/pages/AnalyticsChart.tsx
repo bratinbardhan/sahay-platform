@@ -248,6 +248,18 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
   return (
     <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
+      {/* Print-Only Custom Header */}
+      <div className="hidden print:flex print:flex-col print:items-center print:mb-8 border-b border-slate-200 print:pb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <img src="/sahay-logo.png" alt="Sahay Logo" className="w-12 h-12 object-contain" />
+          <h1 className="text-3xl font-extrabold text-teal-700 tracking-tight">Sahay</h1>
+        </div>
+        <h2 className="text-xl font-bold text-slate-800 mb-4 uppercase tracking-wide">Detailed Analytics of the Patient</h2>
+        <div className="flex gap-12 text-sm font-semibold text-slate-600">
+          <p>Patient: <span className="text-slate-800">Aarav (Age: 72)</span></p>
+          <p>Caretaker: <span className="text-slate-800">Ram</span></p>
+        </div>
+      </div>
       <div className="flex items-center mb-6 print:hidden">
         <button
           type="button"
@@ -258,10 +270,10 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <h1 className="text-3xl font-bold text-sahay-ink">Cognitive Health Analytics</h1>
-        <button type="button" onClick={() => window.print()} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong">
+        <button type="button" onClick={() => window.print()} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong print:hidden">
           <Download className="h-4 w-4" /> Download Detailed Report
         </button>
-        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken">
+        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken print:hidden">
           <Printer className="h-4 w-4" /> Print
         </button>
         {isDemo ? (
@@ -313,7 +325,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
       <Card
         title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
-        className="mb-8 bg-white border border-slate-200 shadow-none"
+        className="mb-8 bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full"
       >
         <div className="flex justify-end"><button type="button" onClick={() => setExpanded('trend')} aria-label="Maximize cognitive trend chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
         <div className="flex gap-2 mb-2">
@@ -342,17 +354,17 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-8">
-        <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-white border border-slate-200 shadow-none">
+        <Card title="Achaotic DDA Curve — Rolling Latency vs Difficulty" className="bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full">
           <div className="flex justify-end"><button type="button" onClick={() => setExpanded('dda')} aria-label="Maximize DDA chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {ddaChart}
         </Card>
-        <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-white border border-slate-200 shadow-none">
+        <Card title="Mood Stability — Diurnal Sundowning Pattern" className="bg-white border border-slate-200 shadow-none print:break-inside-avoid print:w-full">
           <div className="flex justify-end"><button type="button" onClick={() => setExpanded('mood')} aria-label="Maximize mood chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
           {moodChart}
         </Card>
       </div>
 
-      <Card title="Clinical Breakdown Views" className="mb-8 bg-sahay-surface shadow-caretaker-card">
+      <Card title="Clinical Breakdown Views" className="mb-8 bg-sahay-surface shadow-caretaker-card print:break-inside-avoid print:w-full">
         <div className="flex flex-wrap gap-2 mb-5" role="tablist" aria-label="Analytics breakdowns">
           {[
             ['latency', 'Daily Reaction Latency'],
@@ -444,6 +456,21 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           </div>
         ) : null}
       </Card>
+      {/* Print-Only Custom Footer */}
+      <div className="hidden print:block print:mt-12 print:pt-6 border-t border-slate-200 print:break-inside-avoid">
+        <div className="mb-8">
+          <h3 className="text-lg font-bold text-slate-800 mb-3">Analytics Summary & Suggestions</h3>
+          <p className="text-sm text-slate-600 mb-3 leading-relaxed">
+            <strong className="text-slate-800">Summary:</strong> The patient has maintained a stable routine with consistent engagement during morning sessions. The clinical heatmap indicates peak cognitive focus between 9 AM and 12 PM, with moderate activity pacing in the late afternoon.
+          </p>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            <strong className="text-slate-800">Recommendation:</strong> Schedule high-cognitive tasks and primary memory therapy sessions during the morning peak focus hours. Encourage light physical activity or relaxation exercises during the late afternoon to maintain consistent energy levels and prevent fatigue.
+          </p>
+        </div>
+        <div className="text-center mt-10 italic text-slate-500 font-serif text-lg">
+          "To care for those who once cared for us is one of the highest honors."
+        </div>
+      </div>
       {expanded ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4" role="dialog" aria-modal="true">
           <div className="h-[80vh] w-full max-w-7xl overflow-auto rounded-2xl bg-white p-6">
