@@ -40,8 +40,22 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-teal-100 p-4 relative overflow-hidden" role="region" aria-label="Login">
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-teal-400/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10">
+      {/* Ambient Animated Mesh Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Top-left Teal Orb */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-teal-300/30 blur-3xl animate-float-slow" />
+
+        {/* Bottom-right Cyan Orb */}
+        <div className="absolute -bottom-28 -right-20 w-[28rem] h-[28rem] rounded-full bg-cyan-200/40 blur-3xl animate-float-reverse" />
+
+        {/* Center Accent Pulse */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] rounded-full bg-emerald-100/35 blur-[120px] animate-pulse-slow" />
+
+        {/* Subtle grid pattern overlay for technical depth */}
+        <div className="absolute inset-0 bg-[radial-gradient(#0d9488_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.12]" />
+      </div>
+
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10 transition-all duration-500 hover:shadow-teal-900/5">
         <h1 className="auth-title">Sahāy Caregiver Portal</h1>
         <p className="auth-subtitle">Caregiver access only · manage therapy, analytics eth reminders</p>
 
