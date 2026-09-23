@@ -233,9 +233,16 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
               <div key={day} className="contents">
                 <div className="text-right text-xs font-bold text-slate-500 tracking-wide uppercase">{day}</div>
                 <div className="flex gap-1.5">
-                  {Array.from({ length: 18 }).map((__, c) => (
-                    <div key={c} title="Activity level" className={`transition-all duration-200 ease-in-out hover:scale-125 hover:shadow-md hover:z-10 relative cursor-pointer w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${Math.random() > 0.85 ? 'bg-amber-400' : Math.random() > 0.6 ? 'bg-teal-600' : Math.random() > 0.3 ? 'bg-teal-400' : 'bg-slate-200'}`} />
-                  ))}
+                  {Array.from({ length: 18 }).map((__, c) => {
+                    const hour = 6 + c;
+                    const time = hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`;
+                    const rand = Math.random();
+                    const activityLevel = rand > 0.85 ? 'Peak Focus' : rand > 0.6 ? 'Moderate' : rand > 0.3 ? 'Baseline' : 'Inactive';
+                    const bg = rand > 0.85 ? 'bg-amber-400' : rand > 0.6 ? 'bg-teal-600' : rand > 0.3 ? 'bg-teal-400' : 'bg-slate-200';
+                    return (
+                      <div key={c} title={`${day} ${time} - ${activityLevel}`} className={`transition-all duration-200 ease-in-out hover:scale-125 hover:shadow-md hover:z-10 relative cursor-pointer w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${bg}`} />
+                    );
+                  })}
                 </div>
               </div>
             ))}
