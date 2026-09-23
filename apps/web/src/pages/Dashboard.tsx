@@ -235,32 +235,30 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
           <div className="flex items-start justify-between mb-10">
             <div>
               <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
-              <p className="text-base md:text-lg italic text-slate-500 leading-relaxed">"They may not remember the conversation, but they will never forget how you made them feel."</p>
 
               <div className="flex flex-wrap items-center gap-6 mt-8">
                 <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
                 <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
-                <span className="text-sm font-bold text-[#1E293B] bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm tracking-wide">+91 98620 44110</span>
+                <a href="tel:+1234567890" className="inline-flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-wide">
+                  <Phone className="w-4 h-4 mr-1.5 text-slate-500" />
+                  +91 98620 44110
+                </a>
                 <button
                   onClick={() => onNavigate('geofence')}
-                  className="flex items-center text-sm font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
+                  className="flex items-center text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
                 >
-                  <span className="relative flex h-2.5 w-2.5 mr-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                  </span>
-                  <MapPin className="w-4 h-4 mr-1.5 text-slate-500" />
+                  <MapPin className="w-4 h-4 mr-1.5" />
                   Live Tracking
                 </button>
               </div>
             </div>
-            <button
-              onClick={() => setIsEmergencyOpen(true)}
-              className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
+            <a
+              href="tel:911"
+              className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
             >
               <Phone className="w-4 h-4 stroke-[2.25]" />
               <span>Emergency Contact</span>
-            </button>
+            </a>
           </div>
 
           {activeAlert ? (
@@ -539,7 +537,9 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
             </div>
           </div>
-
+          <footer className="mt-8 pt-6 border-t border-slate-200 text-center">
+            <p className="text-base md:text-lg italic text-slate-500 leading-relaxed max-w-2xl mx-auto">"They may not remember the conversation, but they will never forget how you made them feel."</p>
+          </footer>
         </div>
       </main >
     </div >

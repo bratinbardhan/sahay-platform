@@ -65,6 +65,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   const [smsArmed, setSmsArmed] = useState(true);
   const [smsToggling, setSmsToggling] = useState(false);
   const [breachSimulated, setBreachSimulated] = useState(false);
+  const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
 
   const flashNotice = (message: string) => {
     setNotice(message);
@@ -273,6 +274,13 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       <Card title="Safe Zone Editor" className="mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <div className="lg:col-span-3">
+            <div className="flex justify-end mb-4">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" checked={isTrackingEnabled} onChange={() => setIsTrackingEnabled(!isTrackingEnabled)} />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                <span className="ml-3 text-sm font-semibold text-slate-700">Live tracking {isTrackingEnabled ? 'On' : 'Off'}</span>
+              </label>
+            </div>
             <LeafletMap
               centerLat={draft.center_lat}
               centerLng={draft.center_lng}
@@ -390,9 +398,8 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
             type="button"
             onClick={() => setBreachSimulated((prev) => !prev)}
             aria-pressed={breachSimulated}
-            className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-sahay-ink font-semibold min-h-[56px] transition-all duration-care ease-care ${
-              breachSimulated ? 'bg-sahay-alert text-white' : 'bg-sahay-surface text-sahay-ink'
-            }`}
+            className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-sahay-ink font-semibold min-h-[56px] transition-all duration-care ease-care ${breachSimulated ? 'bg-sahay-alert text-white' : 'bg-sahay-surface text-sahay-ink'
+              }`}
           >
             <ShieldAlert className="w-5 h-5 md:w-6 md:h-6" />
             {breachSimulated ? 'Clear simulated breach' : 'Simulate Geofence Breach'}
@@ -417,19 +424,16 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
             onClick={() => void toggleSmsAlerts()}
             disabled={smsToggling}
             aria-pressed={smsArmed}
-            className={`relative inline-flex h-12 w-24 items-center rounded-full border-2 border-sahay-ink transition-colors shrink-0 ${
-              smsArmed ? 'bg-sahay-accent' : 'bg-sahay-bg'
-            } ${smsToggling ? 'opacity-50 cursor-wait' : ''}`}
+            className={`relative inline-flex h-12 w-24 items-center rounded-full border-2 border-sahay-ink transition-colors shrink-0 ${smsArmed ? 'bg-sahay-accent' : 'bg-sahay-bg'
+              } ${smsToggling ? 'opacity-50 cursor-wait' : ''}`}
           >
             <span
-              className={`inline-block h-8 w-8 transform rounded-full bg-white border-2 border-sahay-ink transition-transform ${
-                smsArmed ? 'translate-x-12' : 'translate-x-2'
-              }`}
+              className={`inline-block h-8 w-8 transform rounded-full bg-white border-2 border-sahay-ink transition-transform ${smsArmed ? 'translate-x-12' : 'translate-x-2'
+                }`}
             />
             <span
-              className={`absolute text-xs font-bold ${
-                smsArmed ? 'left-3 text-white' : 'right-2.5 text-sahay-ink'
-              }`}
+              className={`absolute text-xs font-bold ${smsArmed ? 'left-3 text-white' : 'right-2.5 text-sahay-ink'
+                }`}
             >
               {smsArmed ? 'ON' : 'OFF'}
             </span>
@@ -446,9 +450,8 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
                 <button
                   type="button"
                   onClick={() => toggleZoneActive(zone.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-sahay-ink transition-colors ${
-                    zone.is_active ? 'bg-sahay-accent text-white' : 'bg-sahay-bg text-sahay-ink'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-sahay-ink transition-colors ${zone.is_active ? 'bg-sahay-accent text-white' : 'bg-sahay-bg text-sahay-ink'
+                    }`}
                 >
                   {zone.is_active ? 'ACTIVE' : 'OFF'}
                 </button>
