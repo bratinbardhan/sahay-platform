@@ -108,28 +108,28 @@ function LoginForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =>
 
         {error && <p className="auth-error" role="alert">{error}</p>}
 
-        <button type="submit" className="auth-submit" disabled={busy}>
+        <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-xl shadow-md shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2" disabled={busy}>
           {busy ? 'Signing in…' : 'Login as Caretaker'}
         </button>
       </form>
 
-      {/* Clinical High-Contrast Demo Access Card */}
-      <div className="mt-6 rounded-2xl bg-slate-900/90 text-white p-4 shadow-lg shadow-slate-900/10 border border-slate-800">
-        <div className="flex items-center gap-2 mb-2.5">
-          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          <p className="text-xs font-semibold tracking-wider uppercase text-slate-300">
+      {/* Clean Clinical Demo Access Card */}
+      <div className="mt-6 rounded-2xl bg-teal-50/50 border border-teal-100 p-4 transition-all shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse shadow-[0_0_8px_rgba(20,184,166,0.6)]" />
+          <p className="text-xs font-extrabold tracking-wide uppercase text-teal-900">
             Quick Demo Access
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-          <div className="bg-slate-800/80 rounded-xl p-2 border border-slate-700/60">
-            <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-sans font-medium mb-0.5">Username</span>
-            <span className="text-emerald-400 font-bold text-sm tracking-wide">ram</span>
+        <div className="flex gap-3">
+          <div className="flex-1 bg-white rounded-xl p-2.5 border border-teal-100/50 shadow-sm flex flex-col items-start transition-transform hover:-translate-y-0.5">
+            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Username</span>
+            <span className="text-teal-700 font-mono font-bold text-sm">ram</span>
           </div>
-          <div className="bg-slate-800/80 rounded-xl p-2 border border-slate-700/60">
-            <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-sans font-medium mb-0.5">Password</span>
-            <span className="text-emerald-400 font-bold text-sm tracking-wide">12345678</span>
+          <div className="flex-1 bg-white rounded-xl p-2.5 border border-teal-100/50 shadow-sm flex flex-col items-start transition-transform hover:-translate-y-0.5">
+            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Password</span>
+            <span className="text-teal-700 font-mono font-bold text-sm tracking-widest">12345678</span>
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
 
         {error && <p className="auth-error" role="alert">{error}</p>}
 
-        <button type="submit" className="auth-submit" disabled={busy}>
+        <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-xl shadow-md shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2" disabled={busy}>
           {busy ? 'Creating account…' : 'Create Caretaker account'}
         </button>
       </form>
