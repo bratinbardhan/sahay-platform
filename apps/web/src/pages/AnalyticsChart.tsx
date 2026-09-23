@@ -231,17 +231,17 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
           <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 opacity-90 min-w-max items-center">
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
               <div key={day} className="contents">
-                <div className="text-right text-xs font-semibold text-slate-500">{day}</div>
+                <div className="text-right text-xs font-bold text-slate-500 tracking-wide uppercase">{day}</div>
                 <div className="flex gap-1.5">
                   {Array.from({ length: 18 }).map((__, c) => (
-                    <div key={c} className={`w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${Math.random() > 0.8 ? 'bg-amber-400' : Math.random() > 0.5 ? 'bg-teal-500' : 'bg-slate-200'}`} />
+                    <div key={c} title="Activity level" className={`transition-all duration-200 ease-in-out hover:scale-125 hover:shadow-md hover:z-10 relative cursor-pointer w-5 h-5 md:w-6 md:h-6 rounded-sm m-0.5 ${Math.random() > 0.85 ? 'bg-amber-400' : Math.random() > 0.6 ? 'bg-teal-600' : Math.random() > 0.3 ? 'bg-teal-400' : 'bg-slate-200'}`} />
                   ))}
                 </div>
               </div>
             ))}
             <div className="contents">
               <div></div>
-              <div className="flex justify-between text-xs font-semibold text-slate-500 pt-1">
+              <div className="flex justify-between text-xs font-bold text-slate-500 tracking-wide uppercase pt-1">
                 <span>6 AM</span>
                 <span>9 AM</span>
                 <span>12 PM</span>
@@ -250,6 +250,12 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
                 <span>9 PM</span>
               </div>
             </div>
+          </div>
+          <div className="flex items-center justify-center gap-6 mt-4 mb-2">
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-slate-200"></div><span className="text-xs font-bold text-slate-600">Inactive</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-400"></div><span className="text-xs font-bold text-slate-600">Baseline</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-teal-600"></div><span className="text-xs font-bold text-slate-600">Moderate</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm bg-amber-400"></div><span className="text-xs font-bold text-slate-600">Peak Focus</span></div>
           </div>
           <span className="text-xs font-bold text-slate-500 mt-6 block">Circadian 7-day x 18-hour activity matrix</span>
         </div>
