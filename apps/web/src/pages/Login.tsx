@@ -39,25 +39,25 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-teal-100 p-4 relative overflow-hidden" role="region" aria-label="Login">
-      {/* Ambient Animated Mesh Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Top-left Teal Orb */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-teal-300/30 blur-3xl animate-float-slow" />
-
-        {/* Bottom-right Cyan Orb */}
-        <div className="absolute -bottom-28 -right-20 w-[28rem] h-[28rem] rounded-full bg-cyan-200/40 blur-3xl animate-float-reverse" />
-
-        {/* Center Accent Pulse */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] rounded-full bg-emerald-100/35 blur-[120px] animate-pulse-slow" />
-
-        {/* Subtle grid pattern overlay for technical depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(#0d9488_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.12]" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden p-4" role="region" aria-label="Login">
+      {/* Dynamic Mesh Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-teal-400/20 blur-[100px] animate-float-slow mix-blend-multiply" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-cyan-300/20 blur-[120px] animate-float-reverse mix-blend-multiply" />
+        <div className="absolute top-[20%] left-[40%] w-[30vw] h-[30vw] rounded-full bg-emerald-200/30 blur-[90px] animate-pulse-slow mix-blend-multiply" />
       </div>
 
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10 transition-all duration-500 hover:shadow-teal-900/5 animate-fade-in-up opacity-0">
-        <h1 className="auth-title">Sahāy Caregiver Portal</h1>
-        <p className="auth-subtitle">Caregiver access only · manage therapy, analytics eth reminders</p>
+      {/* Premium Grain Texture Overlay */}
+      <div className="absolute inset-0 bg-noise pointer-events-none z-0"></div>
+
+      {/* Levitating Glass Card */}
+      <div className="w-full max-w-md bg-white/70 backdrop-blur-2xl rounded-3xl p-8 relative z-10 glass-inset-border animate-fade-in-up transition-transform duration-500 hover:-translate-y-1">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-600 mb-2 tracking-tight">
+            Welcome to Sahāy
+          </h1>
+          <p className="text-slate-500 font-medium">Log in to access your clinical dashboard</p>
+        </div>
 
         <form
           className="auth-form"
@@ -126,9 +126,22 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </div>
         </div>
 
-        <p className="text-sm text-sahay-muted text-center mt-2">
-          Demo Caretaker: <b>ram</b> / <b>12345678</b>
-        </p>
+        {/* Demo Access Note */}
+        <div className="mt-6 bg-teal-50/50 backdrop-blur-sm border border-teal-100/50 rounded-xl p-4 flex items-start gap-3 transition-colors hover:bg-teal-50/80">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <div className="text-sm text-teal-900/80 font-medium">
+            <p className="mb-1 text-teal-900 font-semibold">Demo Access</p>
+            <p>For testing purposes, please use the provided demo credentials to log in.</p>
+            <div className="mt-2 flex items-center gap-2 font-mono text-xs bg-white/60 py-1.5 px-2 rounded-md border border-teal-100">
+              <span className="text-slate-500 font-sans">Pass:</span>
+              <span className="text-teal-700 font-bold tracking-wider">12345678</span>
+            </div>
+          </div>
+        </div>
 
         <p className="auth-switch">
           New here?{' '}
