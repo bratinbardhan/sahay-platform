@@ -88,7 +88,7 @@ function InnerApp() {
     <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-slate-50 overflow-hidden print:overflow-visible">
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
-          className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
+          className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ease-in-out ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
@@ -111,7 +111,7 @@ function InnerApp() {
               onClick={() => navigate('/')}
             >
               <LayoutGrid className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Dashboard</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Dashboard</span>
             </button>
             <button
               title="Analytics"
@@ -119,7 +119,7 @@ function InnerApp() {
               onClick={() => navigate('/analytics')}
             >
               <Activity className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Analytics</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Analytics</span>
             </button>
             <button
               title="Media Manager"
@@ -127,7 +127,7 @@ function InnerApp() {
               onClick={() => navigate('/media')}
             >
               <ImagePlus className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Media Manager</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Media Manager</span>
             </button>
             <button
               title="Memory Album"
@@ -135,7 +135,7 @@ function InnerApp() {
               onClick={() => navigate('/reminiscence')}
             >
               <BookHeart className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Memory Album</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Memory Album</span>
             </button>
             <button
               title="Geofence Map"
@@ -143,7 +143,7 @@ function InnerApp() {
               onClick={() => navigate('/geofence')}
             >
               <MapPinned className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Geofence Map</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Geofence Map</span>
             </button>
             <button
               title="Care Circle"
@@ -151,7 +151,7 @@ function InnerApp() {
               className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
             >
               <HeartHandshake className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="font-medium text-sm whitespace-nowrap">Care Circle</span>}
+              <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Care Circle</span>
             </button>
           </div>
 
@@ -164,7 +164,7 @@ function InnerApp() {
               title="Log Out"
             >
               <LogOut className="w-5 h-5 shrink-0" />
-              {isSidebarExpanded && <span className="text-sm font-semibold">Log Out</span>}
+              <span className={`text-sm font-semibold whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Log Out</span>
             </button>
           </div>
         </aside>
