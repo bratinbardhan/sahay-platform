@@ -11,15 +11,29 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
-body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
 }
 
-button, input, textarea, select {
+button,
+input,
+textarea,
+select {
   font: inherit;
 }
 
@@ -27,7 +41,8 @@ button {
   cursor: pointer;
 }
 
-img, svg {
+img,
+svg {
   display: block;
   max-width: 100%;
 }
@@ -60,38 +75,70 @@ img, svg {
 :root,
 [data-palette='caretaker'] {
   /* ── PALETTE 2 · Caretaker Dashboard (portal default) ─────────────────── */
-  --sahay-bg: 248 250 252; /* #F8FAFC */
-  --sahay-surface: 255 255 255; /* #FFFFFF */
-  --sahay-surface-raised: 255 255 255; /* #FFFFFF */
-  --sahay-surface-sunken: 241 245 249; /* #F1F5F9 */
-  --sahay-panel: 241 242 244; /* #F1F2F4 */
-  --sahay-ink: 15 23 42; /* #0F172A */
-  --sahay-muted: 71 85 105; /* #475569 */
-  --sahay-border: 226 232 240; /* #E2E8F0 */
-  --sahay-line: 226 232 240; /* #E2E8F0 */
-  --sahay-axis: 100 116 139; /* #64748B */
-  --sahay-accent: 13 148 136; /* #0D9488 */
-  --sahay-accent-strong: 15 118 110; /* #0F766E */
-  --sahay-accent-soft: 204 251 241; /* #CCFBF1 */
-  --sahay-gold: 139 92 246; /* #8B5CF6 */
-  --sahay-gold-soft: 237 233 254; /* #EDE9FE */
-  --sahay-gold-ink: 109 40 217; /* #6D28D9 */
-  --sahay-ok: 16 185 129; /* #10B981 */
-  --sahay-ok-bright: 20 184 166; /* #14B8A6 */
-  --sahay-ok-soft: 209 250 229; /* #D1FAE5 */
-  --sahay-ok-ink: 4 120 87; /* #047857 */
-  --sahay-lime: 16 185 129; /* #10B981 */
-  --sahay-warn: 245 158 11; /* #F59E0B */
-  --sahay-warn-soft: 254 243 199; /* #FEF3C7 */
-  --sahay-warn-ink: 180 83 9; /* #B45309 */
-  --sahay-alert: 239 68 68; /* #EF4444 */
-  --sahay-alert-soft: 254 226 226; /* #FEE2E2 */
-  --sahay-alert-ink: 185 28 28; /* #B91C1C */
-  --sahay-info: 30 58 138; /* #1E3A8A */
-  --sahay-info-soft: 219 234 254; /* #DBEAFE */
-  --sahay-teal: 13 148 136; /* #0D9488 */
-  --sahay-teal-soft: 230 245 243; /* #E6F5F3 */
-  --sahay-mood: 245 158 11; /* #F59E0B */
+  --sahay-bg: 248 250 252;
+  /* #F8FAFC */
+  --sahay-surface: 255 255 255;
+  /* #FFFFFF */
+  --sahay-surface-raised: 255 255 255;
+  /* #FFFFFF */
+  --sahay-surface-sunken: 241 245 249;
+  /* #F1F5F9 */
+  --sahay-panel: 241 242 244;
+  /* #F1F2F4 */
+  --sahay-ink: 15 23 42;
+  /* #0F172A */
+  --sahay-muted: 71 85 105;
+  /* #475569 */
+  --sahay-border: 226 232 240;
+  /* #E2E8F0 */
+  --sahay-line: 226 232 240;
+  /* #E2E8F0 */
+  --sahay-axis: 100 116 139;
+  /* #64748B */
+  --sahay-accent: 13 148 136;
+  /* #0D9488 */
+  --sahay-accent-strong: 15 118 110;
+  /* #0F766E */
+  --sahay-accent-soft: 204 251 241;
+  /* #CCFBF1 */
+  --sahay-gold: 139 92 246;
+  /* #8B5CF6 */
+  --sahay-gold-soft: 237 233 254;
+  /* #EDE9FE */
+  --sahay-gold-ink: 109 40 217;
+  /* #6D28D9 */
+  --sahay-ok: 16 185 129;
+  /* #10B981 */
+  --sahay-ok-bright: 20 184 166;
+  /* #14B8A6 */
+  --sahay-ok-soft: 209 250 229;
+  /* #D1FAE5 */
+  --sahay-ok-ink: 4 120 87;
+  /* #047857 */
+  --sahay-lime: 16 185 129;
+  /* #10B981 */
+  --sahay-warn: 245 158 11;
+  /* #F59E0B */
+  --sahay-warn-soft: 254 243 199;
+  /* #FEF3C7 */
+  --sahay-warn-ink: 180 83 9;
+  /* #B45309 */
+  --sahay-alert: 239 68 68;
+  /* #EF4444 */
+  --sahay-alert-soft: 254 226 226;
+  /* #FEE2E2 */
+  --sahay-alert-ink: 185 28 28;
+  /* #B91C1C */
+  --sahay-info: 30 58 138;
+  /* #1E3A8A */
+  --sahay-info-soft: 219 234 254;
+  /* #DBEAFE */
+  --sahay-teal: 13 148 136;
+  /* #0D9488 */
+  --sahay-teal-soft: 230 245 243;
+  /* #E6F5F3 */
+  --sahay-mood: 245 158 11;
+  /* #F59E0B */
 
   /* ── Surface behaviour ─────────────────────────────────────────────────── */
   --sahay-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
@@ -105,7 +152,8 @@ img, svg {
 [data-palette='patient'] {
   /* ── PALETTE 1 · Patient App — flat, shadow-free, never alarming ──────── */
   --sahay-surface-raised: 255 252 246;
-  --sahay-accent-soft: 255 241 224; /* #FFF1E0 */
+  --sahay-accent-soft: 255 241 224;
+  /* #FFF1E0 */
 
   /* Severity tones collapse to the calm amber action language so a shared
      component can never flash a medical alarm at a patient. */
@@ -142,7 +190,12 @@ body {
   line-height: 1.5;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.025em;
   line-height: 1.15;
@@ -208,13 +261,15 @@ h1, h2, h3, h4, h5, h6 {
  * ══════════════════════════════════════════════════════════════════════════ */
 
 @layer components {
+
   /* Canonical card: 2px ink rule, palette fill, elevation per palette. */
   .sahay-surface {
     background-color: rgb(var(--sahay-surface));
     background-image: var(--sahay-gradient);
     border: none;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    /* shadow-sm */
     transition: none;
   }
 
@@ -355,7 +410,8 @@ h1, h2, h3, h4, h5, h6 {
   padding: 12px 14px;
   border-radius: 16px;
   border: none;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  /* shadow-sm */
   background: rgb(var(--sahay-surface));
   color: rgb(var(--sahay-ink));
   text-align: left;
@@ -503,11 +559,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ─── Phase 2 admin + caretaker dashboards ─────────────────────────── */
- 
-@media print { 
-  * { 
-    -webkit-print-color-adjust: exact !important; 
-    print-color-adjust: exact !important; 
-  } 
-  body { background-color: white !important; } 
-} 
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
+  }
+
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    position: relative !important;
+    background-color: white !important;
+  }
+
+  /* Target common Tailwind layout classes that break PDF pagination */
+  .h-screen,
+  .max-h-screen,
+  .overflow-hidden,
+  .overflow-y-auto,
+  .flex-1 {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+}
