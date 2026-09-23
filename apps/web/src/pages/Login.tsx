@@ -55,7 +55,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
         <div className="absolute inset-0 bg-[radial-gradient(#0d9488_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.12]" />
       </div>
 
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10 transition-all duration-500 hover:shadow-teal-900/5">
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 relative z-10 transition-all duration-500 hover:shadow-teal-900/5 animate-fade-in-up opacity-0">
         <h1 className="auth-title">Sahāy Caregiver Portal</h1>
         <p className="auth-subtitle">Caregiver access only · manage therapy, analytics eth reminders</p>
 
@@ -72,7 +72,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           </label>
           <input
             id="login-email"
-            className="auth-input"
+            className="w-full bg-white/50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 focus:bg-white transition-all duration-300"
             type="email"
             inputMode="email"
             autoComplete="email"
@@ -87,7 +87,7 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
           <div className="relative w-full">
             <input
               id="login-password"
-              className="auth-input pr-10"
+              className="w-full bg-white/50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 focus:bg-white transition-all duration-300 pr-10"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="••••••••"
@@ -110,10 +110,21 @@ export function Login({ onSuccess, onNavigate }: LoginProps) {
 
           {error ? <p className="auth-error" role="alert">{error}</p> : null}
 
-          <button type="submit" className="auth-submit" disabled={busy}>
-            {busy ? 'Signing in…' : 'Login as Caretaker'}
+          <button type="submit" className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 hover:-translate-y-0.5 transition-all duration-300 active:translate-y-0 flex items-center justify-center gap-2" disabled={busy}>
+            {busy ? (
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            ) : 'Login as Caretaker'}
           </button>
         </form>
+
+        <div className="relative mt-8 mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-transparent text-slate-400 backdrop-blur-xl">Or continue with</span>
+          </div>
+        </div>
 
         <p className="text-sm text-sahay-muted text-center mt-2">
           Demo Caretaker: <b>ram</b> / <b>12345678</b>
