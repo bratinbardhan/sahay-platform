@@ -66,6 +66,8 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   const [smsToggling, setSmsToggling] = useState(false);
   const [breachSimulated, setBreachSimulated] = useState(false);
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
+  const [pendingState, setPendingState] = useState<boolean | null>(null);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
 
   const flashNotice = (message: string) => {
     setNotice(message);
@@ -274,13 +276,6 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       <Card title="Safe Zone Editor" className="mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <div className="lg:col-span-3">
-            <div className="flex justify-end mb-4">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={isTrackingEnabled} onChange={() => setIsTrackingEnabled(!isTrackingEnabled)} />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                <span className="ml-3 text-sm font-semibold text-slate-700">Live tracking {isTrackingEnabled ? 'On' : 'Off'}</span>
-              </label>
-            </div>
             <LeafletMap
               centerLat={draft.center_lat}
               centerLng={draft.center_lng}
@@ -370,9 +365,24 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <Card title="Live Tracking Status" className="bg-sahay-surface shadow-caretaker-card">
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> Live tracking active
+        <Card className="bg-sahay-surface shadow-caretaker-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-extrabold text-[#1E293B]">Live Tracking Status</h3>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={isTrackingEnabled} onChange={() => { setPendingState(!isTrackingEnabled); setIsTrackingModalOpen(true); }} />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+            </label>
+          </div>
+          <div className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold border ${isTrackingEnabled ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-amber-50 text-amber-800 border-amber-100'}`}>
+            {isTrackingEnabled ? (
+              <span className="relative flex h-3 w-3 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+            ) : (
+              <span className="h-3 w-3 rounded-full bg-amber-500 mr-1" />
+            )}
+            {isTrackingEnabled ? 'Live tracking active' : 'Live tracking paused / disabled'}
           </div>
           <p className="mt-4 text-sm text-slate-600">Amber heat zones show simulated high-density visits and recent breach locations around Shillong.</p>
         </Card>
@@ -475,6 +485,35 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
           ))}
         </div>
       </Card>
+
+      {isTrackingModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-slate-900/50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-slate-800 font-bold text-lg mb-2">
+              {pendingState ? 'Enable Live Tracking?' : 'Disable Live Tracking?'}
+            </h3>
+            <p className="text-slate-600 text-sm mb-6">
+              {pendingState
+                ? 'Turning on live tracking will resume real-time updates and geofence monitoring.'
+                : 'Warning: Disabling live tracking will halt real-time location updates and safety boundary alerts.'}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsTrackingModalOpen(false)}
+                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition-colors">
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => { setIsTrackingEnabled(pendingState!); setIsTrackingModalOpen(false); }}
+                className={`px-4 py-2 rounded-lg text-white font-semibold transition-colors ${pendingState ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-red-600 hover:bg-red-700'}`}>
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

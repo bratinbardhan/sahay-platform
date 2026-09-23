@@ -252,13 +252,13 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
                 </button>
               </div>
             </div>
-            <a
-              href="tel:911"
+            <button
+              onClick={() => setIsEmergencyOpen(true)}
               className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
             >
               <Phone className="w-4 h-4 stroke-[2.25]" />
               <span>Emergency Contact</span>
-            </a>
+            </button>
           </div>
 
           {activeAlert ? (
