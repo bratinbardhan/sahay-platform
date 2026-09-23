@@ -88,7 +88,7 @@ function InnerApp() {
     <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-slate-50 overflow-hidden print:overflow-visible">
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
-          className={`print:hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
+          className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
@@ -170,7 +170,7 @@ function InnerApp() {
         </aside>
       ) : null}
 
-      <main className="flex-1 overflow-y-auto relative print:block print:h-auto print:max-h-none print:overflow-visible print:w-full print:ml-0 print:p-0">
+      <main className="flex-1 overflow-y-auto relative print:block print:h-auto print:max-h-none print:overflow-visible print:w-full print:ml-0 print:pl-0 print:p-0">
         <Routes>
           <Route path="/login" element={session ? <Navigate to="/" /> : <Login onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />
           <Route path="/signup" element={session ? <Navigate to="/" /> : <Signup onSuccess={onAuthSuccess} onNavigate={(r) => navigate('/' + r)} />} />

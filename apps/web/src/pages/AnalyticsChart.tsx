@@ -388,33 +388,49 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
       </Card>
 
       {/* PRINT-ONLY SEQUENTIAL CHARTS VIEW */}
-      <div className="hidden print:flex print:flex-col print:gap-10 print:w-full mb-8">
-        {/* 1. Cognitive & Latency Group */}
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Cognitive Load Index</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{cognitiveLoadChart}</div>
+      <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none print:relative print:left-0 print:opacity-100 print:flex print:flex-col print:gap-10 print:w-full print:mb-0">
+        {/* 1. Standard Analytics */}
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Cognitive Load Index</h3>
+          <div className="h-[400px] w-full">
+            {cognitiveLoadChart}
+          </div>
         </div>
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Reaction Latency Trend</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{reactionLatencyChart}</div>
+
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Reaction Latency Trend</h3>
+          <div className="h-[400px] w-full">
+            {reactionLatencyChart}
+          </div>
         </div>
 
         {/* 2. Clinical Breakdown Views */}
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Daily Reaction Latency</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{latencyBreakdown}</div>
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Daily Reaction Latency</h3>
+          <div className="h-[400px] w-full">
+            {latencyBreakdown}
+          </div>
         </div>
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Touch Errorless Rebound</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{reboundBreakdown}</div>
+
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Touch Errorless Rebound</h3>
+          <div className="h-[400px] w-full">
+            {reboundBreakdown}
+          </div>
         </div>
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Session Consistency</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{consistencyBreakdown}</div>
+
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Session Consistency</h3>
+          <div className="h-[400px] w-full">
+            {consistencyBreakdown}
+          </div>
         </div>
-        <div className="print:break-inside-avoid">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Activity Heatmap</h3>
-          <div className="bg-white border border-slate-200 rounded-xl p-4">{heatmapBreakdown}</div>
+
+        <div className="print:break-inside-avoid w-full">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Activity Heatmap</h3>
+          <div className="h-[400px] w-full">
+            {heatmapBreakdown}
+          </div>
         </div>
       </div>
 
