@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { AuthResponse } from '@sahay/types';
 
-import { apiLogin, apiSignup } from '@/lib/auth';
+import { apiLogin } from '@/lib/auth';
 
 interface LoginProps {
   onSuccess: (auth: AuthResponse) => void;
@@ -196,30 +196,9 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showSignupWarning, setShowSignupWarning] = useState(false);
 
-  const submit = async () => {
-    if (busy) return;
-    setError(null);
-    const emailTrimmed = email.trim();
-    const nameTrimmed = fullName.trim();
-    if (!nameTrimmed || !emailTrimmed || !password) {
-      setError('Please fill in your full name, email and password.');
-      return;
-    }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
-      return;
-    }
-    setBusy(true);
-    try {
-      const auth = await apiSignup({ email: emailTrimmed, password, full_name: nameTrimmed, role: 'CARETAKER' });
-      onSuccess(auth);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to create your account. Please try again.');
-    } finally {
-      setBusy(false);
-    }
-  };
+  // Form intercept overrides the original apiSignup logic in demo environments.
 
   return (
     <div className="w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 transition-all duration-500 hover:shadow-teal-900/5">
@@ -227,7 +206,7 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
       <h1 className="auth-title">Create your Sahāy account</h1>
       <p className="auth-subtitle">Caregiver access only · monitor &amp; manage care plans</p>
 
-      <form className="auth-form" noValidate onSubmit={(e) => { e.preventDefault(); void submit(); }}>
+      <form className="auth-form" noValidate onSubmit={(e) => { e.preventDefault(); setShowSignupWarning(true); }}>
         <label className="auth-label" htmlFor="signup-name">Full name</label>
         <input
           id="signup-name"
@@ -277,6 +256,51 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
           Log in
         </button>
       </p>
+
+      {showSignupWarning && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 animate-fade-in-up text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Demo Mode Active</h3>
+
+            <p className="text-sm text-slate-500 leading-relaxed mb-6">
+              Account creation is currently disabled. Since this is a demo environment, your data has not been saved. You will now be redirected to the default <strong>Ram Sharma (Demo Caretaker)</strong> dashboard.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowSignupWarning(false)}
+                className="flex-1 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowSignupWarning(false);
+                  setBusy(true);
+                  try {
+                    const auth = await apiLogin({ email: 'ram', password: '12345678', role: 'CARETAKER' });
+                    onSuccess(auth);
+                  } catch (err) {
+                    setError('Unable to log into demo account.');
+                    setBusy(false);
+                  }
+                }}
+                className="flex-1 py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
+              >
+                Proceed to Demo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
