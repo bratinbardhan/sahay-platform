@@ -14,9 +14,14 @@ export function Login({ onSuccess }: LoginProps) {
   const [showSignupWarning, setShowSignupWarning] = useState(false);
 
   useEffect(() => {
-    // Show on load unless user has already dismissed it this session
+    // Check if user already dismissed it this session
     const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
-    if (!dismissed) {
+
+    // Check if the device is a mobile or tablet screen (width less than 1024px)
+    const isSmallScreen = window.innerWidth < 1024;
+
+    // Only show the notice if it's a small screen AND hasn't been dismissed
+    if (isSmallScreen && !dismissed) {
       setShowNotice(true);
     }
   }, []);
