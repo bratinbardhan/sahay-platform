@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { AuthResponse } from '@sahay/types';
 
 import { apiLogin, apiSignup } from '@/lib/auth';
@@ -10,6 +10,20 @@ interface LoginProps {
 
 export function Login({ onSuccess }: LoginProps) {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showNotice, setShowNotice] = useState(false);
+
+  useEffect(() => {
+    // Show on load unless user has already dismissed it this session
+    const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
+    if (!dismissed) {
+      setShowNotice(true);
+    }
+  }, []);
+
+  const dismissNotice = () => {
+    sessionStorage.setItem('sahay_desktop_notice_dismissed', 'true');
+    setShowNotice(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-50 to-teal-100 p-4 relative overflow-hidden" role="region" aria-label={isSignUp ? "Sign up" : "Login"}>
@@ -33,6 +47,37 @@ export function Login({ onSuccess }: LoginProps) {
           <LoginForm onSuccess={onSuccess} onToggle={() => setIsSignUp(true)} />
         )}
       </div>
+
+      {showNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 animate-fade-in-up">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2.5 rounded-xl bg-amber-100 text-amber-700">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="14" x="2" y="3" rx="2" />
+                  <line x1="8" x2="16" y1="21" y2="21" />
+                  <line x1="12" x2="12" y1="17" y2="21" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Platform in Active Development</h3>
+                <p className="text-xs text-slate-500 font-medium">Recommended: Desktop View</p>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-600 leading-relaxed mb-6">
+              Sahāy is currently in its active development phase. For optimal performance, clinical analytics visualization, and responsive workflows, please access the platform in <strong>Desktop Mode</strong> or on a larger screen.
+            </p>
+
+            <button
+              onClick={dismissNotice}
+              className="w-full py-2.5 px-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
+            >
+              Understood, Proceed
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -65,18 +110,7 @@ function LoginForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =>
 
   return (
     <div className="w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 transition-all duration-500 hover:shadow-teal-900/5">
-      {/* Desktop Recommendation & Active Development Notice */}
-      <div className="mb-6 rounded-xl bg-amber-50/80 border border-amber-200/70 p-3.5 flex items-start gap-3 text-amber-900 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="14" x="2" y="3" rx="2" />
-          <line x1="8" x2="16" y1="21" y2="21" />
-          <line x1="12" x2="12" y1="17" y2="21" />
-        </svg>
-        <div className="text-xs leading-relaxed">
-          <span className="font-semibold text-amber-950 block mb-0.5">Platform in Active Development</span>
-          <span>Sahāy is currently in its development stage. For the best clinical workflow experience, please use <strong>Desktop Mode</strong> or a larger screen.</span>
-        </div>
-      </div>
+
       <h1 className="auth-title">Sahāy Caregiver Portal</h1>
       <p className="auth-subtitle">Caregiver access only · manage therapy, analytics eth reminders</p>
 
@@ -189,18 +223,7 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
 
   return (
     <div className="w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 transition-all duration-500 hover:shadow-teal-900/5">
-      {/* Desktop Recommendation & Active Development Notice */}
-      <div className="mb-6 rounded-xl bg-amber-50/80 border border-amber-200/70 p-3.5 flex items-start gap-3 text-amber-900 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect width="20" height="14" x="2" y="3" rx="2" />
-          <line x1="8" x2="16" y1="21" y2="21" />
-          <line x1="12" x2="12" y1="17" y2="21" />
-        </svg>
-        <div className="text-xs leading-relaxed">
-          <span className="font-semibold text-amber-950 block mb-0.5">Platform in Active Development</span>
-          <span>Sahāy is currently in its development stage. For the best clinical workflow experience, please use <strong>Desktop Mode</strong> or a larger screen.</span>
-        </div>
-      </div>
+
       <h1 className="auth-title">Create your Sahāy account</h1>
       <p className="auth-subtitle">Caregiver access only · monitor &amp; manage care plans</p>
 
