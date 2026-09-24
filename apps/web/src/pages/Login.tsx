@@ -11,6 +11,7 @@ interface LoginProps {
 export function Login({ onSuccess }: LoginProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
+  const [showSignupWarning, setShowSignupWarning] = useState(false);
 
   useEffect(() => {
     // Show on load unless user has already dismissed it this session
@@ -42,7 +43,7 @@ export function Login({ onSuccess }: LoginProps) {
       {/* CONDITIONAL FORM LAYER */}
       <div className="relative z-10 w-full max-w-md">
         {isSignUp ? (
-          <SignUpForm onSuccess={onSuccess} onToggle={() => setIsSignUp(false)} />
+          <SignUpForm onToggle={() => setIsSignUp(false)} onIntercept={() => setShowSignupWarning(true)} />
         ) : (
           <LoginForm onSuccess={onSuccess} onToggle={() => setIsSignUp(true)} />
         )}
@@ -75,6 +76,50 @@ export function Login({ onSuccess }: LoginProps) {
             >
               Understood, Proceed
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* PASTED MODAL GOES HERE - Completely outside the form card */}
+      {showSignupWarning && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 animate-fade-in-up text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Demo Mode Active</h3>
+
+            <p className="text-sm text-slate-500 leading-relaxed mb-6">
+              Account creation is currently disabled. Since this is a demo environment, your data has not been saved. You will now be redirected to the default <strong>Ram Sharma (Demo Caretaker)</strong> dashboard.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowSignupWarning(false)}
+                className="flex-1 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowSignupWarning(false);
+                  try {
+                    const auth = await apiLogin({ email: 'ram', password: '12345678', role: 'CARETAKER' });
+                    onSuccess(auth);
+                  } catch (err) {
+                    alert('Unable to log into demo account.');
+                  }
+                }}
+                className="flex-1 py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
+              >
+                Proceed to Demo
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -190,13 +235,10 @@ function LoginForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =>
   );
 }
 
-function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) => void, onToggle: () => void }) {
+function SignUpForm({ onToggle, onIntercept }: { onToggle: () => void, onIntercept: () => void }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [showSignupWarning, setShowSignupWarning] = useState(false);
 
   // Form intercept overrides the original apiSignup logic in demo environments.
 
@@ -206,7 +248,7 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
       <h1 className="auth-title">Create your Sahāy account</h1>
       <p className="auth-subtitle">Caregiver access only · monitor &amp; manage care plans</p>
 
-      <form className="auth-form" noValidate onSubmit={(e) => { e.preventDefault(); setShowSignupWarning(true); }}>
+      <form className="auth-form" noValidate onSubmit={(e) => { e.preventDefault(); onIntercept(); }}>
         <label className="auth-label" htmlFor="signup-name">Full name</label>
         <input
           id="signup-name"
@@ -243,10 +285,8 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && <p className="auth-error" role="alert">{error}</p>}
-
-        <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-xl shadow-md shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2" disabled={busy}>
-          {busy ? 'Creating account…' : 'Create Caretaker account'}
+        <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-xl shadow-md shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+          Create Caretaker account
         </button>
       </form>
 
@@ -256,51 +296,6 @@ function SignUpForm({ onSuccess, onToggle }: { onSuccess: (auth: AuthResponse) =
           Log in
         </button>
       </p>
-
-      {showSignupWarning && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 animate-fade-in-up text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Demo Mode Active</h3>
-
-            <p className="text-sm text-slate-500 leading-relaxed mb-6">
-              Account creation is currently disabled. Since this is a demo environment, your data has not been saved. You will now be redirected to the default <strong>Ram Sharma (Demo Caretaker)</strong> dashboard.
-            </p>
-
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowSignupWarning(false)}
-                className="flex-1 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={async () => {
-                  setShowSignupWarning(false);
-                  setBusy(true);
-                  try {
-                    const auth = await apiLogin({ email: 'ram', password: '12345678', role: 'CARETAKER' });
-                    onSuccess(auth);
-                  } catch (err) {
-                    setError('Unable to log into demo account.');
-                    setBusy(false);
-                  }
-                }}
-                className="flex-1 py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
-              >
-                Proceed to Demo
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
