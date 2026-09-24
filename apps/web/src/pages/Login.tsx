@@ -14,10 +14,28 @@ export function Login({ onSuccess }: LoginProps) {
   const [showSignupWarning, setShowSignupWarning] = useState(false);
 
   useEffect(() => {
-    const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
-    if (!dismissed) {
-      setShowNotice(true);
-    }
+    // Define the exact CSS breakpoint for mobile/tablets
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
+
+    const handleScreenChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
+
+      // If the screen is small (e.matches) AND they haven't clicked dismiss yet
+      if (e.matches && !dismissed) {
+        setShowNotice(true);
+      } else {
+        setShowNotice(false);
+      }
+    };
+
+    // 1. Run it instantly on component load
+    handleScreenChange(mediaQuery);
+
+    // 2. Listen dynamically if the user drags their browser window smaller/larger
+    mediaQuery.addEventListener('change', handleScreenChange);
+
+    // 3. Cleanup on unmount
+    return () => mediaQuery.removeEventListener('change', handleScreenChange);
   }, []);
 
   const dismissNotice = () => {
