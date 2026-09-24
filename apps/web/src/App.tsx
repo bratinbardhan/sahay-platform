@@ -14,6 +14,7 @@ import { ReminiscenceManager } from '@/pages/ReminiscenceManager';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
 import { AdminDashboard } from '@/pages/AdminDashboard';
+import TourGuide from './components/TourGuide';
 
 
 function paletteFor(pathname: string, isSignedIn: boolean): SahayPalette {
@@ -88,7 +89,7 @@ function InnerApp() {
     <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-slate-50 overflow-hidden print:overflow-visible">
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
-          className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ease-in-out ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
+          className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ease-in-out tour-sidebar ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
           onMouseEnter={() => setIsSidebarExpanded(true)}
           onMouseLeave={() => setIsSidebarExpanded(false)}
         >
@@ -115,7 +116,7 @@ function InnerApp() {
             </button>
             <button
               title="Analytics"
-              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden tour-analytics ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
               onClick={() => navigate('/analytics')}
             >
               <Activity className="w-5 h-5 shrink-0" />
@@ -156,7 +157,7 @@ function InnerApp() {
           </div>
 
           <div className="flex-1" />
-          <div className="w-full px-3 pb-4">
+          <div className="w-full px-3 pb-4 tour-profile">
             <button
               onClick={() => setIsLogoutModalOpen(true)}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors ${!isSidebarExpanded ? 'justify-center' : 'px-3'
@@ -227,6 +228,10 @@ function InnerApp() {
             </button>
           </div>
         </div>
+      )}
+
+      {session && session.user.role !== 'ADMIN' && location.pathname === '/' && (
+        <TourGuide />
       )}
     </div>
   );
