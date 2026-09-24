@@ -14,26 +14,10 @@ export function Login({ onSuccess }: LoginProps) {
   const [showSignupWarning, setShowSignupWarning] = useState(false);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
-      const isSmallScreen = window.innerWidth < 1024;
-
-      // Show if small screen and not dismissed. Hide if desktop.
-      if (isSmallScreen && !dismissed) {
-        setShowNotice(true);
-      } else {
-        setShowNotice(false);
-      }
-    };
-
-    // Run immediately on load
-    checkScreenSize();
-
-    // Listen for browser window dragging/resizing
-    window.addEventListener('resize', checkScreenSize);
-
-    // Cleanup listener on unmount
-    return () => window.removeEventListener('resize', checkScreenSize);
+    const dismissed = sessionStorage.getItem('sahay_desktop_notice_dismissed');
+    if (!dismissed) {
+      setShowNotice(true);
+    }
   }, []);
 
   const dismissNotice = () => {
