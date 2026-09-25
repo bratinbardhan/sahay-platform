@@ -53,25 +53,25 @@ export default function TourGuide() {
             route: '/dashboard'
         },
         {
-            target: 'body',
+            target: '.tour-sidebar',
             content: 'This is your main Navigation Hub. Easily switch between Patients, Analytics, and Care Plans from here.',
             placement: 'center',
             route: '/dashboard'
         },
         {
-            target: 'body',
+            target: '.tour-patients-page',
             content: 'The Patient Roster. Here you can monitor vitals, review daily adherence, and manage emergency protocols.',
             placement: 'center',
             route: '/patients'
         },
         {
-            target: 'body',
+            target: '.tour-analytics-page',
             content: 'The Analytics Engine. Visualize therapy adherence trends and generate clinical reports.',
             placement: 'center',
             route: '/analytics'
         },
         {
-            target: 'body',
+            target: '.tour-profile',
             content: 'Your Caretaker Profile. Manage your account settings, switch roles, or log out securely.',
             placement: 'center',
             route: '/dashboard'

@@ -253,7 +253,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const reactionLatencyChart = <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric="latency" />;
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 tour-analytics-page" data-palette="caretaker">
       {/* Print-Only Custom Header */}
       <div className="hidden print:flex print:flex-col print:items-center print:mb-8 border-b border-slate-200 print:pb-6">
         <div className="flex items-center gap-3 mb-2">

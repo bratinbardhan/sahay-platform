@@ -246,7 +246,7 @@ export function AdminDashboard({ user, token, onLogout }: AdminDashboardProps) {
       ) : null}
 
       {/* ─── User Management Table ──────────────────────────────────── */}
-      <section className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-6 shadow-md animate-fade-up">
+      <section className="bg-sahay-surface border-2 border-sahay-ink rounded-2xl p-4 sm:p-6 shadow-md animate-fade-up tour-patients-page">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 text-sahay-ink">
             <Users size={22} />
@@ -405,13 +405,12 @@ function TierToggle({
             type="button"
             disabled={disabled || active}
             onClick={() => onChange(tier)}
-            className={`px-3 py-1 text-xs font-bold transition-colors disabled:cursor-not-allowed ${
-              active
+            className={`px-3 py-1 text-xs font-bold transition-colors disabled:cursor-not-allowed ${active
                 ? tier === 'PREMIUM'
                   ? 'bg-sahay-gold text-white'
                   : 'bg-sahay-ink text-sahay-surface'
                 : 'bg-sahay-bg text-sahay-ink hover:bg-sahay-surface-sunken'
-            }`}
+              }`}
           >
             {tier}
           </button>

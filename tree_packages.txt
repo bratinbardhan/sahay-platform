@@ -1,0 +1,16 @@
+Folder PATH listing for volume New Volume
+Volume serial number is DC58-A79F
+D:\SAHAY\SAHAY-PLATFORM\PACKAGES
+\---types
+    |   package.json
+    |   tsconfig.json
+    |   
+    +---dist
+    |       index.d.ts
+    |       index.d.ts.map
+    |       index.js
+    |       index.js.map
+    |       
+    \---src
+            index.ts
+            

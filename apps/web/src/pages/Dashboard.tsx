@@ -193,7 +193,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             </div>
 
             <div className="relative">
-              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer">
+              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer tour-profile">
                 <UserIcon className="w-6 h-6 text-slate-500" />
               </div>
               {isProfileOpen && (
@@ -230,7 +230,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         </header>
 
         {/* Scrollable Dashboard Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-8">
+        <div className="flex-1 overflow-y-auto px-8 pb-8 tour-patients-page">
           {/* Dashboard Title Area */}
           <div className="flex items-start justify-between mb-10">
             <div>
