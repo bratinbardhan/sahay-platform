@@ -43,7 +43,7 @@ export default function TourGuide() {
         setRun(true);
     };
 
-    // Temporarily set all targets to 'body' to prevent crashing until UI classes are added
+    // ALL targets set to 'body' to guarantee zero crashes until UI classes are added!
     const steps: AppStep[] = [
         {
             target: 'body',
@@ -53,25 +53,25 @@ export default function TourGuide() {
             route: '/dashboard'
         },
         {
-            target: '.tour-sidebar',
+            target: 'body',
             content: 'This is your main Navigation Hub. Easily switch between Patients, Analytics, and Care Plans from here.',
             placement: 'center',
             route: '/dashboard'
         },
         {
-            target: '.tour-patients-page',
+            target: 'body',
             content: 'The Patient Roster. Here you can monitor vitals, review daily adherence, and manage emergency protocols.',
             placement: 'center',
             route: '/patients'
         },
         {
-            target: '.tour-analytics-page',
+            target: 'body',
             content: 'The Analytics Engine. Visualize therapy adherence trends and generate clinical reports.',
             placement: 'center',
             route: '/analytics'
         },
         {
-            target: '.tour-profile',
+            target: 'body',
             content: 'Your Caretaker Profile. Manage your account settings, switch roles, or log out securely.',
             placement: 'center',
             route: '/dashboard'
@@ -145,7 +145,7 @@ export default function TourGuide() {
     return (
         <>
             {showPrompt && (
-                <div className="fixed top-8 inset-x-0 mx-auto z-[99999] w-[90%] max-w-2xl bg-white/20 backdrop-blur-3xl border border-white/40 shadow-[0_32px_64px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down relative overflow-hidden">
+                <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[99999] w-[90%] max-w-2xl bg-white/20 backdrop-blur-3xl border border-white/40 shadow-[0_32px_64px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/50 to-transparent pointer-events-none"></div>
                     <div className="flex items-center gap-4 w-full relative z-10">
                         <div className="flex h-12 w-12 bg-white/60 backdrop-blur-md rounded-full items-center justify-center shrink-0 border border-white/80 shadow-sm">
@@ -202,8 +202,16 @@ export default function TourGuide() {
                 </div>
             )}
 
-            {/* Fully sanitized JSX tag */}
-            <Joyride callback={handleJoyrideCallback} continuous={true} run={run} showSkipButton={true} stepIndex={stepIndex} steps={steps} styles={joyrideStyles} tooltipComponent={CustomTooltip} />
+            <Joyride 
+                callback={handleJoyrideCallback} 
+                continuous={true} 
+                run={run} 
+                showSkipButton={true} 
+                stepIndex={stepIndex} 
+                steps={steps} 
+                styles={joyrideStyles} 
+                tooltipComponent={CustomTooltip} 
+            />
         </>
     );
 }
