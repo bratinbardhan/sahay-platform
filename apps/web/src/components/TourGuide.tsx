@@ -28,9 +28,20 @@ export default function TourGuide() {
         setRun(true);
     };
 
-    const handleDenyTour = () => {
+    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+    const [showFinishPrompt, setShowFinishPrompt] = useState(false);
+
+    const handleFinalClose = () => {
         setShowPrompt(false);
+        setShowSkipConfirm(false);
+        setShowFinishPrompt(false);
+        setRun(false);
         localStorage.setItem('sahay_tour_completed', 'true');
+    };
+
+    const handleResumeTour = () => {
+        setShowSkipConfirm(false);
+        setRun(true);
     };
 
     // DEFINE MULTI-PAGE STEPS
@@ -102,23 +113,61 @@ export default function TourGuide() {
         <>
             {/* Redesigned Floating Clinical Top Prompt */}
             {showPrompt && (
-                <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-2xl bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down">
-                    <div className="flex items-center gap-4 w-full">
-                        <div className="flex h-12 w-12 bg-teal-50/80 rounded-full items-center justify-center shrink-0 border border-teal-100">
-                            <span className="flex h-4 w-4 rounded-full bg-teal-500 animate-pulse shadow-[0_0_12px_rgba(20,184,166,0.6)]" />
+                <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-2xl bg-white/30 backdrop-blur-3xl border border-white/60 shadow-[0_16px_40px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down relative overflow-hidden">
+                    {/* Subtle glass shine overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/50 to-transparent pointer-events-none"></div>
+
+                    <div className="flex items-center gap-4 w-full relative z-10">
+                        <div className="flex h-12 w-12 bg-white/60 backdrop-blur-md rounded-full items-center justify-center shrink-0 border border-white/80 shadow-sm">
+                            <span className="flex h-4 w-4 rounded-full bg-teal-500 animate-pulse shadow-[0_0_12px_rgba(20,184,166,0.8)]" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-900 text-sm md:text-base">Sahāy Platform Tour</h3>
-                            <p className="text-xs md:text-sm text-slate-600 font-medium">Would you like a quick walkthrough of your clinical tools?</p>
+                            <h3 className="font-bold text-slate-900 text-sm md:text-base drop-shadow-sm">Sahāy Platform Tour</h3>
+                            <p className="text-xs md:text-sm text-slate-700 font-medium drop-shadow-sm">Would you like a quick walkthrough of your clinical tools?</p>
                         </div>
                     </div>
-                    <div className="flex gap-2 text-sm font-semibold shrink-0 w-full md:w-auto justify-end">
-                        <button onClick={handleDenyTour} className="px-4 py-2.5 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100/50 transition-colors">
+                    <div className="flex gap-2 text-sm font-semibold shrink-0 w-full md:w-auto justify-end relative z-10">
+                        <button onClick={handleFinalClose} className="px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-white/50 transition-colors border border-transparent hover:border-white/50">
                             Decline
                         </button>
-                        <button onClick={handleStartTour} className="px-5 py-2.5 rounded-xl bg-teal-600/90 hover:bg-teal-700 text-white transition-all shadow-lg shadow-teal-600/20 backdrop-blur-sm">
+                        <button onClick={handleStartTour} className="px-5 py-2.5 rounded-xl bg-teal-600/80 backdrop-blur-md hover:bg-teal-600 text-white transition-all shadow-lg shadow-teal-600/30 border border-teal-500/50 hover:border-teal-400">
                             Start Tour
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {showSkipConfirm && (
+                <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
+                    <div className="w-full max-w-sm bg-white/40 backdrop-blur-3xl rounded-3xl p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] border border-white/60 relative overflow-hidden text-center">
+                        <div className="absolute inset-0 bg-gradient-to-bl from-white/60 via-transparent to-white/20 pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <h3 className="text-lg font-bold text-slate-900 mb-2 drop-shadow-sm">Cancel Tour?</h3>
+                            <p className="text-sm text-slate-700 mb-6 font-medium">Are you sure you want to exit? You can always explore the features on your own.</p>
+                            <div className="flex gap-3">
+                                <button onClick={handleFinalClose} className="flex-1 py-2.5 px-4 bg-white/50 hover:bg-white/80 text-slate-800 text-sm font-semibold rounded-xl transition-all border border-white/60 shadow-sm">Yes, Exit</button>
+                                <button onClick={handleResumeTour} className="flex-1 py-2.5 px-4 bg-teal-600/80 backdrop-blur-md hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-all border border-teal-500/50 shadow-lg shadow-teal-600/30">Resume Tour</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showFinishPrompt && (
+                <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
+                    <div className="w-full max-w-sm bg-white/40 backdrop-blur-3xl rounded-3xl p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] border border-white/60 relative overflow-hidden text-center">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/60 via-transparent to-white/20 pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-200/50 mb-4 text-emerald-700 shadow-inner">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 drop-shadow-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2 drop-shadow-sm">Tour Completed!</h3>
+                            <p className="text-sm text-slate-700 mb-6 font-medium">You are now ready to manage your patients. Do you want to review the tour again or head directly to your dashboard?</p>
+                            <div className="flex gap-3">
+                                <button onClick={() => { setShowFinishPrompt(false); setStepIndex(0); setRun(true); }} className="flex-1 py-2.5 px-4 bg-white/50 hover:bg-white/80 text-slate-800 text-sm font-semibold rounded-xl transition-all border border-white/60 shadow-sm">Restart Tour</button>
+                                <button onClick={handleFinalClose} className="flex-1 py-2.5 px-4 bg-teal-600/80 backdrop-blur-md hover:bg-teal-600 text-white text-sm font-semibold rounded-xl transition-all border border-teal-500/50 shadow-lg shadow-teal-600/30">Close & Begin</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
