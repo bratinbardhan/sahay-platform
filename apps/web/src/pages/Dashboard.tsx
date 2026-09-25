@@ -236,7 +236,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             <div>
               <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
 
-              <div className="flex flex-wrap items-center gap-6 mt-8">
+              <div className="flex flex-wrap items-center gap-6 mt-8 tour-live-tracking">
                 <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
                 <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
                 <a href="tel:+1234567890" className="inline-flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-wide">
@@ -389,7 +389,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
           {/* Exactly Replicated Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Card 1: Medication Scheduling */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-medication">
               <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Medication Scheduling</h3>
               <div className="flex justify-between items-center mb-8 px-4 relative w-full">
                 <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
@@ -417,7 +417,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             </div>
 
             {/* Card 2: Hydration Monitoring */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col">
+            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col tour-hydration">
               <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Hydration Monitoring</h3>
               <div className="flex justify-between items-center mb-8 px-4 relative">
                 <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
@@ -457,7 +457,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             </div>
 
             {/* Card 3: Family Media Uploads */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-media">
               <h3 className="font-extrabold text-lg text-[#1E293B] mb-6">Family Media Uploads</h3>
               <div className="grid grid-cols-3 gap-3">
                 <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
