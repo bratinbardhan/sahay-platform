@@ -16,7 +16,6 @@ export default function TourGuide() {
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showFinishPrompt, setShowFinishPrompt] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
 
   useEffect(() => {
     const tourCompleted = localStorage.getItem('sahay_tour_completed');
@@ -54,97 +53,82 @@ export default function TourGuide() {
     setRun(true);
   };
 
-  // 1. The Full 9-Step Deep Dive Mapping
-  const rawSteps: AppStep[] = [
+  // 100% Safe Structural & Body Steps (Guaranteed never to crash)
+  const steps: AppStep[] = [
     {
       target: 'body',
+      title: 'Welcome to Sahāy',
       content: 'Welcome to the Sahāy Clinical Dashboard! Let us take a deep dive into your clinical tools.',
       placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-sidebar',
-      content: 'Your Navigation Hub. Switch seamlessly between your Dashboard, Patient Roster, and Analytics.',
-      placement: 'right',
+      target: 'body',
+      title: 'Navigation Hub',
+      content: 'Your Navigation Hub (Sidebar). Switch seamlessly between your Dashboard, Patient Roster, and Analytics.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-live-tracking',
-      content: 'Active Patient Status. Instantly view the current patient and access their real-time GPS location via Live Tracking.',
-      placement: 'bottom',
+      target: 'body',
+      title: 'Active Patient & Live Tracking',
+      content: 'Instantly view the current patient status and access their real-time GPS location via Live Tracking.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-medication',
-      content: 'Medication Scheduling. Track adherence in real-time, view upcoming doses, and schedule new alerts directly to the patient app.',
-      placement: 'right',
+      target: 'body',
+      title: 'Medication Scheduling',
+      content: 'Track adherence in real-time, view upcoming doses, and schedule new alerts directly to the patient app.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-hydration',
-      content: 'Hydration & Vitals Monitoring. Keep a close eye on daily water intake and vital signs to ensure health goals are met.',
-      placement: 'bottom',
+      target: 'body',
+      title: 'Hydration & Vitals',
+      content: 'Keep a close eye on daily water intake and vital signs to ensure health goals are met.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-media',
-      content: 'Family Media Uploads. Upload photos and voice memos to help stimulate cognitive function and memory for dementia care.',
-      placement: 'left',
+      target: 'body',
+      title: 'Family Media Uploads',
+      content: 'Upload photos and voice memos to help stimulate cognitive function and memory for dementia care.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
     {
-      target: '.tour-patients-page',
-      content: 'The Patient Roster. Manage your assigned patients, review detailed adherence metrics, and handle emergency protocols.',
+      target: 'body',
+      title: 'The Patient Roster',
+      content: 'Manage your assigned patients, review detailed adherence metrics, and handle emergency protocols.',
       placement: 'center',
       disableBeacon: true,
       route: '/patients',
     },
     {
-      target: '.tour-analytics-page',
-      content: 'The Analytics Engine. Visualize long-term therapy adherence trends, cognitive game scores, and generate clinical reports.',
+      target: 'body',
+      title: 'The Analytics Engine',
+      content: 'Visualize long-term therapy adherence trends, cognitive game scores, and generate clinical reports.',
       placement: 'center',
       disableBeacon: true,
       route: '/analytics',
     },
     {
-      target: '.tour-profile',
-      content: 'Your Caretaker Profile. Manage your account settings, switch roles, or log out securely.',
-      placement: 'left',
+      target: 'body',
+      title: 'Caretaker Profile',
+      content: 'Manage your account settings, switch roles, or log out securely from your profile.',
+      placement: 'center',
       disableBeacon: true,
       route: '/dashboard',
     },
   ];
 
-  // 2. ANTI-CRASH SYSTEM: Fallback to 'body' if target UI class is missing
-  useEffect(() => {
-    const validateTargets = () => {
-      const safeSteps = rawSteps.map((step) => {
-        if (step.target === 'body') return step;
-        
-        // Scan the DOM for the specific class
-        const elementExists = document.querySelector(step.target as string);
-        
-        return {
-          ...step,
-          // Route to 'body' if missing to prevent fatal crash
-          target: elementExists ? step.target : 'body'
-        };
-      });
-      setActiveSteps(safeSteps);
-    };
-
-    validateTargets();
-    const timer = setTimeout(validateTargets, 400); 
-    return () => clearTimeout(timer);
-  }, [location.pathname, stepIndex]);
-
-  // 3. SAFE ROUTING: Handle cross-page navigation safely
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status, type, action, index } = data;
 
@@ -163,8 +147,8 @@ export default function TourGuide() {
     if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
       const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
       
-      if (nextStepIndex >= 0 && nextStepIndex < activeSteps.length) {
-        const nextRoute = activeSteps[nextStepIndex].route;
+      if (nextStepIndex >= 0 && nextStepIndex < steps.length) {
+        const nextRoute = steps[nextStepIndex].route;
         
         if (nextRoute && nextRoute !== location.pathname) {
           setRun(false); // Pause Joyride
@@ -180,7 +164,6 @@ export default function TourGuide() {
     }
   };
 
-  // 4. THICK WHITE UI: Tooltip with bg-white/95 for maximum readability
   const CustomTooltip = ({ continuous, index, step, backProps, primaryProps, tooltipProps }: TooltipRenderProps) => (
     <div 
       {...tooltipProps} 
@@ -192,7 +175,7 @@ export default function TourGuide() {
         <div className="text-sm font-medium leading-relaxed mb-5 text-slate-700">{step.content}</div>
         <div className="flex items-center justify-between mt-2">
           <span className="text-xs font-bold text-teal-800 tracking-widest uppercase bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-200">
-            Step {index + 1} of {activeSteps.length}
+            Step {index + 1} of {steps.length}
           </span>
           <div className="flex gap-2">
             {index > 0 && (
@@ -201,7 +184,7 @@ export default function TourGuide() {
               </button>
             )}
             <button {...primaryProps} className="px-5 py-2 text-xs font-bold rounded-xl bg-teal-600 text-white hover:bg-teal-700 border border-teal-500 transition-all shadow-lg shadow-teal-600/30">
-              {continuous ? (index === activeSteps.length - 1 ? 'Finish' : 'Next') : 'Close'}
+              {continuous ? (index === steps.length - 1 ? 'Finish' : 'Next') : 'Close'}
             </button>
           </div>
         </div>
@@ -211,7 +194,6 @@ export default function TourGuide() {
 
   return (
     <>
-      {/* Modal 1: Initial Prompt */}
       {showPrompt && (
         <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[99999] w-[90%] max-w-2xl bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-[0_24px_48px_rgba(13,148,136,0.15)] rounded-3xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down">
           <div className="flex items-center gap-4 w-full">
@@ -230,7 +212,6 @@ export default function TourGuide() {
         </div>
       )}
 
-      {/* Modal 2: Decline Confirmation */}
       {showDeclineConfirm && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
           <div className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-7 shadow-2xl border border-teal-100 text-center">
@@ -244,7 +225,6 @@ export default function TourGuide() {
         </div>
       )}
 
-      {/* Modal 3: Mid-Tour Skip/Exit */}
       {showSkipConfirm && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
           <div className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-7 shadow-2xl border border-teal-100 text-center">
@@ -258,7 +238,6 @@ export default function TourGuide() {
         </div>
       )}
 
-      {/* Modal 4: Finish & Restart */}
       {showFinishPrompt && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
           <div className="w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-7 shadow-2xl border border-teal-100 text-center">
@@ -281,7 +260,7 @@ export default function TourGuide() {
         run={run}
         showSkipButton={true}
         stepIndex={stepIndex}
-        steps={activeSteps}
+        steps={steps}
         styles={{ options: { zIndex: 10000, overlayColor: 'rgba(15, 23, 42, 0.4)' } }}
         tooltipComponent={CustomTooltip}
       />
