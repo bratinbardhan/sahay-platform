@@ -109,6 +109,8 @@ export default function TourGuide() {
         }
     };
 
+    const joyrideLocale = { last: 'Done', skip: 'Skip Tour' };
+
     return (
         <>
             {/* Redesigned Floating Clinical Top Prompt */}
@@ -182,6 +184,7 @@ export default function TourGuide() {
 
             {/* Interactive Tour Guide */}
             <Joyride
+                locale={joyrideLocale}
                 steps={steps}
                 run={run}
                 stepIndex={stepIndex}
