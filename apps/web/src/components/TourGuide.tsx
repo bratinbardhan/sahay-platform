@@ -113,7 +113,7 @@ export default function TourGuide() {
         <>
             {/* Redesigned Floating Clinical Top Prompt */}
             {showPrompt && (
-                <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-2xl bg-white/30 backdrop-blur-3xl border border-white/60 shadow-[0_16px_40px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down relative overflow-hidden">
+                <div className="fixed top-8 inset-x-0 mx-auto z-[99999] w-[90%] max-w-2xl bg-white/70 backdrop-blur-2xl border border-teal-100/50 shadow-[0_20px_60px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down">
                     {/* Subtle glass shine overlay */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/50 to-transparent pointer-events-none"></div>
 
