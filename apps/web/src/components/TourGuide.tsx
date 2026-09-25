@@ -35,8 +35,8 @@ export default function TourGuide() {
         setShowPrompt(false);
         setShowSkipConfirm(false);
         setShowFinishPrompt(false);
-        setRun(false);
         localStorage.setItem('sahay_tour_completed', 'true');
+        setStepIndex(0);
     };
 
     const handleResumeTour = () => {
@@ -84,10 +84,14 @@ export default function TourGuide() {
         const { status, type, action, index } = data;
 
         // End Tour Logic
-        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status as any)) {
+        if (status === STATUS.SKIPPED) {
             setRun(false);
-            localStorage.setItem('sahay_tour_completed', 'true');
-            setStepIndex(0);
+            setShowSkipConfirm(true);
+            return;
+        }
+        if (status === STATUS.FINISHED) {
+            setRun(false);
+            setShowFinishPrompt(true);
             return;
         }
 
