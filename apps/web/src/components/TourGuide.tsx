@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS, TooltipRenderProps } from 'react-joyride';
 
-// Extend the default Step type to accept a custom 'route' property
 interface AppStep extends Step {
     route?: string;
 }
@@ -13,6 +12,8 @@ export default function TourGuide() {
 
     const [run, setRun] = useState(false);
     const [showPrompt, setShowPrompt] = useState(false);
+    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+    const [showFinishPrompt, setShowFinishPrompt] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
 
     useEffect(() => {
@@ -24,12 +25,10 @@ export default function TourGuide() {
 
     const handleStartTour = () => {
         setShowPrompt(false);
+        setShowFinishPrompt(false);
         setStepIndex(0);
         setRun(true);
     };
-
-    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
-    const [showFinishPrompt, setShowFinishPrompt] = useState(false);
 
     const handleFinalClose = () => {
         setShowPrompt(false);
@@ -44,85 +43,110 @@ export default function TourGuide() {
         setRun(true);
     };
 
-    // DEFINE MULTI-PAGE STEPS
-    // Update the 'route' strings to match your actual application URLs
+    // Temporarily set all targets to 'body' to prevent crashing until UI classes are added
     const steps: AppStep[] = [
         {
             target: 'body',
-            content: 'Welcome to the Sahāy Platform! Let us take a quick tour of your clinical dashboard.',
+            content: 'Welcome to the Sahāy Clinical Dashboard! Let us take a comprehensive tour of your workspace.',
             placement: 'center',
             disableBeacon: true,
-            route: '/dashboard' // Starting point
-        },
-        {
-            target: '.tour-sidebar',
-            content: 'This is your main navigation menu. You can access all modules from here.',
-            placement: 'right',
             route: '/dashboard'
         },
         {
-            target: '.tour-patients-page',
-            content: 'This is the Patient Roster. Here you can monitor all assigned individuals.',
+            target: 'body',
+            content: 'This is your main Navigation Hub. Easily switch between Patients, Analytics, and Care Plans from here.',
             placement: 'center',
-            route: '/patients' // Tour will auto-navigate to this page!
+            route: '/dashboard'
         },
         {
-            target: '.tour-analytics-page',
-            content: 'View real-time therapy adherence and clinical statistics here.',
+            target: 'body',
+            content: 'The Patient Roster. Here you can monitor vitals, review daily adherence, and manage emergency protocols.',
             placement: 'center',
-            route: '/analytics' // Tour will auto-navigate to this page!
+            route: '/patients'
         },
         {
-            target: '.tour-profile',
-            content: 'Manage your caretaker profile, demo settings, and logout from here.',
-            placement: 'left',
-            route: '/dashboard' // Back to dashboard
+            target: 'body',
+            content: 'The Analytics Engine. Visualize therapy adherence trends and generate clinical reports.',
+            placement: 'center',
+            route: '/analytics'
+        },
+        {
+            target: 'body',
+            content: 'Your Caretaker Profile. Manage your account settings, switch roles, or log out securely.',
+            placement: 'center',
+            route: '/dashboard'
         }
     ];
 
     const handleJoyrideCallback = (data: CallBackProps) => {
         const { status, type, action, index } = data;
 
-        // End Tour Logic
         if (status === STATUS.SKIPPED) {
             setRun(false);
             setShowSkipConfirm(true);
             return;
         }
+
         if (status === STATUS.FINISHED) {
             setRun(false);
             setShowFinishPrompt(true);
             return;
         }
 
-        // Cross-Page Navigation Logic
         if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
-            // Determine if user clicked Next or Back
             const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
-
             if (nextStepIndex >= 0 && nextStepIndex < steps.length) {
                 const nextRoute = steps[nextStepIndex].route;
-
-                // If the next step requires a different page, push the router to that page
                 if (nextRoute && nextRoute !== location.pathname) {
                     navigate(nextRoute);
                 }
-
                 setStepIndex(nextStepIndex);
             }
         }
     };
 
-    const joyrideLocale = { last: 'Done', skip: 'Skip Tour' };
+    const CustomTooltip = ({
+        continuous,
+        index,
+        step,
+        backProps,
+        primaryProps,
+        tooltipProps,
+    }: TooltipRenderProps) => (
+        <div {...tooltipProps} className="bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_16px_40px_rgba(13,148,136,0.15)] rounded-2xl p-5 max-w-sm relative overflow-hidden text-slate-800">
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-white/40 pointer-events-none"></div>
+            <div className="relative z-10">
+                {step.title && <h4 className="font-bold text-lg mb-2">{step.title}</h4>}
+                <div className="text-sm font-medium leading-relaxed mb-4">{step.content}</div>
+                <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-teal-700/80 tracking-widest uppercase bg-teal-100/50 px-2 py-1 rounded-md border border-teal-200/30">Step {index + 1}</span>
+                    <div className="flex gap-2">
+                        {index > 0 && (
+                            <button {...backProps} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-white/50 hover:bg-white/80 border border-white/60 transition-colors">
+                                Back
+                            </button>
+                        )}
+                        <button {...primaryProps} className="px-4 py-1.5 text-xs font-bold rounded-lg bg-teal-600/90 text-white hover:bg-teal-700 border border-teal-500/50 transition-colors shadow-md">
+                            {continuous ? (index === steps.length - 1 ? 'Done' : 'Next') : 'Close'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const joyrideStyles = {
+        options: {
+            overlayColor: 'rgba(15, 23, 42, 0.4)',
+            zIndex: 10000,
+        }
+    };
 
     return (
         <>
-            {/* Redesigned Floating Clinical Top Prompt */}
             {showPrompt && (
-                <div className="fixed top-8 inset-x-0 mx-auto z-[99999] w-[90%] max-w-2xl bg-white/20 backdrop-blur-3xl border border-white/40 shadow-[0_32px_64px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down">
-                    {/* Subtle glass shine overlay */}
+                <div className="fixed top-8 inset-x-0 mx-auto z-[99999] w-[90%] max-w-2xl bg-white/20 backdrop-blur-3xl border border-white/40 shadow-[0_32px_64px_rgba(13,148,136,0.15)] rounded-3xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-down relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-white/50 to-transparent pointer-events-none"></div>
-
                     <div className="flex items-center gap-4 w-full relative z-10">
                         <div className="flex h-12 w-12 bg-white/60 backdrop-blur-md rounded-full items-center justify-center shrink-0 border border-white/80 shadow-sm">
                             <span className="flex h-4 w-4 rounded-full bg-teal-500 animate-pulse shadow-[0_0_12px_rgba(20,184,166,0.8)]" />
@@ -144,7 +168,7 @@ export default function TourGuide() {
             )}
 
             {showSkipConfirm && (
-                <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
+                <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
                     <div className="w-full max-w-sm bg-white/40 backdrop-blur-3xl rounded-3xl p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] border border-white/60 relative overflow-hidden text-center">
                         <div className="absolute inset-0 bg-gradient-to-bl from-white/60 via-transparent to-white/20 pointer-events-none"></div>
                         <div className="relative z-10">
@@ -160,7 +184,7 @@ export default function TourGuide() {
             )}
 
             {showFinishPrompt && (
-                <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
+                <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/30 backdrop-blur-md p-4 animate-fade-in">
                     <div className="w-full max-w-sm bg-white/40 backdrop-blur-3xl rounded-3xl p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] border border-white/60 relative overflow-hidden text-center">
                         <div className="absolute inset-0 bg-gradient-to-tr from-white/60 via-transparent to-white/20 pointer-events-none"></div>
                         <div className="relative z-10">
@@ -178,42 +202,8 @@ export default function TourGuide() {
                 </div>
             )}
 
-            {/* Fixed Light-Theme Progress Indicator */}
-            {run && (
-                <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] bg-white/95 backdrop-blur-md text-teal-800 px-5 py-2.5 rounded-full shadow-lg border border-teal-200 text-sm font-bold flex items-center gap-3 animate-fade-in">
-                    <div className="h-2.5 w-2.5 rounded-full bg-teal-500 animate-pulse" />
-                    Tour Progress: Step {stepIndex + 1} of {steps.length}
-                </div>
-            )}
-
-            {/* Interactive Tour Guide */}
-            <Joyride
-                locale={joyrideLocale}
-                steps={steps}
-                run={run}
-                stepIndex={stepIndex}
-                continuous={true}
-                showProgress={false}
-                showSkipButton={true}
-                callback={handleJoyrideCallback}
-                styles={{
-                    options: {
-                        primaryColor: '#0d9488',
-                        textColor: '#0f172a',
-                        backgroundColor: '#ffffff',
-                        overlayColor: 'rgba(15, 23, 42, 0.4)', // Softened overlay
-                        zIndex: 1000,
-                    },
-                    tooltip: {
-                        borderRadius: '16px',
-                        boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
-                        padding: '24px',
-                    },
-                    buttonNext: { borderRadius: '8px', padding: '10px 18px', fontWeight: 600 },
-                    buttonBack: { color: '#64748b', marginRight: '8px' },
-                    buttonSkip: { color: '#94a3b8' }
-                }}
-            />
+            {/* Fully sanitized JSX tag */}
+            <Joyride callback={handleJoyrideCallback} continuous={true} run={run} showSkipButton={true} stepIndex={stepIndex} steps={steps} styles={joyrideStyles} tooltipComponent={CustomTooltip} />
         </>
     );
 }
