@@ -230,17 +230,16 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         </header>
 
         {/* Scrollable Dashboard Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-8">
-          {/* Dashboard Title Area */}
-          <div className="relative overflow-hidden mb-10">
-            {/* 1. The injected texture background */}
-            <div
-              className="absolute inset-0 z-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"
-              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
-            />
+        <div className="flex-1 overflow-y-auto px-8 pb-8 relative overflow-hidden">
+          {/* 1. The injected texture background */}
+          <div
+            className="absolute inset-0 z-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
+          />
 
-            {/* 2. The existing content securely pushed above the texture */}
-            <div className="relative z-10 flex items-start justify-between w-full">
+          <div className="relative z-10">
+            {/* Dashboard Title Area */}
+            <div className="flex items-start justify-between mb-10 w-full">
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
 
@@ -268,287 +267,287 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
                 <span>Emergency Contact</span>
               </button>
             </div>
+
+            {activeAlert ? (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-sahay-alert text-white p-8 rounded-xl max-w-lg w-full shadow-caretaker-card">
+                  <h2 className="text-3xl font-bold flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" /> EMERGENCY SOS
+                  </h2>
+                  <p className="text-xl mt-2">Patient {patient.name} has triggered an SOS.</p>
+                  <p>Reason: {activeAlert.trigger_reason}</p>
+                  <p>Coordinates: {activeAlert.latitude}, {activeAlert.longitude}</p>
+                  <div className="mt-6 flex gap-4">
+                    <button type="button" onClick={() => void handleResolve('ACKNOWLEDGED')} className="bg-sahay-surface-raised text-sahay-alert px-4 py-2 rounded">Acknowledge</button>
+                    <button type="button" onClick={() => void handleResolve('RESOLVED')} className="bg-sahay-ink text-white px-4 py-2 rounded">Resolve</button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {isMedModalOpen ? (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white p-6 rounded-2xl max-w-sm w-full shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-lg text-[#1F2937]">Schedule Medication</h3>
+                    <button onClick={() => setMedModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                  </div>
+                  <div className="space-y-4 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Medication Name</label>
+                      <input type="text" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" placeholder="e.g. Donepezil" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Time</label>
+                      <input type="time" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" />
+                    </div>
+                  </div>
+                  <button onClick={() => setMedModalOpen(false)} className="w-full bg-[#1E293B] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#334155] transition-colors">Save Schedule</button>
+                </div>
+              </div>
+            ) : null}
+
+            {isEmergencyOpen ? (
+              <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
+                <div className="bg-white w-[600px] rounded-2xl p-6 shadow-xl relative">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-red-600 flex items-center gap-2">Care Circle & Emergency Help</h2>
+                    <button onClick={() => setIsEmergencyOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+                  </div>
+                  <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                    <div>
+                      <p className="text-[15px] font-bold text-[#1E293B]">Ram Sharma</p>
+                      <p className="text-xs font-semibold text-slate-600 mt-0.5">Primary Caregiver / Son</p>
+                      <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 98620 44110</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <a href="tel:+919862044110" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                      <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                    <div>
+                      <p className="text-[15px] font-bold text-[#1E293B]">Dr. S. K. Sen</p>
+                      <p className="text-xs font-semibold text-slate-600 mt-0.5">Consultant Neurologist</p>
+                      <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 94340 12345</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <a href="tel:+919434012345" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                      <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                    <div>
+                      <p className="text-[15px] font-bold text-[#1E293B]">NEIGRIHMS Hospital Emergency / Cardiology</p>
+                      <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
+                      <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 253 8025</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <a href="tel:+913642538025" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                      <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                    <div>
+                      <p className="text-[15px] font-bold text-[#1E293B]">Shillong Civil Hospital Emergency Desk</p>
+                      <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
+                      <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 222 2395</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <a href="tel:+913642222395" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                      <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
+                    <div>
+                      <p className="text-[15px] font-bold text-[#1E293B]">Police Control Room Shillong</p>
+                      <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong emergency response</p>
+                      <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">112</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <a href="tel:112" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
+                        <PhoneCall className="w-4 h-4" />
+                      </a>
+                      <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Exactly Replicated Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Card 1: Medication Scheduling */}
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-medication">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Medication Scheduling</h3>
+                <div className="flex justify-between items-center mb-8 px-4 relative w-full">
+                  <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
+                  <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CheckCircle2 className="w-5 h-5" /></div>
+                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CalendarDays className="w-5 h-5" /></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#1E293B]"></div>
+                      <span className="text-sm font-medium text-slate-700">Medication A</span>
+                    </div>
+                    <span className="text-sm text-slate-500 font-medium">12:08 AM</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-[#F5E6D3]"></div>
+                      <span className="text-sm font-medium text-slate-700">Medication B</span>
+                    </div>
+                    <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
+                  </div>
+                </div>
+                <button onClick={() => setMedModalOpen(true)} className="w-full mt-5 bg-[#1E293B] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#334155] transition-colors">Schedule Medication</button>
+              </div>
+
+              {/* Card 2: Hydration Monitoring */}
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col tour-hydration">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Hydration Monitoring</h3>
+                <div className="flex justify-between items-center mb-8 px-4 relative">
+                  <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
+                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                    <Droplets className="w-5 h-5" />
+                  </div>
+                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                    <HeartPulse className="w-5 h-5" />
+                  </div>
+                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                    <CupSoda className="w-5 h-5" />
+                  </div>
+                </div>
+                <div className="space-y-4 mt-auto">
+                  {[
+                    { key: 'medication', label: "Medication" },
+                    { key: 'hydration', label: "Hydration" },
+                    { key: 'water', label: "Water intake" },
+                    { key: 'participation', label: "Participations" }
+                  ].map((row) => (
+                    <div key={row.key} className="flex items-center justify-between text-sm">
+                      <span className="w-28 text-[#1F2937] font-medium text-xs">{row.label}</span>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={hydrationStats[row.key as keyof typeof hydrationStats]}
+                        onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
+                        className="flex-1 ml-4 h-2 rounded-full appearance-none cursor-pointer accent-[#1E293B]"
+                        style={{
+                          background: `linear-gradient(to right, #1E293B 0%, #1E293B ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 100%)`
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card 3: Family Media Uploads */}
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-media">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-6">Family Media Uploads</h3>
+                <div className="grid grid-cols-3 gap-3">
+                  <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
+                  <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Images className="w-6 h-6" /></div>
+                  <div onClick={() => setIsRecording(!isRecording)} className={`aspect-square rounded-[16px] flex items-center justify-center cursor-pointer transition-transform active:scale-95 hover:shadow-sm ${isRecording ? 'bg-red-50 text-red-600 animate-pulse ring-2 ring-red-400' : 'bg-[#F5E6D3] text-[#1E293B]'}`}><Mic className="w-6 h-6" /></div>
+                  <div onClick={() => onNavigate('reminiscence')} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Play className="w-6 h-6" /></div>
+
+                  <div className="aspect-square rounded-[16px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
+                    {uploadedImages[0] ? <img src={uploadedImages[0]} alt="thumb0" className="w-full h-full object-cover" /> : <img src="https://api.dicebear.com/9.x/micah/svg?seed=Aneka&backgroundColor=f5e6d3" alt="Family member" className="w-full h-full object-cover" />}
+                  </div>
+                  <div className="aspect-square rounded-[16px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
+                    {uploadedImages[1] ? <img src={uploadedImages[1]} alt="thumb1" className="w-full h-full object-cover" /> : <img src="https://api.dicebear.com/9.x/micah/svg?seed=Felix&backgroundColor=f5e6d3" alt="Family member" className="w-full h-full object-cover" />}
+                  </div>
+
+                  <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex flex-col items-center justify-center text-[#1E293B] font-medium text-xs cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Plus className="w-5 h-5 mb-1" /> Add</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-4 gap-4 mt-6">
+              <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+                <Brain className="w-6 h-6 text-[#0E7490] mb-2" />
+                <div className="text-3xl font-bold text-[#0E7490]">3</div>
+                <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">GDS STAGE</div>
+                <div className="text-xs font-medium text-[#475569] mt-1">Mild</div>
+              </div>
+              <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+                <Coins className="w-6 h-6 text-[#0E7490] mb-2" />
+                <div className="text-3xl font-bold text-[#0E7490]">186</div>
+                <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">DEMITOKEN BALANCE</div>
+                <div className="text-xs font-medium text-[#475569] mt-1">Local Wallet Balance</div>
+              </div>
+              <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+                <Flame className="w-6 h-6 text-[#0E7490] mb-2" />
+                <div className="text-3xl font-bold text-[#0E7490]">88%</div>
+                <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">STABILITY SCORE</div>
+                <div className="text-xs font-medium text-[#475569] mt-1">14-day mood / load</div>
+              </div>
+              <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+                <Clock className="w-6 h-6 text-[#0E7490] mb-2" />
+                <div className="text-3xl font-bold text-[#0E7490]">427ms</div>
+                <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">TOUCH LATENCY</div>
+                <div className="text-xs font-medium text-[#475569] mt-1">↑ vs 14-day target</div>
+              </div>
+            </div>
+
+            <div className="bg-[#FDFBF7] border border-[#F1E8DC] shadow-sm rounded-[18px] p-6 mt-4 mb-8">
+              <h3 className="text-base font-bold text-[#1E293B] mb-4">Cognitive Summary — 7 Day Trend</h3>
+              <div className="flex justify-between items-center text-center">
+                <div>
+                  <div className="text-2xl font-extrabold text-[#1E293B]">STABLE</div>
+                  <div className="text-xs text-slate-500">-1.79% accuracy</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-[#0E7490]">88%</div>
+                  <div className="text-xs text-slate-500">Stability Score</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-[#0E7490]">3</div>
+                  <div className="text-xs text-slate-500">Recommended Difficulty</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-[#1E293B]">420ms</div>
+                  <div className="text-xs text-slate-500">Avg Latency (7 Days)</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Preserve original charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">Activity rhythm</h3>
+                <ActivityHeatmap cells={isDemo ? getDemoActivityHeatmap() : []} />
+              </div>
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">DDA Difficulty & Reaction Curve</h3>
+                <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
+              </div>
+            </div>
+            <footer className="mt-8 pt-6 border-t border-slate-200 text-center">
+              <p className="text-base md:text-lg italic text-slate-500 leading-relaxed max-w-2xl mx-auto">"They may not remember the conversation, but they will never forget how you made them feel."</p>
+            </footer>
           </div>
-
-          {activeAlert ? (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-              <div className="bg-sahay-alert text-white p-8 rounded-xl max-w-lg w-full shadow-caretaker-card">
-                <h2 className="text-3xl font-bold flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 md:w-6 md:h-6" /> EMERGENCY SOS
-                </h2>
-                <p className="text-xl mt-2">Patient {patient.name} has triggered an SOS.</p>
-                <p>Reason: {activeAlert.trigger_reason}</p>
-                <p>Coordinates: {activeAlert.latitude}, {activeAlert.longitude}</p>
-                <div className="mt-6 flex gap-4">
-                  <button type="button" onClick={() => void handleResolve('ACKNOWLEDGED')} className="bg-sahay-surface-raised text-sahay-alert px-4 py-2 rounded">Acknowledge</button>
-                  <button type="button" onClick={() => void handleResolve('RESOLVED')} className="bg-sahay-ink text-white px-4 py-2 rounded">Resolve</button>
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          {isMedModalOpen ? (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-              <div className="bg-white p-6 rounded-2xl max-w-sm w-full shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="font-bold text-lg text-[#1F2937]">Schedule Medication</h3>
-                  <button onClick={() => setMedModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-                </div>
-                <div className="space-y-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Medication Name</label>
-                    <input type="text" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" placeholder="e.g. Donepezil" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Time</label>
-                    <input type="time" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#1E293B]" />
-                  </div>
-                </div>
-                <button onClick={() => setMedModalOpen(false)} className="w-full bg-[#1E293B] text-white py-2.5 rounded-lg font-medium text-sm hover:bg-[#334155] transition-colors">Save Schedule</button>
-              </div>
-            </div>
-          ) : null}
-
-          {isEmergencyOpen ? (
-            <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-              <div className="bg-white w-[600px] rounded-2xl p-6 shadow-xl relative">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold text-red-600 flex items-center gap-2">Care Circle & Emergency Help</h2>
-                  <button onClick={() => setIsEmergencyOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-                </div>
-                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
-                  <div>
-                    <p className="text-[15px] font-bold text-[#1E293B]">Ram Sharma</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Primary Caregiver / Son</p>
-                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 98620 44110</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a href="tel:+919862044110" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
-                      <PhoneCall className="w-4 h-4" />
-                    </a>
-                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
-                      <MessageSquare className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
-                  <div>
-                    <p className="text-[15px] font-bold text-[#1E293B]">Dr. S. K. Sen</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Consultant Neurologist</p>
-                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 94340 12345</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a href="tel:+919434012345" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
-                      <PhoneCall className="w-4 h-4" />
-                    </a>
-                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
-                      <MessageSquare className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
-                  <div>
-                    <p className="text-[15px] font-bold text-[#1E293B]">NEIGRIHMS Hospital Emergency / Cardiology</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
-                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 253 8025</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a href="tel:+913642538025" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
-                      <PhoneCall className="w-4 h-4" />
-                    </a>
-                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
-                      <MessageSquare className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
-                  <div>
-                    <p className="text-[15px] font-bold text-[#1E293B]">Shillong Civil Hospital Emergency Desk</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong, Meghalaya</p>
-                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">+91 364 222 2395</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a href="tel:+913642222395" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
-                      <PhoneCall className="w-4 h-4" />
-                    </a>
-                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
-                      <MessageSquare className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="border border-slate-200 bg-white hover:border-slate-300 rounded-xl p-4 mb-3 flex justify-between items-center transition-all">
-                  <div>
-                    <p className="text-[15px] font-bold text-[#1E293B]">Police Control Room Shillong</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-0.5">Shillong emergency response</p>
-                    <p className="text-sm font-bold text-teal-800 tracking-wide mt-1">112</p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <a href="tel:112" className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Call">
-                      <PhoneCall className="w-4 h-4" />
-                    </a>
-                    <button className="w-10 h-10 rounded-full bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm" title="Message">
-                      <MessageSquare className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          {/* Exactly Replicated Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Card 1: Medication Scheduling */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-medication">
-              <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Medication Scheduling</h3>
-              <div className="flex justify-between items-center mb-8 px-4 relative w-full">
-                <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CheckCircle2 className="w-5 h-5" /></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CalendarDays className="w-5 h-5" /></div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#1E293B]"></div>
-                    <span className="text-sm font-medium text-slate-700">Medication A</span>
-                  </div>
-                  <span className="text-sm text-slate-500 font-medium">12:08 AM</span>
-                </div>
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#F5E6D3]"></div>
-                    <span className="text-sm font-medium text-slate-700">Medication B</span>
-                  </div>
-                  <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
-                </div>
-              </div>
-              <button onClick={() => setMedModalOpen(true)} className="w-full mt-5 bg-[#1E293B] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#334155] transition-colors">Schedule Medication</button>
-            </div>
-
-            {/* Card 2: Hydration Monitoring */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col tour-hydration">
-              <h3 className="font-extrabold text-lg text-[#1E293B] mb-8">Hydration Monitoring</h3>
-              <div className="flex justify-between items-center mb-8 px-4 relative">
-                <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                  <Droplets className="w-5 h-5" />
-                </div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                  <HeartPulse className="w-5 h-5" />
-                </div>
-                <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                  <CupSoda className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="space-y-4 mt-auto">
-                {[
-                  { key: 'medication', label: "Medication" },
-                  { key: 'hydration', label: "Hydration" },
-                  { key: 'water', label: "Water intake" },
-                  { key: 'participation', label: "Participations" }
-                ].map((row) => (
-                  <div key={row.key} className="flex items-center justify-between text-sm">
-                    <span className="w-28 text-[#1F2937] font-medium text-xs">{row.label}</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={hydrationStats[row.key as keyof typeof hydrationStats]}
-                      onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
-                      className="flex-1 ml-4 h-2 rounded-full appearance-none cursor-pointer accent-[#1E293B]"
-                      style={{
-                        background: `linear-gradient(to right, #1E293B 0%, #1E293B ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 100%)`
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Card 3: Family Media Uploads */}
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] tour-media">
-              <h3 className="font-extrabold text-lg text-[#1E293B] mb-6">Family Media Uploads</h3>
-              <div className="grid grid-cols-3 gap-3">
-                <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Images className="w-6 h-6" /></div>
-                <div onClick={() => setIsRecording(!isRecording)} className={`aspect-square rounded-[16px] flex items-center justify-center cursor-pointer transition-transform active:scale-95 hover:shadow-sm ${isRecording ? 'bg-red-50 text-red-600 animate-pulse ring-2 ring-red-400' : 'bg-[#F5E6D3] text-[#1E293B]'}`}><Mic className="w-6 h-6" /></div>
-                <div onClick={() => onNavigate('reminiscence')} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex items-center justify-center text-[#1E293B] cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Play className="w-6 h-6" /></div>
-
-                <div className="aspect-square rounded-[16px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
-                  {uploadedImages[0] ? <img src={uploadedImages[0]} alt="thumb0" className="w-full h-full object-cover" /> : <img src="https://api.dicebear.com/9.x/micah/svg?seed=Aneka&backgroundColor=f5e6d3" alt="Family member" className="w-full h-full object-cover" />}
-                </div>
-                <div className="aspect-square rounded-[16px] overflow-hidden flex items-center justify-center bg-[#F5E6D3]/60 cursor-pointer transition-transform active:scale-95 hover:shadow-sm">
-                  {uploadedImages[1] ? <img src={uploadedImages[1]} alt="thumb1" className="w-full h-full object-cover" /> : <img src="https://api.dicebear.com/9.x/micah/svg?seed=Felix&backgroundColor=f5e6d3" alt="Family member" className="w-full h-full object-cover" />}
-                </div>
-
-                <div onClick={() => fileInputRef.current?.click()} className="aspect-square bg-[#F5E6D3] rounded-[16px] flex flex-col items-center justify-center text-[#1E293B] font-medium text-xs cursor-pointer transition-transform active:scale-95 hover:shadow-sm"><Plus className="w-5 h-5 mb-1" /> Add</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-4 gap-4 mt-6">
-            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
-              <Brain className="w-6 h-6 text-[#0E7490] mb-2" />
-              <div className="text-3xl font-bold text-[#0E7490]">3</div>
-              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">GDS STAGE</div>
-              <div className="text-xs font-medium text-[#475569] mt-1">Mild</div>
-            </div>
-            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
-              <Coins className="w-6 h-6 text-[#0E7490] mb-2" />
-              <div className="text-3xl font-bold text-[#0E7490]">186</div>
-              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">DEMITOKEN BALANCE</div>
-              <div className="text-xs font-medium text-[#475569] mt-1">Local Wallet Balance</div>
-            </div>
-            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
-              <Flame className="w-6 h-6 text-[#0E7490] mb-2" />
-              <div className="text-3xl font-bold text-[#0E7490]">88%</div>
-              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">STABILITY SCORE</div>
-              <div className="text-xs font-medium text-[#475569] mt-1">14-day mood / load</div>
-            </div>
-            <div className="bg-[#D1F2EB]/60 hover:bg-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
-              <Clock className="w-6 h-6 text-[#0E7490] mb-2" />
-              <div className="text-3xl font-bold text-[#0E7490]">427ms</div>
-              <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">TOUCH LATENCY</div>
-              <div className="text-xs font-medium text-[#475569] mt-1">↑ vs 14-day target</div>
-            </div>
-          </div>
-
-          <div className="bg-[#FDFBF7] border border-[#F1E8DC] shadow-sm rounded-[18px] p-6 mt-4 mb-8">
-            <h3 className="text-base font-bold text-[#1E293B] mb-4">Cognitive Summary — 7 Day Trend</h3>
-            <div className="flex justify-between items-center text-center">
-              <div>
-                <div className="text-2xl font-extrabold text-[#1E293B]">STABLE</div>
-                <div className="text-xs text-slate-500">-1.79% accuracy</div>
-              </div>
-              <div>
-                <div className="text-2xl font-extrabold text-[#0E7490]">88%</div>
-                <div className="text-xs text-slate-500">Stability Score</div>
-              </div>
-              <div>
-                <div className="text-2xl font-extrabold text-[#0E7490]">3</div>
-                <div className="text-xs text-slate-500">Recommended Difficulty</div>
-              </div>
-              <div>
-                <div className="text-2xl font-extrabold text-[#1E293B]">420ms</div>
-                <div className="text-xs text-slate-500">Avg Latency (7 Days)</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Preserve original charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">Activity rhythm</h3>
-              <ActivityHeatmap cells={isDemo ? getDemoActivityHeatmap() : []} />
-            </div>
-            <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-              <h3 className="font-extrabold text-lg text-[#1E293B] mb-4">DDA Difficulty & Reaction Curve</h3>
-              <DdaDifficultyCurve points={ddaHistory?.points ?? []} recommendedDifficulty={cognitiveSummary?.recommended_difficulty ?? null} />
-            </div>
-          </div>
-          <footer className="mt-8 pt-6 border-t border-slate-200 text-center">
-            <p className="text-base md:text-lg italic text-slate-500 leading-relaxed max-w-2xl mx-auto">"They may not remember the conversation, but they will never forget how you made them feel."</p>
-          </footer>
         </div>
       </main >
     </div >
