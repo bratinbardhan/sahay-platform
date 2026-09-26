@@ -454,42 +454,44 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               </div>
 
               {/* Card 2: Hydration Monitoring */}
-              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col h-full justify-between gap-6 tour-hydration">
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col h-full tour-hydration">
                 <h3 className="font-extrabold text-lg text-[#1E293B]">Hydration Monitoring</h3>
-                <div className="flex justify-between items-center px-4 relative">
-                  <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                    <Droplets className="w-5 h-5" />
-                  </div>
-                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                    <HeartPulse className="w-5 h-5" />
-                  </div>
-                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
-                    <CupSoda className="w-5 h-5" />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {[
-                    { key: 'medication', label: "Medication" },
-                    { key: 'hydration', label: "Hydration" },
-                    { key: 'water', label: "Water intake" },
-                    { key: 'participation', label: "Participations" }
-                  ].map((row) => (
-                    <div key={row.key} className="flex items-center justify-between text-sm">
-                      <span className="w-28 text-[#1F2937] font-medium text-xs">{row.label}</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={hydrationStats[row.key as keyof typeof hydrationStats]}
-                        onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
-                        className="flex-1 ml-4 h-2 rounded-full appearance-none cursor-pointer accent-[#1E293B]"
-                        style={{
-                          background: `linear-gradient(to right, #1E293B 0%, #1E293B ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 100%)`
-                        }}
-                      />
+                <div className="flex flex-col gap-10 my-auto">
+                  <div className="flex justify-between items-center px-4 relative">
+                    <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
+                    <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                      <Droplets className="w-5 h-5" />
                     </div>
-                  ))}
+                    <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                      <HeartPulse className="w-5 h-5" />
+                    </div>
+                    <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] z-10">
+                      <CupSoda className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {[
+                      { key: 'medication', label: "Medication" },
+                      { key: 'hydration', label: "Hydration" },
+                      { key: 'water', label: "Water intake" },
+                      { key: 'participation', label: "Participations" }
+                    ].map((row) => (
+                      <div key={row.key} className="flex items-center justify-between text-sm">
+                        <span className="w-28 text-[#1F2937] font-medium text-xs">{row.label}</span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={hydrationStats[row.key as keyof typeof hydrationStats]}
+                          onChange={(e) => setHydrationStats(prev => ({ ...prev, [row.key]: parseInt(e.target.value) }))}
+                          className="flex-1 ml-4 h-2 rounded-full appearance-none cursor-pointer accent-[#1E293B]"
+                          style={{
+                            background: `linear-gradient(to right, #1E293B 0%, #1E293B ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 ${hydrationStats[row.key as keyof typeof hydrationStats]}%, #E2E8F0 100%)`
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
