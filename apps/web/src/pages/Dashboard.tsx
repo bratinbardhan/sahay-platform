@@ -78,6 +78,19 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const scrollContainer = document.querySelector('.overflow-y-auto') || window;
+
+    const handleScroll = (e: any) => {
+      const scrollTop = e.target?.scrollTop ?? window.scrollY;
+      setIsScrolled(scrollTop > 10);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -148,83 +161,94 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto h-full relative">
         {/* Top Header */}
-        <header className="flex items-center justify-between px-8 py-6 shrink-0 sticky top-0 z-40 bg-white/45 backdrop-blur-xl backdrop-saturate-150 border-b border-white/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75),0_4px_20px_-2px_rgba(0,0,0,0.03)] transition-all">
-          <div className="text-[#1F2937] font-medium text-lg">Caretaker Dashboard</div>
-          <div className="flex items-center space-x-6">
-            <div className="relative inline-block">
-              <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
-              {isAlertOpen && (
-                <div className="absolute right-0 top-[calc(100%+8px)] w-[360px] bg-slate-50 rounded-2xl border border-slate-300 shadow-2xl z-50 overflow-hidden">
-                  <div className="px-4 py-3 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-[#1E293B] tracking-tight">Notifications</span>
-                      <span className="text-[10px] font-semibold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-md">3 unread</span>
-                    </div>
-                    <button onClick={() => { }} className="text-[11px] font-medium text-slate-400 hover:text-slate-700 transition-colors">Mark all as read</button>
-                  </div>
-                  <div className="divide-y divide-slate-100 max-h-[340px] overflow-y-auto">
-                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
-                      <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-rose-100/60"><ShieldAlert className="w-3.5 h-3.5 stroke-[2]" /></div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Security Breach Blocked</span><span className="text-[10px] text-slate-400 font-medium">02:15 AM</span></div>
-                        <p className="text-[11px] text-slate-500 leading-snug">Unrecognized device login attempt blocked from external IP.</p>
-                      </div>
-                    </div>
-                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
-                      <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-100/60"><Pill className="w-3.5 h-3.5 stroke-[2]" /></div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Missed Medication Dose</span><span className="text-[10px] text-slate-400 font-medium">Yesterday</span></div>
-                        <p className="text-[11px] text-slate-500 leading-snug">Scheduled 12:00 PM dose was not marked as taken by patient.</p>
-                      </div>
-                    </div>
-                    <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
-                      <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-teal-100/60"><Activity className="w-3.5 h-3.5 stroke-[2]" /></div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Hydration Target Met</span><span className="text-[10px] text-slate-400 font-medium">01:30 AM</span></div>
-                        <p className="text-[11px] text-slate-500 leading-snug">Nightly intake generated: target reached at 100% capacity.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-2.5 bg-slate-100 border-t border-slate-200 text-center">
-                    <button className="text-[11px] font-semibold text-slate-600 hover:text-[#1E293B] transition-colors">View all audit logs &rarr;</button>
-                  </div>
-                </div>
-              )}
-            </div>
+        <header className="sticky top-0 z-40 px-8 py-6 shrink-0">
+          {/* Dynamic Gradient Glass Background Layer */}
+          <div
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0'
+              }`}
+          >
+            <div className="absolute inset-0 bg-white/45 backdrop-blur-xl backdrop-saturate-150 border-b border-white/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75)] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]" />
+          </div>
 
-            <div className="relative">
-              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer tour-profile-avatar">
-                <UserIcon className="w-6 h-6 text-slate-500" />
-              </div>
-              {isProfileOpen && (
-                <div className="absolute right-0 top-12 w-80 bg-white border border-slate-200 shadow-xl rounded-xl p-5 z-50">
-                  <div className="mb-4">
-                    <p className="font-bold text-sm text-[#1F2937]">Caretaker: Ram Sharma</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Phone: +91 98765 43210</p>
-                  </div>
-                  <div className="mb-4">
-                    <p className="font-bold text-sm text-[#1F2937]">Patient: Aditya Sharma</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Age: 74, Condition: Hypertension</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-700">Current Plan: <span className="font-bold text-[#1E293B]">Basic (Free)</span></p>
-                  </div>
-                  <hr className="my-4 border-slate-100" />
-                  <div>
-                    <div className="flex items-center text-indigo-600 font-bold mb-2">
-                      <Zap className="w-4 h-4 mr-1 fill-indigo-600" /> UPGRADE TO PRO
+          {/* Foreground Navigation Content */}
+          <div className="relative z-10 flex items-center justify-between w-full">
+            <div className="text-[#1F2937] font-medium text-lg">Caretaker Dashboard</div>
+            <div className="flex items-center space-x-6">
+              <div className="relative inline-block">
+                <Bell onClick={() => { setIsAlertOpen(!isAlertOpen); setIsProfileOpen(false); }} className="w-6 h-6 text-[#1F2937] cursor-pointer" />
+                {isAlertOpen && (
+                  <div className="absolute right-0 top-[calc(100%+8px)] w-[360px] bg-slate-50 rounded-2xl border border-slate-300 shadow-2xl z-50 overflow-hidden">
+                    <div className="px-4 py-3 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-[#1E293B] tracking-tight">Notifications</span>
+                        <span className="text-[10px] font-semibold bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-md">3 unread</span>
+                      </div>
+                      <button onClick={() => { }} className="text-[11px] font-medium text-slate-400 hover:text-slate-700 transition-colors">Mark all as read</button>
                     </div>
-                    <ul className="space-y-2 mb-3">
-                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Real-time vital anomaly streaming</li>
-                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> 24/7 Priority Emergency Dispatch</li>
-                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Advanced AI Health Trend Insights</li>
-                      <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Multi-caretaker account syncing</li>
-                    </ul>
-                    <p className="text-[10px] italic text-slate-400 mb-3">...and many more exclusive features.</p>
-                    <button className="w-full bg-[#1E293B] text-white py-2 rounded-lg mt-3 text-sm font-medium hover:bg-[#334155] transition-colors">Upgrade Now</button>
+                    <div className="divide-y divide-slate-100 max-h-[340px] overflow-y-auto">
+                      <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
+                        <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-rose-100/60"><ShieldAlert className="w-3.5 h-3.5 stroke-[2]" /></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Security Breach Blocked</span><span className="text-[10px] text-slate-400 font-medium">02:15 AM</span></div>
+                          <p className="text-[11px] text-slate-500 leading-snug">Unrecognized device login attempt blocked from external IP.</p>
+                        </div>
+                      </div>
+                      <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
+                        <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-amber-100/60"><Pill className="w-3.5 h-3.5 stroke-[2]" /></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Missed Medication Dose</span><span className="text-[10px] text-slate-400 font-medium">Yesterday</span></div>
+                          <p className="text-[11px] text-slate-500 leading-snug">Scheduled 12:00 PM dose was not marked as taken by patient.</p>
+                        </div>
+                      </div>
+                      <div className="p-3.5 hover:bg-slate-200/50 transition-colors flex gap-3 items-start cursor-pointer">
+                        <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-teal-100/60"><Activity className="w-3.5 h-3.5 stroke-[2]" /></div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between w-full mb-0.5"><span className="text-[12px] font-bold text-[#1E293B]">Hydration Target Met</span><span className="text-[10px] text-slate-400 font-medium">01:30 AM</span></div>
+                          <p className="text-[11px] text-slate-500 leading-snug">Nightly intake generated: target reached at 100% capacity.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-2.5 bg-slate-100 border-t border-slate-200 text-center">
+                      <button className="text-[11px] font-semibold text-slate-600 hover:text-[#1E293B] transition-colors">View all audit logs &rarr;</button>
+                    </div>
                   </div>
+                )}
+              </div>
+
+              <div className="relative">
+                <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer tour-profile-avatar">
+                  <UserIcon className="w-6 h-6 text-slate-500" />
                 </div>
-              )}
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-12 w-80 bg-white border border-slate-200 shadow-xl rounded-xl p-5 z-50">
+                    <div className="mb-4">
+                      <p className="font-bold text-sm text-[#1F2937]">Caretaker: Ram Sharma</p>
+                      <p className="text-xs text-slate-500 mt-0.5">Phone: +91 98765 43210</p>
+                    </div>
+                    <div className="mb-4">
+                      <p className="font-bold text-sm text-[#1F2937]">Patient: Aditya Sharma</p>
+                      <p className="text-xs text-slate-500 mt-0.5">Age: 74, Condition: Hypertension</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-700">Current Plan: <span className="font-bold text-[#1E293B]">Basic (Free)</span></p>
+                    </div>
+                    <hr className="my-4 border-slate-100" />
+                    <div>
+                      <div className="flex items-center text-indigo-600 font-bold mb-2">
+                        <Zap className="w-4 h-4 mr-1 fill-indigo-600" /> UPGRADE TO PRO
+                      </div>
+                      <ul className="space-y-2 mb-3">
+                        <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Real-time vital anomaly streaming</li>
+                        <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> 24/7 Priority Emergency Dispatch</li>
+                        <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Advanced AI Health Trend Insights</li>
+                        <li className="flex items-start text-xs text-slate-600"><Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" /> Multi-caretaker account syncing</li>
+                      </ul>
+                      <p className="text-[10px] italic text-slate-400 mb-3">...and many more exclusive features.</p>
+                      <button className="w-full bg-[#1E293B] text-white py-2 rounded-lg mt-3 text-sm font-medium hover:bg-[#334155] transition-colors">Upgrade Now</button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
