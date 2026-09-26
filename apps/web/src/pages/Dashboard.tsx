@@ -230,7 +230,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         </header>
 
         {/* Scrollable Dashboard Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-8 tour-patients-page">
+        <div className="flex-1 overflow-y-auto px-8 pb-8 tour-care-circle">
           {/* Dashboard Title Area */}
           <div className="flex items-start justify-between mb-10">
             <div>

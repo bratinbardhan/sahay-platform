@@ -253,7 +253,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const reactionLatencyChart = <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric="latency" />;
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 tour-analytics-page tour-analytics-chart" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8" data-palette="caretaker">
       {/* Print-Only Custom Header */}
       <div className="hidden print:flex print:flex-col print:items-center print:mb-8 border-b border-slate-200 print:pb-6">
         <div className="flex items-center gap-3 mb-2">
@@ -331,7 +331,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
 
       <Card
         title={metric === 'load' ? 'Cognitive Load Index — Clinical Thresholds' : 'Reaction Latency Trend'}
-        className="mb-8 bg-white border border-slate-200 shadow-none print:hidden"
+        className="mb-8 bg-white border border-slate-200 shadow-none print:hidden tour-analytics-chart"
       >
         <div className="flex justify-end"><button type="button" onClick={() => setExpanded('trend')} aria-label="Maximize cognitive trend chart" className="rounded-md p-2 text-slate-600 hover:bg-slate-100"><Maximize2 className="h-4 w-4" /></button></div>
         <div className="flex gap-2 mb-2">
