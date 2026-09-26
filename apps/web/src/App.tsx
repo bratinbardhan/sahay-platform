@@ -252,7 +252,7 @@ function InnerApp() {
               <Route path="/admin" element={session.user.role === 'ADMIN' ? <AdminDashboard user={session.user} token={session.accessToken} onLogout={logout} /> : <Navigate to="/" />} />
               <Route path="/" element={<Dashboard user={session.user} token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/patients" element={<Patients />} />
-              <Route path="/analytics" element={<AnalyticsChart token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/analytics" element={<AnalyticsChart token={session.accessToken} caretakerName={session.user.full_name} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/media" element={<MediaManager onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/geofence" element={<GeofenceMap onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/reminiscence" element={<ReminiscenceManager token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />

@@ -17,6 +17,7 @@ import { SAHAY_CARETAKER, sahayTooltipLabelStyle, sahayTooltipStyle } from '@/li
 interface AnalyticsChartProps {
   onNavigate: (page: string) => void;
   token: string;
+  caretakerName?: string;
 }
 
 const SESSION_PAGE_SIZE = 14;
@@ -28,7 +29,7 @@ const TREND_LABELS: Record<string, string> = {
   INSUFFICIENT_DATA: 'Building baseline…',
 };
 
-export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
+export function AnalyticsChart({ onNavigate, token, caretakerName = 'Unknown' }: AnalyticsChartProps) {
   const [metric, setMetric] = useState<'load' | 'latency'>('load');
   const [expanded, setExpanded] = useState<'trend' | 'dda' | 'mood' | null>(null);
   const [breakdown, setBreakdown] = useState<'latency' | 'rebound' | 'consistency' | 'heatmap'>('latency');
@@ -262,8 +263,8 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         </div>
         <h2 className="text-xl font-bold text-slate-800 mb-4 uppercase tracking-wide">Detailed Analytics of the Patient</h2>
         <div className="flex gap-12 text-sm font-semibold text-slate-600">
-          <p>Patient: <span className="text-slate-800">Aarav (Age: 72)</span></p>
-          <p>Caretaker: <span className="text-slate-800">Ram</span></p>
+          <p>Patient: <span className="text-slate-800">{patient?.name ?? 'Unknown'} (Age: {patient?.age ?? '--'})</span></p>
+          <p>Caretaker: <span className="text-slate-800">{caretakerName}</span></p>
         </div>
       </div>
       <div className="flex items-center mb-6 print:hidden">
