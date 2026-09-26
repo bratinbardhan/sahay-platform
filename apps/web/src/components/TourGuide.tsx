@@ -9,7 +9,6 @@ export default function TourGuide() {
     const location = useLocation();
 
     const [run, setRun] = useState(false);
-    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
     const [showFinishPrompt, setShowFinishPrompt] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
     const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
@@ -33,7 +32,7 @@ export default function TourGuide() {
     };
 
     const handleFinalClose = () => {
-        setShowSkipConfirm(false); setShowFinishPrompt(false);
+        setShowFinishPrompt(false);
         localStorage.setItem('sahay_tour_completed', 'true');
         setStepIndex(0); setRun(false);
     };
@@ -58,7 +57,7 @@ export default function TourGuide() {
             const safeSteps = rawSteps.map((step) => {
                 if (step.target === 'body') return step;
                 const el = document.querySelector(step.target as string);
-                return el ? step : { ...step, target: 'body', placement: 'center' };
+                return el ? step : { ...step, target: 'body', placement: 'center' as const };
             });
             setActiveSteps(safeSteps);
         };
