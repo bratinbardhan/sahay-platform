@@ -16,6 +16,7 @@ export default function TourGuide() {
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [showFinishPrompt, setShowFinishPrompt] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
 
   useEffect(() => {
     const tourCompleted = localStorage.getItem('sahay_tour_completed');
@@ -53,84 +54,102 @@ export default function TourGuide() {
     setRun(true);
   };
 
-  // CRITICAL FIX: All '/dashboard' routes changed to '/' to match your App.tsx router
-  const steps: AppStep[] = [
+  // RESTORED: Precise CSS targets with beacons enabled for the "Guided" experience
+  const rawSteps: AppStep[] = [
     {
       target: 'body',
       title: 'Welcome to Sahāy',
       content: 'Welcome to the Sahāy Clinical Dashboard! Let us take a deep dive into your clinical tools.',
       placement: 'center',
-      disableBeacon: true,
+      disableBeacon: true, // Keep center step beacon-free
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-sidebar',
       title: 'Navigation Hub',
       content: 'Your Navigation Hub (Sidebar). Switch seamlessly between your Dashboard, Patient Roster, and Analytics.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'right',
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-live-tracking',
       title: 'Active Patient & Live Tracking',
       content: 'Instantly view the current patient status and access their real-time GPS location via Live Tracking.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'bottom',
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-medication',
       title: 'Medication Scheduling',
       content: 'Track adherence in real-time, view upcoming doses, and schedule new alerts directly to the patient app.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'right',
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-hydration',
       title: 'Hydration & Vitals',
       content: 'Keep a close eye on daily water intake and vital signs to ensure health goals are met.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'bottom',
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-media',
       title: 'Family Media Uploads',
       content: 'Upload photos and voice memos to help stimulate cognitive function and memory for dementia care.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'left',
       route: '/',
     },
     {
-      target: 'body',
+      target: '.tour-patients-page',
       title: 'The Patient Roster',
       content: 'Manage your assigned patients, review detailed adherence metrics, and handle emergency protocols.',
       placement: 'center',
-      disableBeacon: true,
       route: '/patients',
     },
     {
-      target: 'body',
+      target: '.tour-analytics-page',
       title: 'The Analytics Engine',
       content: 'Visualize long-term therapy adherence trends, cognitive game scores, and generate clinical reports.',
       placement: 'center',
-      disableBeacon: true,
       route: '/analytics',
     },
     {
-      target: 'body',
+      target: '.tour-profile',
       title: 'Caretaker Profile',
       content: 'Manage your account settings, switch roles, or log out securely from your profile.',
-      placement: 'center',
-      disableBeacon: true,
+      placement: 'left',
       route: '/',
     },
   ];
 
+  // ANTI-CRASH FALLBACK: If your agent missed injecting a class, it falls back to 'body' safely
+  useEffect(() => {
+    const validateTargets = () => {
+      const safeSteps = rawSteps.map((step) => {
+        if (step.target === 'body') return step;
+        const elementExists = document.querySelector(step.target as string);
+        return {
+          ...step,
+          target: elementExists ? step.target : 'body'
+        };
+      });
+      setActiveSteps(safeSteps);
+    };
+
+    validateTargets();
+    const timer = setTimeout(validateTargets, 400); 
+    return () => clearTimeout(timer);
+  }, [location.pathname, stepIndex]);
+
   const handleJoyrideCallback = (data: CallBackProps) => {
     const { status, type, action, index } = data;
+
+    // FIX: Explicitly catch the Finish action and Tour End event
+    if (status === STATUS.FINISHED || type === EVENTS.TOUR_END) {
+      setRun(false);
+      setShowFinishPrompt(true);
+      return;
+    }
 
     if (status === STATUS.SKIPPED) {
       setRun(false);
@@ -138,24 +157,19 @@ export default function TourGuide() {
       return;
     }
 
-    if (status === STATUS.FINISHED) {
-      setRun(false);
-      setShowFinishPrompt(true);
-      return;
-    }
-
+    // FIX: Properly handle PREV (Back) and NEXT cross-page routing
     if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
       const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
       
-      if (nextStepIndex >= 0 && nextStepIndex < steps.length) {
-        const nextRoute = steps[nextStepIndex].route;
+      if (nextStepIndex >= 0 && nextStepIndex < activeSteps.length) {
+        const nextRoute = activeSteps[nextStepIndex].route;
         
         if (nextRoute && nextRoute !== location.pathname) {
-          setRun(false); // Pause Joyride
-          navigate(nextRoute); // Switch page
+          setRun(false); 
+          navigate(nextRoute); 
           setTimeout(() => {
             setStepIndex(nextStepIndex);
-            setRun(true); // Resume after DOM loads
+            setRun(true); 
           }, 400); 
         } else {
           setStepIndex(nextStepIndex);
@@ -175,7 +189,7 @@ export default function TourGuide() {
         <div className="text-sm font-medium leading-relaxed mb-5 text-slate-700">{step.content}</div>
         <div className="flex items-center justify-between mt-2">
           <span className="text-xs font-bold text-teal-800 tracking-widest uppercase bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-200">
-            Step {index + 1} of {steps.length}
+            Step {index + 1} of {activeSteps.length}
           </span>
           <div className="flex gap-2">
             {index > 0 && (
@@ -184,7 +198,7 @@ export default function TourGuide() {
               </button>
             )}
             <button {...primaryProps} className="px-5 py-2 text-xs font-bold rounded-xl bg-teal-600 text-white hover:bg-teal-700 border border-teal-500 transition-all shadow-lg shadow-teal-600/30">
-              {continuous ? (index === steps.length - 1 ? 'Finish' : 'Next') : 'Close'}
+              {continuous ? (index === activeSteps.length - 1 ? 'Finish' : 'Next') : 'Close'}
             </button>
           </div>
         </div>
@@ -260,7 +274,7 @@ export default function TourGuide() {
         run={run}
         showSkipButton={true}
         stepIndex={stepIndex}
-        steps={steps}
+        steps={activeSteps}
         styles={{ options: { zIndex: 10000, overlayColor: 'rgba(15, 23, 42, 0.4)' } }}
         tooltipComponent={CustomTooltip}
       />
