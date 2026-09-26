@@ -81,15 +81,15 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const scrollContainer = document.querySelector('.overflow-y-auto') || window;
-
     const handleScroll = (e: any) => {
-      const scrollTop = e.target?.scrollTop ?? window.scrollY;
+      // Safely grab scrollTop from whichever element is currently scrolling
+      const scrollTop = e.target?.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
       setIsScrolled(scrollTop > 10);
     };
 
-    scrollContainer.addEventListener('scroll', handleScroll);
-    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    // The 'true' argument enables the capture phase, catching all scroll events globally
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,10 +164,16 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         <header className="sticky top-0 z-40 px-8 py-6 shrink-0">
           {/* Dynamic Gradient Glass Background Layer */}
           <div
-            className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0'
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0'
               }`}
           >
-            <div className="absolute inset-0 bg-white/45 backdrop-blur-xl backdrop-saturate-150 border-b border-white/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75)] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]" />
+            <div
+              className="absolute inset-0 bg-white/45 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75)] border-b border-white/20"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
+              }}
+            />
           </div>
 
           {/* Foreground Navigation Content */}
