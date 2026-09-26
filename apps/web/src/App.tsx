@@ -86,32 +86,52 @@ function InnerApp() {
     );
   }
 
-  // ----- TEXTURE DICTIONARY START ----- //
+  // ----- EXPANDED TEXTURE DICTIONARY START ----- //
   const textureMap: Record<string, { svg: string, animClass: string }> = {
     '/dashboard': {
       // Organic drifting dot-grid
       svg: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")`,
       animClass: 'animate-organic-float'
     },
-    '/patients': {
-      // Clinical 'plus' grid
-      svg: `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 10h2v10h-2zM10 14h10v2H10z' fill='%230f766e' fill-opacity='0.15'/%3E%3C/svg%3E")`,
+    '/analytics': {
+      // Diagonal data hash
+      svg: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40' stroke='%230f766e' stroke-opacity='0.08' stroke-width='1' fill='none'/%3E%3C/svg%3E")`,
       animClass: 'animate-linear-drift'
     },
-    'default': {
-      // Technical diagonal hash
-      svg: `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-1 13L13 -1M-1 1L1 -1M11 13L13 11' stroke='%230f766e' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E")`,
+    '/media': {
+      // Bokeh scatter (Cameras/Media)
+      svg: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='4' fill='%230f766e' fill-opacity='0.1'/%3E%3Ccircle cx='40' cy='30' r='6' fill='%230f766e' fill-opacity='0.15'/%3E%3Ccircle cx='20' cy='50' r='3' fill='%230f766e' fill-opacity='0.1'/%3E%3C/svg%3E")`,
+      animClass: 'animate-organic-float'
+    },
+    '/reminiscence': {
+      // Overlapping nostalgic rings
+      svg: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='20' fill='none' stroke='%230f766e' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E")`,
+      animClass: 'animate-pulse-slow'
+    },
+    '/geofence': {
+      // Coordinate dash/crosshairs
+      svg: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0v40M0 20h40' stroke='%230f766e' stroke-opacity='0.1' stroke-width='1' stroke-dasharray='4 4'/%3E%3C/svg%3E")`,
       animClass: 'animate-linear-drift'
+    },
+    '/care-circle': {
+      // Concentric expanding network rings
+      svg: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='10' fill='none' stroke='%230f766e' stroke-opacity='0.15' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='%230f766e' stroke-opacity='0.1' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='30' fill='none' stroke='%230f766e' stroke-opacity='0.05' stroke-width='1'/%3E%3C/svg%3E")`,
+      animClass: 'animate-pulse-slow'
+    },
+    'default': {
+      // Fallback
+      svg: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.15'/%3E%3C/svg%3E")`,
+      animClass: 'animate-organic-float'
     }
   };
 
   const currentPath = location.pathname === '/' ? '/dashboard' : location.pathname;
   const activeTexture = textureMap[currentPath] || textureMap['default'];
-  // ----- TEXTURE DICTIONARY END ----- //
+  // ----- EXPANDED TEXTURE DICTIONARY END ----- //
 
   return (
     <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-[#FDFBF7] overflow-hidden print:overflow-visible">
-      {/* ----- DYNAMIC TEXTURE DOM START ----- */}
+      {/* ----- UPDATED KEYFRAMES START ----- */}
       <style>{`
         @keyframes organic-float {
           0% { background-position: 0px 0px; opacity: 0.4; }
@@ -122,16 +142,22 @@ function InnerApp() {
         }
         @keyframes linear-drift {
           0% { background-position: 0px 0px; opacity: 0.5; }
-          100% { background-position: 60px 60px; opacity: 0.5; }
+          100% { background-position: 40px 40px; opacity: 0.5; }
         }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.02); }
+        }
+        
         .animate-organic-float { animation: organic-float 35s ease-in-out infinite; }
         .animate-linear-drift { animation: linear-drift 40s linear infinite; }
+        .animate-pulse-slow { animation: pulse-slow 15s ease-in-out infinite; }
       `}</style>
       <div
         className={`fixed top-0 left-0 right-0 h-[400px] z-0 pointer-events-none [mask-image:linear-gradient(to_bottom,white_40%,transparent_100%)] ${activeTexture.animClass}`}
         style={{ backgroundImage: activeTexture.svg }}
       />
-      {/* ----- DYNAMIC TEXTURE DOM END ----- */}
+      {/* ----- UPDATED KEYFRAMES END ----- */}
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
           className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ease-in-out tour-sidebar ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}
