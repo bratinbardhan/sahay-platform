@@ -240,9 +240,9 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       )}
 
       {demoAlertMessage && (
-        <div className="mb-6 flex items-center justify-between rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
-          <span>{demoAlertMessage}</span>
-          <button onClick={() => setDemoAlertMessage(null)} className="font-bold ml-4 text-lg">&times;</button>
+        <div className="fixed bottom-6 right-6 z-50 flex items-center justify-between rounded-lg bg-slate-800 text-white px-5 py-3 shadow-xl max-w-sm animate-in slide-in-from-bottom-5">
+          <span className="text-sm font-medium">{demoAlertMessage}</span>
+          <button onClick={() => setDemoAlertMessage(null)} className="ml-4 text-2xl leading-none text-slate-300 hover:text-white">&times;</button>
         </div>
       )}
 
@@ -384,7 +384,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <Card className="bg-sahay-surface shadow-caretaker-card">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+          <div className="flex items-center justify-between mb-4 w-full">
             <h3 className="text-lg font-extrabold text-[#1E293B]">Live Tracking Status</h3>
             <div className="flex items-center gap-4">
               <button
