@@ -130,7 +130,7 @@ function InnerApp() {
   // ----- EXPANDED TEXTURE DICTIONARY END ----- //
 
   return (
-    <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-[#FDFBF7] overflow-hidden print:overflow-visible">
+    <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-gradient-to-b from-[#F5EFE6] to-[#FDFBF7] overflow-hidden print:overflow-visible">
       {/* ----- UPDATED KEYFRAMES START ----- */}
       <style>{`
         @keyframes organic-float {
