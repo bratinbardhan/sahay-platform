@@ -88,6 +88,21 @@ function InnerApp() {
 
   return (
     <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-slate-50 overflow-hidden print:overflow-visible">
+      {/* ----- GLOBAL TEXTURE START ----- */}
+      <style>{`
+        @keyframes linear-drift {
+          0% { background-position: 0px 0px; }
+          100% { background-position: 24px 24px; }
+        }
+        .global-texture {
+          animation: linear-drift 20s linear infinite;
+        }
+      `}</style>
+      <div
+        className="fixed top-0 left-0 right-0 h-[400px] z-0 pointer-events-none opacity-60 global-texture [mask-image:linear-gradient(to_bottom,white_40%,transparent_100%)]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
+      />
+      {/* ----- GLOBAL TEXTURE END ----- */}
       {session && session.user.role !== 'ADMIN' && location.pathname !== '/login' && location.pathname !== '/signup' ? (
         <aside
           className={`print:!hidden bg-[#FAF8F5] border-r border-[#EADBCC] flex flex-col items-center py-6 gap-6 h-screen transition-all duration-300 ease-in-out tour-sidebar ${isSidebarExpanded ? 'w-48' : 'w-16'} z-40`}

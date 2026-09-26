@@ -163,29 +163,11 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#FDFBF7]" data-palette="caretaker">
+    <div className="flex flex-col h-full bg-transparent" data-palette="caretaker">
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto h-full relative">
         {/* Top Header */}
         <header className={`sticky top-0 z-40 px-8 shrink-0 transition-all duration-300 ${isScrolled ? 'pt-4 pb-8' : 'py-4'}`}>
-          <style>{`
-            @keyframes drift-texture {
-              0% { background-position: 0px 0px; }
-              25% { background-position: 16px 4px; }
-              50% { background-position: 8px 18px; }
-              75% { background-position: -4px 8px; }
-              100% { background-position: 24px 24px; }
-            }
-            .animate-texture {
-              animation: drift-texture 30s ease-in-out infinite;
-            }
-          `}</style>
-          {/* 1. Base Texture Layer (Always present, fills the blank space at the top) */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_60%,transparent_100%)] animate-texture"
-            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
-          />
-
           {/* Dynamic Gradient Glass Background Layer */}
           <div
             className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0'
