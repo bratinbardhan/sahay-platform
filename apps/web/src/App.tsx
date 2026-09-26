@@ -87,7 +87,7 @@ function InnerApp() {
   }
 
   return (
-    <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-slate-50 overflow-hidden print:overflow-visible">
+    <div className="flex print:block print:h-auto print:max-h-none h-screen w-full bg-[#FDFBF7] overflow-hidden print:overflow-visible">
       {/* ----- UPGRADED GLOBAL TEXTURE START ----- */}
       <style>{`
         @keyframes organic-float {
