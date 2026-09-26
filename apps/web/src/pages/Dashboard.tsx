@@ -426,28 +426,30 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             {/* Exactly Replicated Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Card 1: Medication Scheduling */}
-              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col h-full gap-6 tour-medication">
-                <h3 className="font-extrabold text-lg text-[#1E293B]">Medication Scheduling</h3>
-                <div className="flex justify-between items-center px-4 relative w-full">
-                  <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
-                  <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
-                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CheckCircle2 className="w-5 h-5" /></div>
-                  <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CalendarDays className="w-5 h-5" /></div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-[#1E293B]"></div>
-                      <span className="text-sm font-medium text-slate-700">Medication A</span>
-                    </div>
-                    <span className="text-sm text-slate-500 font-medium">12:08 AM</span>
+              <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] flex flex-col h-full tour-medication">
+                <h3 className="font-extrabold text-lg text-[#1E293B] mb-6">Medication Scheduling</h3>
+                <div className="flex flex-col gap-6">
+                  <div className="flex justify-between items-center px-4 relative w-full">
+                    <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F5E6D3] -z-0 -translate-y-1/2"></div>
+                    <div className="w-10 h-10 bg-[#1E293B] rounded-full flex items-center justify-center text-white shrink-0 shadow-sm z-10"><Pill className="w-5 h-5" /></div>
+                    <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CheckCircle2 className="w-5 h-5" /></div>
+                    <div className="w-10 h-10 bg-[#F5E6D3] rounded-full flex items-center justify-center text-[#1E293B] shrink-0 z-10"><CalendarDays className="w-5 h-5" /></div>
                   </div>
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-[#F5E6D3]"></div>
-                      <span className="text-sm font-medium text-slate-700">Medication B</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[#1E293B]"></div>
+                        <span className="text-sm font-medium text-slate-700">Medication A</span>
+                      </div>
+                      <span className="text-sm text-slate-500 font-medium">12:08 AM</span>
                     </div>
-                    <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[#F5E6D3]"></div>
+                        <span className="text-sm font-medium text-slate-700">Medication B</span>
+                      </div>
+                      <span className="text-sm text-slate-500 font-medium">7:30 PM</span>
+                    </div>
                   </div>
                 </div>
                 <button onClick={() => setMedModalOpen(true)} className="w-full mt-auto bg-[#1E293B] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#334155] transition-colors">Schedule Medication</button>
