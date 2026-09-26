@@ -214,6 +214,7 @@ export default function TourGuide() {
                 stepIndex={stepIndex}
                 steps={activeSteps}
                 disableScrolling={false}
+                scrollOffset={120}
                 styles={{
                     options: {
                         zIndex: 10000,

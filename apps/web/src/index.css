@@ -635,3 +635,14 @@ h6 {
 .animate-pulse-slow {
   animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* ----- TOUR GUIDE SCROLL FIX START ----- */
+/* Ensures elements targeted by the tour do not get hidden under the sticky glass header */
+[class*="tour-"],
+[id*="tour-step"],
+.driver-active-element,
+.react-joyride__spotlight {
+  scroll-margin-top: 120px !important;
+}
+
+/* ----- TOUR GUIDE SCROLL FIX END ----- */
