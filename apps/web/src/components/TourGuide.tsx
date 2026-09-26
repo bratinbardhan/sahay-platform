@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Joyride, { CallBackProps, STATUS, Step, ACTIONS, EVENTS, TooltipRenderProps } from 'react-joyride';
 
@@ -15,31 +15,11 @@ export default function TourGuide() {
     const [showFinishPrompt, setShowFinishPrompt] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
     const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
+    const isNavigatingRef = useRef(false);
 
     useEffect(() => {
         if (!localStorage.getItem('sahay_tour_completed')) setShowPrompt(true);
     }, []);
-
-    const handleStartTour = () => {
-        setShowPrompt(false); setShowDeclineConfirm(false); setShowFinishPrompt(false);
-        setStepIndex(0);
-        if (location.pathname !== '/') {
-            navigate('/');
-            setTimeout(() => setRun(true), 400);
-        } else {
-            setTimeout(() => setRun(true), 200);
-        }
-    };
-
-    const handleInitialDecline = () => { setShowPrompt(false); setShowDeclineConfirm(true); };
-
-    const handleFinalClose = () => {
-        setShowPrompt(false); setShowDeclineConfirm(false); setShowSkipConfirm(false); setShowFinishPrompt(false);
-        localStorage.setItem('sahay_tour_completed', 'true');
-        setStepIndex(0); setRun(false);
-    };
-
-    const handleResumeTour = () => { setShowDeclineConfirm(false); setShowSkipConfirm(false); setRun(true); };
 
     const rawSteps: AppStep[] = [
         { target: 'body', title: 'Welcome to Sahāy', content: 'Let us take a deep dive into your clinical tools.', placement: 'center', disableBeacon: true, route: '/' },
@@ -56,21 +36,61 @@ export default function TourGuide() {
         { target: '.tour-logout', title: 'Secure Log Out', content: 'Securely log out of your caretaker session.', placement: 'right', disableBeacon: true, route: '/' },
     ];
 
-    useEffect(() => {
-        const validateTargets = () => {
-            const safeSteps = rawSteps.map((step) => {
-                if (step.target === 'body') return step;
-                const el = document.querySelector(step.target as string);
-                return el ? step : { ...step, target: 'body', placement: 'center' as const };
-            });
-            setActiveSteps(safeSteps);
-        };
-        validateTargets();
-        const timer = setTimeout(validateTargets, 400);
-        return () => clearTimeout(timer);
-    }, [location.pathname, stepIndex]);
+    const waitForElement = useCallback((selector: string, timeout = 3500): Promise<boolean> => {
+        return new Promise((resolve) => {
+            if (selector === 'body' || document.querySelector(selector)) {
+                return resolve(true);
+            }
+            const startTime = Date.now();
+            const interval = setInterval(() => {
+                if (document.querySelector(selector)) {
+                    clearInterval(interval);
+                    resolve(true);
+                } else if (Date.now() - startTime >= timeout) {
+                    clearInterval(interval);
+                    resolve(false);
+                }
+            }, 50);
+        });
+    }, []);
 
-    const handleJoyrideCallback = (data: CallBackProps) => {
+    const syncSteps = useCallback(() => {
+        const safeSteps = rawSteps.map((step) => {
+            if (step.target === 'body') return step;
+            const el = document.querySelector(step.target as string);
+            return el ? step : { ...step, target: 'body', placement: 'center' as const };
+        });
+        setActiveSteps(safeSteps);
+    }, []);
+
+    useEffect(() => {
+        if (!isNavigatingRef.current) {
+            syncSteps();
+        }
+    }, [location.pathname, stepIndex, syncSteps]);
+
+    const handleStartTour = async () => {
+        setShowPrompt(false); setShowDeclineConfirm(false); setShowFinishPrompt(false);
+        setStepIndex(0);
+        if (location.pathname !== '/') {
+            navigate('/');
+            await waitForElement('.tour-sidebar', 2000);
+        }
+        syncSteps();
+        setRun(true);
+    };
+
+    const handleInitialDecline = () => { setShowPrompt(false); setShowDeclineConfirm(true); };
+
+    const handleFinalClose = () => {
+        setShowPrompt(false); setShowDeclineConfirm(false); setShowSkipConfirm(false); setShowFinishPrompt(false);
+        localStorage.setItem('sahay_tour_completed', 'true');
+        setStepIndex(0); setRun(false);
+    };
+
+    const handleResumeTour = () => { setShowDeclineConfirm(false); setShowSkipConfirm(false); setRun(true); };
+
+    const handleJoyrideCallback = async (data: CallBackProps) => {
         const { status, type, action, index } = data;
 
         if (status === STATUS.FINISHED || type === EVENTS.TOUR_END) {
@@ -84,12 +104,25 @@ export default function TourGuide() {
             if (action === ACTIONS.NEXT && index === activeSteps.length - 1) {
                 setRun(false); setShowFinishPrompt(true); return;
             }
+
             const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
             if (nextStepIndex >= 0 && nextStepIndex < activeSteps.length) {
-                const nextRoute = activeSteps[nextStepIndex].route;
+                const nextTargetStep = rawSteps[nextStepIndex];
+                const nextRoute = nextTargetStep.route;
+
                 if (nextRoute && nextRoute !== location.pathname) {
-                    setRun(false); navigate(nextRoute);
-                    setTimeout(() => { setStepIndex(nextStepIndex); setRun(true); }, 400);
+                    isNavigatingRef.current = true;
+                    setRun(false);
+                    navigate(nextRoute);
+
+                    await waitForElement(nextTargetStep.target as string, 3500);
+                    syncSteps();
+                    setStepIndex(nextStepIndex);
+                    isNavigatingRef.current = false;
+
+                    requestAnimationFrame(() => {
+                        setRun(true);
+                    });
                 } else {
                     setStepIndex(nextStepIndex);
                 }
@@ -98,7 +131,7 @@ export default function TourGuide() {
     };
 
     const CustomTooltip = ({ continuous, index, step, backProps, primaryProps, tooltipProps }: TooltipRenderProps) => (
-        <div {...tooltipProps} className="bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-[0_32px_64px_rgba(13,148,136,0.2)] rounded-3xl p-6 max-w-sm relative text-slate-900 overflow-hidden">
+        <div {...tooltipProps} className="bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-[0_32px_64px_rgba(13,148,136,0.2)] rounded-3xl p-6 max-w-sm relative text-slate-900 overflow-hidden transition-all duration-200">
             <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none"></div>
             <div className="relative z-10">
                 {step.title && <h4 className="font-bold text-lg mb-2">{step.title}</h4>}
@@ -106,8 +139,8 @@ export default function TourGuide() {
                 <div className="flex items-center justify-between mt-2">
                     <span className="text-xs font-bold text-teal-800 tracking-widest uppercase bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-200">Step {index + 1} of {activeSteps.length}</span>
                     <div className="flex gap-2">
-                        {index > 0 && <button {...backProps} className="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-sm">Back</button>}
-                        <button {...primaryProps} className="px-5 py-2 text-xs font-bold rounded-xl bg-teal-600 text-white hover:bg-teal-700 border border-teal-500 shadow-lg shadow-teal-600/30">{continuous ? (index === activeSteps.length - 1 ? 'Finish' : 'Next') : 'Close'}</button>
+                        {index > 0 && <button {...backProps} className="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-sm transition-colors">Back</button>}
+                        <button {...primaryProps} className="px-5 py-2 text-xs font-bold rounded-xl bg-teal-600 text-white hover:bg-teal-700 border border-teal-500 shadow-lg shadow-teal-600/30 transition-colors">{continuous ? (index === activeSteps.length - 1 ? 'Finish' : 'Next') : 'Close'}</button>
                     </div>
                 </div>
             </div>
@@ -180,7 +213,13 @@ export default function TourGuide() {
                 showSkipButton={true}
                 stepIndex={stepIndex}
                 steps={activeSteps}
-                styles={{ options: { zIndex: 10000, overlayColor: 'rgba(15, 23, 42, 0.4)' } }}
+                disableScrolling={false}
+                styles={{
+                    options: {
+                        zIndex: 10000,
+                        overlayColor: 'rgba(15, 23, 42, 0.4)',
+                    },
+                }}
                 tooltipComponent={CustomTooltip}
             />
         </>
