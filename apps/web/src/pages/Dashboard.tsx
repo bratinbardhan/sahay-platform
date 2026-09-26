@@ -81,15 +81,21 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = (e: any) => {
-      // Safely grab scrollTop from whichever element is currently scrolling
-      const scrollTop = e.target?.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
-      setIsScrolled(scrollTop > 10);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollTop = e.target?.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
+          setIsScrolled(scrollTop > 10);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    // The 'true' argument enables the capture phase, catching all scroll events globally
-    window.addEventListener('scroll', handleScroll, true);
-    return () => window.removeEventListener('scroll', handleScroll, true);
+    window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
+    return () => window.removeEventListener('scroll', handleScroll, { capture: true });
   }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,17 +167,17 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto h-full relative">
         {/* Top Header */}
-        <header className="sticky top-0 z-40 px-8 py-6 shrink-0">
+        <header className={`sticky top-0 z-40 px-8 shrink-0 transition-all duration-300 ${isScrolled ? 'py-6' : 'py-4'}`}>
           {/* Dynamic Gradient Glass Background Layer */}
           <div
-            className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0'
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0'
               }`}
           >
             <div
-              className="absolute inset-0 bg-white/45 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75)] border-b border-white/20"
+              className="absolute inset-0 bg-white/60 backdrop-blur-2xl backdrop-saturate-200 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75)] border-b border-white/30"
               style={{
-                WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-                maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
+                WebkitMaskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)'
               }}
             />
           </div>
