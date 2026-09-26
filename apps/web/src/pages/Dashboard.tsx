@@ -267,12 +267,6 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
 
         {/* Scrollable Dashboard Area */}
         <div className="px-8 pb-8 relative overflow-hidden">
-          {/* 1. The injected texture background */}
-          <div
-            className="absolute inset-0 z-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"
-            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
-          />
-
           <div className="relative z-10">
             {/* Dashboard Title Area */}
             <div className="flex items-start justify-between mb-10 w-full">
