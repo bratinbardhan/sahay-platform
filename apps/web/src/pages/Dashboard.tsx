@@ -273,7 +273,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
 
-                <div className="flex flex-wrap items-center gap-4 bg-white/30 backdrop-blur-xl border border-white/60 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.1)] rounded-2xl px-5 py-3 w-fit mt-2 tour-live-tracking">
+                <div className="flex flex-wrap items-center gap-4 rounded-2xl px-5 py-3 w-fit mt-2 frosted-glass-texture tour-live-tracking">
                   <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
                   <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
                   <a href="tel:+1234567890" className="inline-flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-wide">
