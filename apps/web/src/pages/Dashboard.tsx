@@ -146,9 +146,9 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   return (
     <div className="flex flex-col h-full bg-[#FDFBF7]" data-palette="caretaker">
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <main className="flex-1 overflow-y-auto h-full relative">
         {/* Top Header */}
-        <header className="flex items-center justify-between px-8 py-6 shrink-0">
+        <header className="flex items-center justify-between px-8 py-6 shrink-0 sticky top-0 z-40 bg-white/45 backdrop-blur-xl backdrop-saturate-150 border-b border-white/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.75),0_4px_20px_-2px_rgba(0,0,0,0.03)] transition-all">
           <div className="text-[#1F2937] font-medium text-lg">Caretaker Dashboard</div>
           <div className="flex items-center space-x-6">
             <div className="relative inline-block">
@@ -230,7 +230,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         </header>
 
         {/* Scrollable Dashboard Area */}
-        <div className="flex-1 overflow-y-auto px-8 pb-8 relative overflow-hidden">
+        <div className="px-8 pb-8 relative overflow-hidden">
           {/* 1. The injected texture background */}
           <div
             className="absolute inset-0 z-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"
