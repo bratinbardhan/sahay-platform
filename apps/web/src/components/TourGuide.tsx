@@ -9,28 +9,35 @@ export default function TourGuide() {
     const location = useLocation();
 
     const [run, setRun] = useState(false);
+    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
     const [showFinishPrompt, setShowFinishPrompt] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
     const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
 
     useEffect(() => {
         if (!localStorage.getItem('sahay_tour_completed')) {
-            setStepIndex(0); setTimeout(() => setRun(true), 200);
+            setStepIndex(0);
+            setTimeout(() => setRun(true), 200);
         }
     }, []);
 
     const handleStartTour = () => {
         setShowFinishPrompt(false);
-        setStepIndex(0); setTimeout(() => setRun(true), 200);
+        setStepIndex(0);
+        if (location.pathname !== '/') {
+            navigate('/');
+            setTimeout(() => setRun(true), 400);
+        } else {
+            setTimeout(() => setRun(true), 200);
+        }
     };
 
     const handleFinalClose = () => {
-        setShowFinishPrompt(false);
+        setShowSkipConfirm(false); setShowFinishPrompt(false);
         localStorage.setItem('sahay_tour_completed', 'true');
         setStepIndex(0); setRun(false);
     };
 
-    // 12-Step Expanded Tour (All Beacons Disabled to prevent UI phantom dots)
     const rawSteps: AppStep[] = [
         { target: 'body', title: 'Welcome to Sahāy', content: 'Let us take a deep dive into your clinical tools.', placement: 'center', disableBeacon: true, route: '/' },
         { target: '.tour-sidebar', title: 'Navigation Hub', content: 'Switch seamlessly between your Dashboard, Care Circle, and Analytics.', placement: 'right', disableBeacon: true, route: '/' },
@@ -38,7 +45,7 @@ export default function TourGuide() {
         { target: '.tour-medication', title: 'Medication Scheduling', content: 'Track adherence and schedule new alerts directly to the patient app.', placement: 'right', disableBeacon: true, route: '/' },
         { target: '.tour-hydration', title: 'Hydration & Vitals', content: 'Keep a close eye on daily water intake and vital signs.', placement: 'bottom', disableBeacon: true, route: '/' },
         { target: '.tour-media', title: 'Family Media Uploads', content: 'Upload photos and voice memos to help stimulate cognitive function.', placement: 'left', disableBeacon: true, route: '/' },
-        { target: '.tour-care-circle', title: 'Care Circle', content: 'Manage your assigned patients and review emergency protocols.', placement: 'right', disableBeacon: true, route: '/' },
+        { target: '.tour-care-circle', title: 'Care Circle', content: 'Manage your assigned patients and review emergency protocols.', placement: 'center', disableBeacon: true, route: '/' },
         { target: '.tour-geofence', title: 'Geofence Map', content: 'Monitor patient boundaries and receive alerts if they wander.', placement: 'center', disableBeacon: true, route: '/geofence' },
         { target: '.tour-analytics-chart', title: 'The Analytics Engine', content: 'Visualize long-term therapy adherence trends and cognitive scores.', placement: 'bottom', disableBeacon: true, route: '/analytics' },
         { target: '.tour-print-btn', title: 'Print Reports', content: 'Export and print detailed clinical analytics for physical records.', placement: 'bottom-end', disableBeacon: true, route: '/analytics' },
@@ -50,7 +57,8 @@ export default function TourGuide() {
         const validateTargets = () => {
             const safeSteps = rawSteps.map((step) => {
                 if (step.target === 'body') return step;
-                return { ...step, target: document.querySelector(step.target as string) ? step.target : 'body' };
+                const el = document.querySelector(step.target as string);
+                return el ? step : { ...step, target: 'body', placement: 'center' };
             });
             setActiveSteps(safeSteps);
         };
@@ -61,16 +69,30 @@ export default function TourGuide() {
 
     const handleJoyrideCallback = (data: CallBackProps) => {
         const { status, type, action, index } = data;
-        if (status === STATUS.FINISHED || type === EVENTS.TOUR_END) { setRun(false); setShowFinishPrompt(true); return; }
-        if (status === STATUS.SKIPPED) { handleFinalClose(); return; }
+
+        if (status === STATUS.FINISHED || type === EVENTS.TOUR_END) {
+            setRun(false); setShowFinishPrompt(true); return;
+        }
+        if (status === STATUS.SKIPPED) {
+            setRun(false); handleFinalClose(); return;
+        }
+
         if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
+            if (action === ACTIONS.NEXT && index === activeSteps.length - 1) {
+                setRun(false);
+                setShowFinishPrompt(true);
+                return;
+            }
+
             const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
             if (nextStepIndex >= 0 && nextStepIndex < activeSteps.length) {
                 const nextRoute = activeSteps[nextStepIndex].route;
                 if (nextRoute && nextRoute !== location.pathname) {
                     setRun(false); navigate(nextRoute);
                     setTimeout(() => { setStepIndex(nextStepIndex); setRun(true); }, 400);
-                } else { setStepIndex(nextStepIndex); }
+                } else {
+                    setStepIndex(nextStepIndex);
+                }
             }
         }
     };
@@ -106,7 +128,16 @@ export default function TourGuide() {
                     </div>
                 </div>
             )}
-            <Joyride callback={handleJoyrideCallback} continuous={true} run={run} showSkipButton={true} stepIndex={stepIndex} steps={activeSteps} styles={{ options: { zIndex: 10000, overlayColor: 'rgba(15, 23, 42, 0.4)' } }} tooltipComponent={CustomTooltip} />
+            <Joyride
+                callback={handleJoyrideCallback}
+                continuous={true}
+                run={run}
+                showSkipButton={true}
+                stepIndex={stepIndex}
+                steps={activeSteps}
+                styles={{ options: { zIndex: 10000, overlayColor: 'rgba(15, 23, 42, 0.4)' } }}
+                tooltipComponent={CustomTooltip}
+            />
         </>
     );
 }
