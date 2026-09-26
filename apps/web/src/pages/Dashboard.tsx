@@ -234,7 +234,10 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
           {/* Dashboard Title Area */}
           <div className="relative overflow-hidden mb-10">
             {/* 1. The injected texture background */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-60 bg-[url('data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'2\' cy=\'2\' r=\'1.5\' fill=\'%230f766e\' fill-opacity=\'0.15\'/%3E%3C/svg%3E')] [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]" />
+            <div
+              className="absolute inset-0 z-0 pointer-events-none opacity-60 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")` }}
+            />
 
             {/* 2. The existing content securely pushed above the texture */}
             <div className="relative z-10 flex items-start justify-between w-full">
