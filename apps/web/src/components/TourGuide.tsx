@@ -9,28 +9,26 @@ export default function TourGuide() {
     const location = useLocation();
 
     const [run, setRun] = useState(false);
-    const [showPrompt, setShowPrompt] = useState(false);
-    const [showDeclineConfirm, setShowDeclineConfirm] = useState(false);
-    const [showSkipConfirm, setShowSkipConfirm] = useState(false);
     const [showFinishPrompt, setShowFinishPrompt] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
     const [activeSteps, setActiveSteps] = useState<AppStep[]>([]);
 
     useEffect(() => {
-        if (!localStorage.getItem('sahay_tour_completed')) setShowPrompt(true);
+        if (!localStorage.getItem('sahay_tour_completed')) {
+            setStepIndex(0); setTimeout(() => setRun(true), 200);
+        }
     }, []);
 
     const handleStartTour = () => {
-        setShowPrompt(false); setShowDeclineConfirm(false); setShowFinishPrompt(false);
+        setShowFinishPrompt(false);
         setStepIndex(0); setTimeout(() => setRun(true), 200);
     };
-    const handleInitialDecline = () => { setShowPrompt(false); setShowDeclineConfirm(true); };
+
     const handleFinalClose = () => {
-        setShowPrompt(false); setShowDeclineConfirm(false); setShowSkipConfirm(false); setShowFinishPrompt(false);
+        setShowFinishPrompt(false);
         localStorage.setItem('sahay_tour_completed', 'true');
         setStepIndex(0); setRun(false);
     };
-    const handleResumeTour = () => { setShowDeclineConfirm(false); setShowSkipConfirm(false); setRun(true); };
 
     // 12-Step Expanded Tour (All Beacons Disabled to prevent UI phantom dots)
     const rawSteps: AppStep[] = [
@@ -64,7 +62,7 @@ export default function TourGuide() {
     const handleJoyrideCallback = (data: CallBackProps) => {
         const { status, type, action, index } = data;
         if (status === STATUS.FINISHED || type === EVENTS.TOUR_END) { setRun(false); setShowFinishPrompt(true); return; }
-        if (status === STATUS.SKIPPED) { setRun(false); setShowSkipConfirm(true); return; }
+        if (status === STATUS.SKIPPED) { handleFinalClose(); return; }
         if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
             const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1);
             if (nextStepIndex >= 0 && nextStepIndex < activeSteps.length) {
