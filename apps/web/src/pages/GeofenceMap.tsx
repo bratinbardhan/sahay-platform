@@ -239,12 +239,6 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
         </div>
       )}
 
-      {demoAlertMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center justify-between rounded-lg bg-slate-800 text-white px-5 py-3 shadow-xl max-w-sm animate-in slide-in-from-bottom-5">
-          <span className="text-sm font-medium">{demoAlertMessage}</span>
-          <button onClick={() => setDemoAlertMessage(null)} className="ml-4 text-2xl leading-none text-slate-300 hover:text-white">&times;</button>
-        </div>
-      )}
 
       {notice ? (
         <div className="mb-6 px-4 py-3 rounded-xl bg-sahay-accent/10 border-2 border-sahay-accent text-sahay-ink font-semibold">
@@ -406,6 +400,17 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
               </label>
             </div>
           </div>
+          {demoAlertMessage && (
+            <div className="mb-4 flex items-center justify-between rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800 animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>{demoAlertMessage}</span>
+              </div>
+              <button onClick={() => setDemoAlertMessage(null)} className="ml-4 font-bold text-amber-600 hover:text-amber-900 transition-colors text-lg">&times;</button>
+            </div>
+          )}
           <div className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold border ${isTrackingEnabled ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-amber-50 text-amber-800 border-amber-100'}`}>
             {isTrackingEnabled ? (
               <span className="relative flex h-3 w-3 mr-1">
