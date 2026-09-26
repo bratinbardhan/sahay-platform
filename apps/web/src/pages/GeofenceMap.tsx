@@ -68,6 +68,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
   const [pendingState, setPendingState] = useState<boolean | null>(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [demoAlertMessage, setDemoAlertMessage] = useState<string | null>(null);
 
   const flashNotice = (message: string) => {
     setNotice(message);
@@ -222,21 +223,28 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
         <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> Back to Dashboard
       </button>
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-4">
-        <h1 className="text-3xl font-bold text-sahay-ink">Anti-Wandering Geofencing</h1>
-        <button
-          type="button"
-          onClick={() => alert("Action restricted: This feature is currently unavailable in the demo account.")}
-          className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-[#1E293B] text-[#1E293B] font-bold text-sm hover:bg-slate-50 transition-colors shadow-sm"
-        >
-          <Link className="w-4 h-4 md:w-5 md:h-5" />
-          Get Sharable Link
-        </button>
-      </div>
+      <h1 className="text-3xl font-bold text-sahay-ink mb-2">Anti-Wandering Geofencing</h1>
       <p className="text-sahay-ink/70 mb-8">
         Place the home anchor pin and set a safe radius. When the patient's device crosses the
         boundary, emergency contacts receive an SMS with a live Google Maps location link.
       </p>
+
+      {!isTrackingEnabled && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl bg-amber-50 border-2 border-amber-300 p-4 shadow-sm text-amber-900">
+          <ShieldAlert className="w-5 h-5 flex-shrink-0 text-amber-600" />
+          <div>
+            <p className="font-semibold">Live Tracking is Currently Offline</p>
+            <p className="text-xs text-amber-700">Geofence alerts and real-time synchronization are paused until live tracking is enabled.</p>
+          </div>
+        </div>
+      )}
+
+      {demoAlertMessage && (
+        <div className="mb-6 flex items-center justify-between rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+          <span>{demoAlertMessage}</span>
+          <button onClick={() => setDemoAlertMessage(null)} className="font-bold ml-4 text-lg">&times;</button>
+        </div>
+      )}
 
       {notice ? (
         <div className="mb-6 px-4 py-3 rounded-xl bg-sahay-accent/10 border-2 border-sahay-accent text-sahay-ink font-semibold">
@@ -376,12 +384,27 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <Card className="bg-sahay-surface shadow-caretaker-card">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
             <h3 className="text-lg font-extrabold text-[#1E293B]">Live Tracking Status</h3>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={isTrackingEnabled} onChange={() => { setPendingState(!isTrackingEnabled); setIsTrackingModalOpen(true); }} />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-            </label>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                disabled={!isTrackingEnabled}
+                title={!isTrackingEnabled ? "Enable live tracking to generate a sharable link" : "Generate sharable link"}
+                onClick={() => {
+                  if (isTrackingEnabled) {
+                    setDemoAlertMessage("Action restricted: This feature is currently unavailable in the demo account.");
+                  }
+                }}
+                className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border-2 border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors shadow-sm ${!isTrackingEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <Link className="w-3.5 h-3.5" /> Get Sharable Link
+              </button>
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                <input type="checkbox" className="sr-only peer" checked={isTrackingEnabled} onChange={() => { setPendingState(!isTrackingEnabled); setIsTrackingModalOpen(true); }} />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+              </label>
+            </div>
           </div>
           <div className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold border ${isTrackingEnabled ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-amber-50 text-amber-800 border-amber-100'}`}>
             {isTrackingEnabled ? (
