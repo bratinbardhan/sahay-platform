@@ -232,33 +232,39 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
         {/* Scrollable Dashboard Area */}
         <div className="flex-1 overflow-y-auto px-8 pb-8">
           {/* Dashboard Title Area */}
-          <div className="flex items-start justify-between mb-10">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
+          <div className="relative overflow-hidden mb-10">
+            {/* 1. The injected texture background */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-60 bg-[url('data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'2\' cy=\'2\' r=\'1.5\' fill=\'%230f766e\' fill-opacity=\'0.15\'/%3E%3C/svg%3E')] [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]" />
 
-              <div className="flex flex-wrap items-center gap-6 mt-8 tour-live-tracking">
-                <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
-                <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
-                <a href="tel:+1234567890" className="inline-flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-wide">
-                  <Phone className="w-4 h-4 mr-1.5 text-slate-500" />
-                  +91 98620 44110
-                </a>
-                <button
-                  onClick={() => onNavigate('geofence')}
-                  className="flex items-center text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
-                >
-                  <MapPin className="w-4 h-4 mr-1.5" />
-                  Live Tracking
-                </button>
+            {/* 2. The existing content securely pushed above the texture */}
+            <div className="relative z-10 flex items-start justify-between w-full">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
+
+                <div className="flex flex-wrap items-center gap-6 mt-8 tour-live-tracking">
+                  <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
+                  <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
+                  <a href="tel:+1234567890" className="inline-flex items-center text-sm font-bold text-[#1E293B] bg-white border border-slate-200 hover:bg-slate-50 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-wide">
+                    <Phone className="w-4 h-4 mr-1.5 text-slate-500" />
+                    +91 98620 44110
+                  </a>
+                  <button
+                    onClick={() => onNavigate('geofence')}
+                    className="flex items-center text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
+                  >
+                    <MapPin className="w-4 h-4 mr-1.5" />
+                    Live Tracking
+                  </button>
+                </div>
               </div>
+              <button
+                onClick={() => setIsEmergencyOpen(true)}
+                className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
+              >
+                <Phone className="w-4 h-4 stroke-[2.25]" />
+                <span>Emergency Contact</span>
+              </button>
             </div>
-            <button
-              onClick={() => setIsEmergencyOpen(true)}
-              className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-xl font-bold text-[13px] flex items-center gap-2 transition-colors shadow-sm shrink-0"
-            >
-              <Phone className="w-4 h-4 stroke-[2.25]" />
-              <span>Emergency Contact</span>
-            </button>
           </div>
 
           {activeAlert ? (
