@@ -515,25 +515,25 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             </div>
 
             <div className="grid grid-cols-4 gap-4 mt-6">
-              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#BCE7DE]/80 hover:to-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#A3D8CC]/60 hover:to-[#BCE7DE]/60 transition-colors duration-200 border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
                 <Brain className="w-6 h-6 text-[#0E7490] mb-2" />
                 <div className="text-3xl font-bold text-[#0E7490]">3</div>
                 <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">GDS STAGE</div>
                 <div className="text-xs font-medium text-[#475569] mt-1">Mild</div>
               </div>
-              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#BCE7DE]/80 hover:to-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#A3D8CC]/60 hover:to-[#BCE7DE]/60 transition-colors duration-200 border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
                 <Coins className="w-6 h-6 text-[#0E7490] mb-2" />
                 <div className="text-3xl font-bold text-[#0E7490]">186</div>
                 <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">DEMITOKEN BALANCE</div>
                 <div className="text-xs font-medium text-[#475569] mt-1">Local Wallet Balance</div>
               </div>
-              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#BCE7DE]/80 hover:to-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#A3D8CC]/60 hover:to-[#BCE7DE]/60 transition-colors duration-200 border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
                 <Flame className="w-6 h-6 text-[#0E7490] mb-2" />
                 <div className="text-3xl font-bold text-[#0E7490]">88%</div>
                 <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">STABILITY SCORE</div>
                 <div className="text-xs font-medium text-[#475569] mt-1">14-day mood / load</div>
               </div>
-              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#BCE7DE]/80 hover:to-[#D1F2EB]/80 transition-colors border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
+              <div className="bg-gradient-to-b from-[#BCE7DE]/60 to-[#D1F2EB]/60 hover:from-[#A3D8CC]/60 hover:to-[#BCE7DE]/60 transition-colors duration-200 border border-[#BCE7DE] rounded-[18px] p-5 flex flex-col items-center justify-center text-center shadow-sm">
                 <Clock className="w-6 h-6 text-[#0E7490] mb-2" />
                 <div className="text-3xl font-bold text-[#0E7490]">427ms</div>
                 <div className="text-[11px] font-bold tracking-wider text-slate-900 uppercase">TOUCH LATENCY</div>
