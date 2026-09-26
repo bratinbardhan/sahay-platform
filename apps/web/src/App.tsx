@@ -230,7 +230,7 @@ function InnerApp() {
         </div>
       )}
 
-      {session && session.user.role !== 'ADMIN' && location.pathname === '/' && (
+      {session && session.user.role !== 'ADMIN' && ['/', '/patients', '/analytics'].includes(location.pathname) && (
         <TourGuide />
       )}
     </div>

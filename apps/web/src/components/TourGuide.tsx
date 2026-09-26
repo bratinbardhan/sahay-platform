@@ -53,7 +53,7 @@ export default function TourGuide() {
     setRun(true);
   };
 
-  // 100% Safe Structural & Body Steps (Guaranteed never to crash)
+  // CRITICAL FIX: All '/dashboard' routes changed to '/' to match your App.tsx router
   const steps: AppStep[] = [
     {
       target: 'body',
@@ -61,7 +61,7 @@ export default function TourGuide() {
       content: 'Welcome to the Sahāy Clinical Dashboard! Let us take a deep dive into your clinical tools.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -69,7 +69,7 @@ export default function TourGuide() {
       content: 'Your Navigation Hub (Sidebar). Switch seamlessly between your Dashboard, Patient Roster, and Analytics.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -77,7 +77,7 @@ export default function TourGuide() {
       content: 'Instantly view the current patient status and access their real-time GPS location via Live Tracking.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -85,7 +85,7 @@ export default function TourGuide() {
       content: 'Track adherence in real-time, view upcoming doses, and schedule new alerts directly to the patient app.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -93,7 +93,7 @@ export default function TourGuide() {
       content: 'Keep a close eye on daily water intake and vital signs to ensure health goals are met.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -101,7 +101,7 @@ export default function TourGuide() {
       content: 'Upload photos and voice memos to help stimulate cognitive function and memory for dementia care.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
     {
       target: 'body',
@@ -125,7 +125,7 @@ export default function TourGuide() {
       content: 'Manage your account settings, switch roles, or log out securely from your profile.',
       placement: 'center',
       disableBeacon: true,
-      route: '/dashboard',
+      route: '/',
     },
   ];
 
