@@ -204,7 +204,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
 
   return (
     <div
-      className={`min-h-screen bg-sahay-bg p-4 sm:p-8 ${breachSimulated ? 'pt-20' : ''} tour-geofence`}
+      className={`min-h-screen bg-sahay-bg p-4 sm:p-8 ${breachSimulated ? 'pt-20' : ''}`}
       data-palette="caretaker"
     >
       {breachSimulated ? (
@@ -275,7 +275,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
       {/* Interactive map + editor */}
       <Card title="Safe Zone Editor" className="mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 tour-geofence-map">
             <LeafletMap
               centerLat={draft.center_lat}
               centerLng={draft.center_lng}

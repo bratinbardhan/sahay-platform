@@ -48,11 +48,11 @@ export default function TourGuide() {
         { target: '.tour-medication', title: 'Medication Scheduling', content: 'Track adherence and schedule new alerts directly to the patient app.', placement: 'right', disableBeacon: true, route: '/' },
         { target: '.tour-hydration', title: 'Hydration & Vitals', content: 'Keep a close eye on daily water intake and vital signs.', placement: 'bottom', disableBeacon: true, route: '/' },
         { target: '.tour-media', title: 'Family Media Uploads', content: 'Upload photos and voice memos to help stimulate cognitive function.', placement: 'left', disableBeacon: true, route: '/' },
-        { target: '.tour-care-circle', title: 'Care Circle', content: 'Manage your assigned patients and review emergency protocols.', placement: 'center', disableBeacon: true, route: '/patients' },
-        { target: '.tour-geofence', title: 'Geofence Map', content: 'Monitor patient boundaries and receive alerts if they wander.', placement: 'center', disableBeacon: true, route: '/geofence' },
+        { target: '.tour-nav-care-circle', title: 'Care Circle', content: 'Manage your assigned patients and review emergency protocols.', placement: 'right', disableBeacon: true, route: '/' },
+        { target: '.tour-geofence-map', title: 'Geofence Map', content: 'Monitor patient boundaries and receive alerts if they wander.', placement: 'left', disableBeacon: true, route: '/geofence' },
         { target: '.tour-analytics-chart', title: 'The Analytics Engine', content: 'Visualize long-term therapy adherence trends and cognitive scores.', placement: 'bottom', disableBeacon: true, route: '/analytics' },
         { target: '.tour-print-btn', title: 'Print Reports', content: 'Export and print detailed clinical analytics for physical records.', placement: 'bottom-end', disableBeacon: true, route: '/analytics' },
-        { target: '.tour-profile', title: 'Caretaker Profile', content: 'Manage your account settings and switch active caretaker roles.', placement: 'bottom-start', disableBeacon: true, route: '/' },
+        { target: '.tour-profile-avatar', title: 'Caretaker Profile', content: 'Manage your account settings and switch active caretaker roles.', placement: 'bottom-end', disableBeacon: true, route: '/' },
         { target: '.tour-logout', title: 'Secure Log Out', content: 'Securely log out of your caretaker session.', placement: 'right', disableBeacon: true, route: '/' },
     ];
 

@@ -193,7 +193,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
             </div>
 
             <div className="relative">
-              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer tour-profile">
+              <div onClick={() => { setIsProfileOpen(!isProfileOpen); setIsAlertOpen(false); }} className="w-10 h-10 bg-slate-300 rounded-full overflow-hidden flex items-center justify-center shadow-sm cursor-pointer tour-profile-avatar">
                 <UserIcon className="w-6 h-6 text-slate-500" />
               </div>
               {isProfileOpen && (
