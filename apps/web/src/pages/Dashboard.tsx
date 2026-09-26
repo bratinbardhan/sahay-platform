@@ -273,6 +273,11 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
 
+                <div className="mb-4 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm text-amber-800 w-fit">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span><strong>Notice:</strong> Live tracking is currently offline. Location updates are paused.</span>
+                </div>
+
                 <div className="flex flex-wrap items-center gap-4 rounded-2xl px-5 py-3 w-fit mt-2 frosted-glass-texture tour-live-tracking">
                   <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
                   <span className="text-base font-medium text-slate-500">&middot; Last session: 21/9/2026, 4:42:00 pm</span>
@@ -281,11 +286,12 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
                     +91 98620 44110
                   </a>
                   <button
-                    onClick={() => onNavigate('geofence')}
-                    className="flex items-center text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md px-3 py-1.5 rounded-lg transition-all duration-200"
+                    disabled
+                    title="Please enable it from the Geofencing section."
+                    className="flex items-center text-sm font-bold bg-gray-100 text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg cursor-not-allowed opacity-70"
                   >
                     <MapPin className="w-4 h-4 mr-1.5" />
-                    Live Tracking
+                    Live Tracking Disabled
                   </button>
                 </div>
               </div>

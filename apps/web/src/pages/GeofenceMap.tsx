@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { GeofenceZone, GeofenceZoneUpsertPayload } from '@sahay/types';
-import { BellRing, ChevronLeft, Loader2, MapPin, Plus, Search, ShieldAlert, Siren } from 'lucide-react';
+import { BellRing, ChevronLeft, Loader2, MapPin, Plus, Search, ShieldAlert, Siren, Link } from 'lucide-react';
 
 import { ActionButton } from '@/components/ActionButton';
 import { Card } from '@/components/Card';
@@ -222,7 +222,17 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
         <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" /> Back to Dashboard
       </button>
 
-      <h1 className="text-3xl font-bold text-sahay-ink mb-2">Anti-Wandering Geofencing</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-4">
+        <h1 className="text-3xl font-bold text-sahay-ink">Anti-Wandering Geofencing</h1>
+        <button
+          type="button"
+          onClick={() => alert("Action restricted: This feature is currently unavailable in the demo account.")}
+          className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-[#1E293B] text-[#1E293B] font-bold text-sm hover:bg-slate-50 transition-colors shadow-sm"
+        >
+          <Link className="w-4 h-4 md:w-5 md:h-5" />
+          Get Sharable Link
+        </button>
+      </div>
       <p className="text-sahay-ink/70 mb-8">
         Place the home anchor pin and set a safe radius. When the patient's device crosses the
         boundary, emergency contacts receive an SMS with a live Google Maps location link.
