@@ -253,7 +253,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
   const reactionLatencyChart = <CognitiveTrendChart points={ddaHistory?.points ?? []} loadSeries={boundLoadSeries} metric="latency" />;
 
   return (
-    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 tour-analytics-page" data-palette="caretaker">
+    <div className="min-h-screen bg-sahay-bg p-4 sm:p-8 tour-analytics-page tour-analytics-chart" data-palette="caretaker">
       {/* Print-Only Custom Header */}
       <div className="hidden print:flex print:flex-col print:items-center print:mb-8 border-b border-slate-200 print:pb-6">
         <div className="flex items-center gap-3 mb-2">
@@ -279,7 +279,7 @@ export function AnalyticsChart({ onNavigate, token }: AnalyticsChartProps) {
         <button type="button" onClick={() => window.print()} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-sahay-accent px-3 py-2 text-sm font-semibold text-white hover:bg-sahay-accent-strong print:hidden">
           <Download className="h-4 w-4" /> Download Detailed Report
         </button>
-        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken print:hidden">
+        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-lg border border-sahay-line bg-sahay-surface px-3 py-2 text-sm font-semibold text-sahay-ink hover:bg-sahay-surface-sunken print:hidden tour-print-btn">
           <Printer className="h-4 w-4" /> Print
         </button>
         {isDemo ? (

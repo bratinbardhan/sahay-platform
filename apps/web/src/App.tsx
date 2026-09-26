@@ -149,15 +149,14 @@ function InnerApp() {
             <button
               title="Care Circle"
               onClick={() => setShowCareCircleModal(true)}
-              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
+              className={`w-full h-10 text-slate-500 hover:text-[#1E293B] hover:bg-[#F5E6D3]/60 rounded-xl transition-all flex items-center shrink-0 overflow-hidden tour-care-circle ${isSidebarExpanded ? 'gap-3 px-4' : 'justify-center'}`}
             >
               <HeartHandshake className="w-5 h-5 shrink-0" />
               <span className={`font-medium text-sm whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${!isSidebarExpanded ? 'w-0 opacity-0 ml-0' : 'w-auto opacity-100 ml-3'}`}>Care Circle</span>
             </button>
           </div>
 
-          <div className="flex-1" />
-          <div className="w-full px-3 pb-4 tour-profile">
+          <div className="w-full px-3 pb-4 tour-logout">
             <button
               onClick={() => setIsLogoutModalOpen(true)}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors ${!isSidebarExpanded ? 'justify-center' : 'px-3'
@@ -230,7 +229,7 @@ function InnerApp() {
         </div>
       )}
 
-      {session && session.user.role !== 'ADMIN' && ['/', '/patients', '/analytics'].includes(location.pathname) && (
+      {session && session.user.role !== 'ADMIN' && ['/', '/patients', '/analytics', '/geofence'].includes(location.pathname) && (
         <TourGuide />
       )}
     </div>
