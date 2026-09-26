@@ -646,3 +646,13 @@ h6 {
 }
 
 /* ----- TOUR GUIDE SCROLL FIX END ----- */
+
+body.tour-active header {
+  padding-top: 1rem !important;
+  padding-bottom: 2rem !important;
+  transition: none !important;
+}
+
+body.tour-active {
+  scroll-behavior: auto !important;
+}

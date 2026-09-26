@@ -69,6 +69,15 @@ export default function TourGuide() {
         }
     }, [location.pathname, stepIndex, syncSteps]);
 
+    useEffect(() => {
+        if (run) {
+            document.body.classList.add('tour-active');
+        } else {
+            document.body.classList.remove('tour-active');
+        }
+        return () => document.body.classList.remove('tour-active');
+    }, [run]);
+
     const handleStartTour = async () => {
         setShowPrompt(false); setShowDeclineConfirm(false); setShowFinishPrompt(false);
         setStepIndex(0);
