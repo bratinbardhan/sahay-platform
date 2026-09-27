@@ -16,6 +16,8 @@ import { Signup } from '@/pages/Signup';
 import { AdminDashboard } from '@/pages/AdminDashboard';
 import Patients from '@/pages/Patients';
 import { NotFound } from '@/pages/NotFound';
+import { Forbidden } from '@/pages/Forbidden';
+import { ServerError } from '@/pages/ServerError';
 import TourGuide from './components/TourGuide';
 
 
@@ -257,6 +259,8 @@ function InnerApp() {
               <Route path="/media" element={<MediaManager onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/geofence" element={<GeofenceMap onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
               <Route path="/reminiscence" element={<ReminiscenceManager token={session.accessToken} onNavigate={(p) => navigate(p === 'dashboard' ? '/' : '/' + p)} />} />
+              <Route path="/403" element={<Forbidden />} />
+              <Route path="/500" element={<ServerError />} />
               <Route path="*" element={<NotFound />} />
             </>
           ) : (
