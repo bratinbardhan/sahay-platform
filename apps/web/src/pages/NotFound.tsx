@@ -5,8 +5,14 @@ export function NotFound() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 w-full">
-            <div className="flex flex-col items-center justify-center bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] rounded-[2rem] p-12 max-w-lg text-center w-full mx-4">
+        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-[#F5EFE6] to-[#FDFBF7] relative overflow-hidden">
+            <div
+                className="absolute inset-0 animate-organic-float opacity-70 pointer-events-none"
+                style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")`,
+                }}
+            />
+            <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] rounded-[2rem] p-12 max-w-lg text-center w-full mx-4">
                 <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-slate-100 border border-white shadow-sm text-slate-700">
                     <Compass className="w-8 h-8" />
                 </div>
