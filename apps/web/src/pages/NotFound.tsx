@@ -6,16 +6,16 @@ export function NotFound() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6 w-full">
-            <div className="flex flex-col items-center justify-center bg-white/30 backdrop-blur-xl border border-white/60 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.1)] rounded-3xl p-12 max-w-lg text-center w-full">
-                <div className="w-16 h-16 bg-slate-100/50 rounded-full flex items-center justify-center mb-6 text-slate-800">
+            <div className="flex flex-col items-center justify-center bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] rounded-[2rem] p-12 max-w-lg text-center w-full mx-4">
+                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-slate-100 border border-white shadow-sm text-slate-700">
                     <Compass className="w-8 h-8" />
                 </div>
-                <h1 className="text-7xl font-bold text-slate-800 mb-4">404</h1>
-                <h2 className="text-xl font-semibold text-slate-700 mb-2">Looks like you wandered off the map.</h2>
-                <p className="text-slate-500 mb-8">The page you are looking for doesn't exist or has been moved.</p>
+                <h1 className="text-8xl font-extrabold tracking-tighter text-slate-800 mb-4">404</h1>
+                <h2 className="text-2xl font-semibold tracking-tight text-slate-700 mb-3">Looks like you wandered off the map.</h2>
+                <p className="text-slate-500 mb-10 leading-relaxed max-w-sm mx-auto">The page you are looking for doesn't exist or has been moved.</p>
                 <button
                     onClick={() => navigate('/')}
-                    className="bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors shadow-sm"
+                    className="bg-slate-900 text-white font-medium px-8 py-3.5 rounded-xl shadow-md shadow-slate-900/20 hover:bg-slate-800 hover:-translate-y-0.5 transition-all duration-200"
                 >
                     Return to Dashboard
                 </button>
