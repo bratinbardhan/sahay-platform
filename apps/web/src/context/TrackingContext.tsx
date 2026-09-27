@@ -12,10 +12,10 @@ export const TrackingProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [isTrackingEnabled, setIsTrackingEnabled] = useState<boolean>(() => {
         try {
             const item = window.localStorage.getItem('sahay_tracking_enabled');
-            return item ? JSON.parse(item) : false;
+            return item ? JSON.parse(item) : true;
         } catch (error) {
             console.error("Error reading localStorage", error);
-            return false;
+            return true;
         }
     });
 
