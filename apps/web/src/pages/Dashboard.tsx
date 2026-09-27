@@ -38,6 +38,7 @@ import { sendHeartbeat } from '@/lib/adminApi';
 import {
   getDemoActivityHeatmap,
 } from '@/lib/demoSeed';
+import { useTracking } from '../context/TrackingContext';
 
 
 interface DashboardProps {
@@ -79,6 +80,7 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isTrackingEnabled } = useTracking();
 
   useEffect(() => {
     let ticking = false;
@@ -273,10 +275,12 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#1E293B] tracking-tight mb-5">Good morning, Ram</h1>
 
-                <div className="mb-4 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm text-amber-800 w-fit">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span><strong>Notice:</strong> Live tracking is currently offline. Location updates are paused.</span>
-                </div>
+                {!isTrackingEnabled && (
+                  <div className="mb-4 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm text-amber-800 w-fit">
+                    <AlertTriangle className="w-4 h-4" />
+                    <span><strong>Notice:</strong> Live tracking is currently offline. Location updates are paused.</span>
+                  </div>
+                )}
 
                 <div className="flex flex-wrap items-center gap-4 rounded-2xl px-5 py-3 w-fit mt-2 frosted-glass-texture tour-live-tracking">
                   <span className="text-base font-bold text-[#1E293B]">Aditya Sharma, 74</span>
@@ -286,12 +290,13 @@ export function Dashboard({ user: _user, token, onNavigate }: DashboardProps) {
                     +91 98620 44110
                   </a>
                   <button
-                    disabled
-                    title="Please enable it from the Geofencing section."
-                    className="flex items-center text-sm font-bold bg-gray-100 text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg cursor-not-allowed opacity-70"
+                    onClick={isTrackingEnabled ? () => onNavigate('geofence') : undefined}
+                    disabled={!isTrackingEnabled}
+                    title={!isTrackingEnabled ? "Please enable it from the Geofencing section." : "View Live Tracking"}
+                    className={`flex items-center text-sm font-bold px-3 py-1.5 rounded-lg transition-all duration-200 ${isTrackingEnabled ? 'text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:shadow-md' : 'bg-gray-100 text-gray-500 border border-gray-200 cursor-not-allowed opacity-70'}`}
                   >
                     <MapPin className="w-4 h-4 mr-1.5" />
-                    Live Tracking Disabled
+                    {isTrackingEnabled ? 'Live Tracking' : 'Live Tracking Disabled'}
                   </button>
                 </div>
               </div>

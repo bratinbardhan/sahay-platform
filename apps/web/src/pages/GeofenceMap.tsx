@@ -7,6 +7,7 @@ import { Card } from '@/components/Card';
 import { LeafletMap } from '@/components/LeafletMap';
 import { saveGeofenceZone, searchAddress, type GeocodedPlace } from '@/lib/api';
 import { MOCK_GEOFENCE } from '@/lib/mockData';
+import { useTracking } from '../context/TrackingContext';
 
 interface GeofenceMapProps {
   onNavigate: (page: string) => void;
@@ -65,7 +66,7 @@ export function GeofenceMap({ onNavigate }: GeofenceMapProps) {
   const [smsArmed, setSmsArmed] = useState(true);
   const [smsToggling, setSmsToggling] = useState(false);
   const [breachSimulated, setBreachSimulated] = useState(false);
-  const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
+  const { isTrackingEnabled, setIsTrackingEnabled } = useTracking();
   const [pendingState, setPendingState] = useState<boolean | null>(null);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [demoAlertMessage, setDemoAlertMessage] = useState<string | null>(null);
