@@ -12,8 +12,8 @@ export function NotFound() {
                     backgroundImage: `url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1.5' fill='%230f766e' fill-opacity='0.25'/%3E%3C/svg%3E")`,
                 }}
             />
-            <div className="relative z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] rounded-[2rem] p-12 max-w-lg text-center w-full mx-4">
-                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-slate-100 border border-white shadow-sm text-slate-700">
+            <div className="relative z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-2xl border-2 border-white shadow-2xl shadow-slate-200/60 rounded-[2rem] p-12 max-w-lg text-center w-full mx-4 animate-in fade-in zoom-in-95 duration-500 ease-out">
+                <div className="flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-slate-100 border border-white shadow-sm text-slate-700 animate-bounce">
                     <Compass className="w-8 h-8" />
                 </div>
                 <h1 className="text-8xl font-extrabold tracking-tighter text-slate-800 mb-4">404</h1>
